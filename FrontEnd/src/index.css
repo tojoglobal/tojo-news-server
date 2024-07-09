@@ -236,9 +236,10 @@ ul li a {
 
 .card-category {
   color: #fff;
-  font-family: var(--font-main), "Lucida Sans", Arial, sans-serif;
-  font-size: 1.7rem;
+  font-family: var(--font-main);
+  font-size: 1.2rem;
   font-weight: 600;
+  text-transform: uppercase;
 }
 .canvasjs-chart-credit {
   display: none;
@@ -388,6 +389,7 @@ label[for="file"]:active {
   margin: 0 auto;
   width: 190px;
   font-size: 1rem;
+  text-transform: uppercase;
 }
 /* Grid Item */
 .gid_item {

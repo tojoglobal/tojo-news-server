@@ -20,8 +20,6 @@ app.use(
   })
 );
 
-// app.use(express.static(path.join(__dirname, "public")));
-
 app.use(express.json());
 app.use(cookieParser());
 

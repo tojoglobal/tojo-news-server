@@ -13,12 +13,12 @@ const editJobPostIdQuery = `SELECT * FROM jobpost WHERE uuid = ?`;
 const editJobPostQuery = `UPDATE jobpost SET jobTitle = ?, jobPosition = ?, jobTime = ?, applyLink = ? WHERE uuid = ?`;
 const jobPostToDeleteQuery = `DELETE FROM jobpost WHERE uuid = ?`;
 
-//FaqQuery
-const createFaqQuery = `INSERT INTO faq (uuid, question , answer) VALUES ( ? )`;
-const allFaqQuery = `SELECT * FROM faq ORDER BY faq.ID ASC`;
-const editFaqIdQuery = `SELECT * FROM faq WHERE uuid = ?`;
-const editFaqQuery = `UPDATE faq SET question = ?, answer = ?  WHERE uuid = ?`;
-const faqToDeleteQuery = `DELETE FROM faq WHERE uuid = ?`;
+//TagNameQuery
+const createTagNameQuery = `INSERT INTO tags (uuid , name) VALUES ( ? )`;
+const allTagNameQuery = `SELECT * FROM tags ORDER BY tags.ID ASC`;
+const editTagNameIdQuery = `SELECT * FROM tags WHERE uuid = ?`;
+const editTagNameQuery = `UPDATE tags SET name = ? WHERE uuid = ?`;
+const TagNameToDeleteQuery = `DELETE FROM tags WHERE uuid = ?`;
 
 // Blog  Area
 const createBlogPostQuery = `INSERT INTO blog (uuid, blogtitle, blogImg , description , authorName , timestamp_column) VALUES ( ? )`;
@@ -87,11 +87,11 @@ export {
   editBlogPostQuery,
   BlogPostToDeleteQuery,
   editBlogPostIdQuery,
-  allFaqQuery,
-  faqToDeleteQuery,
-  editFaqIdQuery,
-  editFaqQuery,
-  createFaqQuery,
+  allTagNameQuery,
+  TagNameToDeleteQuery,
+  editTagNameIdQuery,
+  editTagNameQuery,
+  createTagNameQuery,
   memberImageDeleteQuery,
   memberImageCreateQuery,
   memberImageQuery,

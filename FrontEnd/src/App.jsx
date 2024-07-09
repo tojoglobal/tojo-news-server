@@ -3,16 +3,19 @@ import AdminLogin from "./Component/AdminLoginPage/AdminLogin";
 import Dashboard from "./Dashbord/dashbord";
 import PrivateRoute from "./Component/PivateRoute/PrivateRoute";
 import MainDashbord from "./Dashbord/MainDashbord/MainDashbord";
+
 // contact list
 import ContactList from "./Component/Routers/Contact/ContactList";
 import CreateContactList from "./Component/Routers/Contact/CreateContactList";
 import ShowContactList from "./Component/Routers/Contact/ShowContactList";
 import EditContactList from "./Component/Routers/Contact/EditContactList";
+
 // contact categorey list
-import ContactCategoryList from "./Component/Routers/ContactCategory/ContactCategoryList";
-import EditContactCategory from "./Component/Routers/ContactCategory/EditContactCategory";
-import CreateContactCategory from "./Component/Routers/ContactCategory/CreateContactCategory";
-// colinet list
+import Authors from "./Component/Routers/Authors/Authors";
+import EditAuthors from "./Component/Routers/Authors/EditAuthors";
+import CreateAuthors from "./Component/Routers/Authors/CreateAuthors";
+
+// clinet list
 import ClientList from "./Component/Routers/ClientList/ClientList";
 import CreateClinetList from "./Component/Routers/ClientList/CreateClinetList";
 import ShowClinetList from "./Component/Routers/ClientList/ShowClientList";
@@ -28,10 +31,11 @@ import BlogPost from "./Component/Routers/Blog/BlogPost";
 import CreateBlogPost from "./Component/Routers/Blog/CreateBlogPost";
 import EditBlogPost from "./Component/Routers/Blog/EditBlogPost";
 
-// Faq Route
-import FaqServerRouter from "./Component/Routers/Faq/Faq";
-import CreateFaqRouter from "./Component/Routers/Faq/CreateFaq";
-import EditFaq from "./Component/Routers/Faq/editFaq";
+// TagName Route
+import TagNameServerRouter from "./Component/Routers/TagName/TagName";
+import CreateTagNameRouter from "./Component/Routers/TagName/CreateTagName";
+import EditTagName from "./Component/Routers/TagName/editTagName";
+
 // Team Member
 import TeamMember from "./Component/Routers/TeamMember/TeamMember";
 import CreateTeamMember from "./Component/Routers/TeamMember/CreateTeamMember";
@@ -49,7 +53,8 @@ import AllMemberFirm from "./Component/Routers/Patner/AllMemberFirm";
 import CreateMemberFirm from "./Component/Routers/Patner/CreateMemberFirm";
 import ShowTeamMember from "./Component/Routers/TeamMember/ShowTeamMember";
 import ShowBlogPost from "./Component/Routers/Blog/ShowBlogPost";
-import ShowFaq from "./Component/Routers/Faq/ShowFaq";
+
+// job poost
 import JobPost from "./Component/Routers/jobPost/JobPost";
 import CreateJobPostRouter from "./Component/Routers/jobPost/CreateJobPost";
 import ShowJobPost from "./Component/Routers/jobPost/ShowJobPost";
@@ -75,16 +80,11 @@ function App() {
           <Route path="contact/create" element={<CreateContactList />} />
           <Route path="contact/:id" element={<ShowContactList />} />
           <Route path="contact/edit/:id" element={<EditContactList />} />
-          {/* ContactCategoryList */}
-          <Route path="contact/category" element={<ContactCategoryList />} />
-          <Route
-            path="contact/category/edit/:id"
-            element={<EditContactCategory />}
-          />
-          <Route
-            path="contact/category/create"
-            element={<CreateContactCategory />}
-          />
+
+          {/* Authors */}
+          <Route path="contact/category" element={<Authors />} />
+          <Route path="contact/category/edit/:id" element={<EditAuthors />} />
+          <Route path="contact/category/create" element={<CreateAuthors />} />
 
           {/* client list  */}
           <Route path="client" element={<ClientList />} />
@@ -115,11 +115,11 @@ function App() {
           <Route path="job/:id" element={<ShowJobPost />} />
           <Route path="job/edit/:id" element={<EditJobPost />} />
 
-          {/* Faq Route */}
-          <Route path="faq" element={<FaqServerRouter />} />
-          <Route path="faq/create" element={<CreateFaqRouter />} />
-          <Route path="faq/:id" element={<ShowFaq />} />
-          <Route path="faq/edit/:id" element={<EditFaq />} />
+          {/* TagName Route */}
+          <Route path="TagName" element={<TagNameServerRouter />} />
+          <Route path="TagName/create" element={<CreateTagNameRouter />} />
+
+          <Route path="TagName/edit/:id" element={<EditTagName />} />
 
           {/* Team Member */}
           <Route path="teamMember" element={<TeamMember />} />

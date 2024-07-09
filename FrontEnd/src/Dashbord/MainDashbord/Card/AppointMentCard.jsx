@@ -43,7 +43,7 @@ const AppointMentCard = () => {
       <div className="col-sm-12 col-md-6">
         <div className="card card-chart">
           <div className="card-header">
-            <h5 className="card-category">Appointment</h5>
+            <h5 className="card-category">LATEST NEWS</h5>
           </div>
           <div className="card-body">
             <p>{errorMessage}</p>
@@ -51,26 +51,23 @@ const AppointMentCard = () => {
               <tr>
                 <th>Title</th>
                 <th>Date & Time</th>
-                <th>Contact Name</th>
               </tr>
               {paginatedData.length > 0 &&
                 paginatedData.map((ms) => (
                   <tr key={ms.uuid}>
-                    <td>{ms.problemTitle}</td>
-                    <td>
-                      {ms.ApoDate
-                        ? dayjs(ms.ApoDate).format(`DD MMM , YYYY`)
-                        : ""}{" "}
-                      <br /> {ms.ApoTime}
-                    </td>
-
                     <td>
                       <Link
                         to={`/dashboard/appointment/${ms.uuid}`}
                         className="dashbord_text"
                       >
-                        {ms.contactName}
+                        {ms.problemTitle}
                       </Link>
+                    </td>
+                    <td>
+                      {ms.ApoDate
+                        ? dayjs(ms.ApoDate).format(`DD MMM , YYYY`)
+                        : ""}{" "}
+                      <br /> {ms.ApoTime}
                     </td>
                   </tr>
                 ))}

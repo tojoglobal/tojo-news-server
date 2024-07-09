@@ -2,58 +2,53 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IoStarSharp } from "react-icons/io5";
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { Link } from "react-router-dom";
 
-const EditContactCategory = () => {
+const EditTagName = () => {
   // Router
   const { id } = useParams();
   const navigate = useNavigate();
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
-  const [ContactCatagoryList, setContactCatagoryList] = useState([]);
+  const [TagName, setTagName] = useState({});
 
-
-  // fetch data
+  //Data Fetching
   useEffect(() => {
     axios
-      .get(`https://api.tojoglobal.com/api/admin/contactCatagoryList/${id}`)
+      .get(`http://localhost:8080/api/admin/TagName/${id}`)
       .then((result) => {
         if (result.data.Status) {
-          setContactCatagoryList({
-            ...ContactCatagoryList,
-            categoryName: result.data.Result[0].categoryName,
-            categoryNote: result.data.Result[0].categoryNote,
+          setTagName({
+            ...TagName,
+            Name: result.data.Result[0].name,
           });
         } else {
           alert(result.data.Error);
         }
       })
-      .catch((err) => setErrorMessage(err));
+      .catch((err) => console.log(err));
   }, [id]);
 
-  console.log(ContactCatagoryList);
+  // console.log(TagName);
+
   // use fromik method
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      categoryName: ContactCatagoryList.categoryName || "",
-      categoryNote: ContactCatagoryList.categoryNote || "",
+      TagName: TagName.Name || "",
     },
     onSubmit: async (values, { resetForm }) => {
       console.log(values);
       try {
         const response = await axios.put(
-          `https://api.tojoglobal.com/api/admin/contactCatagoryList/edit/${id}`,
+          `http://localhost:8080/api/admin/TagName/edit/${id}`,
           values
         );
         if (response.data.Status) {
           setErrorMessage(null);
-          toast.success(`Catagory Edit successfully`, {
+          toast.success(`Edit successfully`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -63,9 +58,10 @@ const EditContactCategory = () => {
             progress: undefined,
             theme: "light",
           });
-          const delay = 1500; // 1.5 seconds delay
+
+          const delay = 2000; // 2 seconds delay
           const timer = setTimeout(() => {
-            navigate("/dashboard/contact/category");
+            navigate("/dashboard/TagName");
           }, delay);
           // Clear the timer if the component unmounts before the delay is complete
           return () => clearTimeout(timer);
@@ -81,18 +77,11 @@ const EditContactCategory = () => {
   return (
     <div className="container dashboard_All">
       <ToastContainer />
-      <h5>
-        <Link to="/dashboard/contact/category" className="route_link">
-          {" "}
-          <IoMdArrowRoundBack /> Back
-        </Link>
-      </h5>
-      <h1 className="dashboard_name">Edit Category list</h1>
+      <h5>/dashboard/TagName/edit/</h5>
+      <h1 className="dashboard_name">Edit TagName </h1>
       <hr />
-      {/* <p>{formattedValue}</p> */}
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       {/* form start */}
-      {/* ++++++========part 1 =======++++++++ */}
       <div className="from_div">
         <form
           onSubmit={formik.handleSubmit}
@@ -101,40 +90,24 @@ const EditContactCategory = () => {
         >
           <div className="row">
             <div className="col-md-12 inputfield">
-              <label htmlFor="categoryName">
-                Category Name <IoStarSharp className="reqired_symbole" />
-              </label>
-
+              <label htmlFor="question">Tag Name</label>
               <input
                 className="text_input_field"
                 type="text"
-                name="categoryName"
+                name="TagName"
                 onChange={formik.handleChange}
-                placeholder="Cognomen Name"
-                value={formik.values.categoryName}
+                placeholder="update TagName"
+                value={formik.values.TagName}
                 required
               />
             </div>
-
-            <div className="col-md-12 inputfield">
-              <label htmlFor="categoryNote">Note</label>
-              <input
-                className="text_input_field"
-                type="text"
-                name="categoryNote"
-                onChange={formik.handleChange}
-                placeholder="Cognomen Note"
-                value={formik.values.categoryNote}
-              />
-            </div>
-
             <div className="col-md-12 inputFiledMiddel">
               <button
                 type="submit"
                 className="button-62 cetificate_image_AddBtn "
                 role="button"
               >
-                ADD CATEGORY
+                update TagName
               </button>
             </div>
           </div>
@@ -144,4 +117,4 @@ const EditContactCategory = () => {
   );
 };
 
-export default EditContactCategory;
+export default EditTagName;

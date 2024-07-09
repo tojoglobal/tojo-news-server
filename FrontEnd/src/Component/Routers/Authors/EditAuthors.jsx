@@ -1,34 +1,58 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoStarSharp } from "react-icons/io5";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { Link } from "react-router-dom";
 
-const CreateContactCategory = () => {
-  // path
-  const isHomePageRoute = location.pathname;
+const EditContactCategory = () => {
+  // Router
+  const { id } = useParams();
   const navigate = useNavigate();
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
+  const [ContactCatagoryList, setContactCatagoryList] = useState([]);
 
+  // fetch data
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/admin/contactCatagoryList/${id}`)
+      .then((result) => {
+        if (result.data.Status) {
+          setContactCatagoryList({
+            ...ContactCatagoryList,
+            categoryName: result.data.Result[0].categoryName,
+            categoryNote: result.data.Result[0].categoryNote,
+          });
+        } else {
+          alert(result.data.Error);
+        }
+      })
+      .catch((err) => setErrorMessage(err));
+  }, [id]);
+
+  console.log(ContactCatagoryList);
   // use fromik method
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      categoryName: "",
-      categoryNote: ""
+      categoryName: ContactCatagoryList.categoryName || "",
+      categoryNote: ContactCatagoryList.categoryNote || "",
     },
-    onSubmit: async (values, { resetForm }) => {      
-          try {
-        const response = await axios.post(
-          "https://api.tojoglobal.com/api/admin/contactCatagory/create",
+    onSubmit: async (values, { resetForm }) => {
+      console.log(values);
+      try {
+        const response = await axios.put(
+          `http://localhost:8080/api/admin/contactCatagoryList/edit/${id}`,
           values
         );
         if (response.data.Status) {
           setErrorMessage(null);
-          toast.success(`Catagory Create successfully`, {
+          toast.success(`Catagory Edit successfully`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -41,7 +65,8 @@ const CreateContactCategory = () => {
           const delay = 1500; // 1.5 seconds delay
           const timer = setTimeout(() => {
             navigate("/dashboard/contact/category");
-          }, delay);         
+          }, delay);
+          // Clear the timer if the component unmounts before the delay is complete
           return () => clearTimeout(timer);
         }
       } catch (error) {
@@ -55,8 +80,13 @@ const CreateContactCategory = () => {
   return (
     <div className="container dashboard_All">
       <ToastContainer />
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">Create Category</h1>
+      <h5>
+        <Link to="/dashboard/contact/category" className="route_link">
+          {" "}
+          <IoMdArrowRoundBack /> Back
+        </Link>
+      </h5>
+      <h1 className="dashboard_name">Edit Category list</h1>
       <hr />
       {/* <p>{formattedValue}</p> */}
       {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -71,7 +101,7 @@ const CreateContactCategory = () => {
           <div className="row">
             <div className="col-md-12 inputfield">
               <label htmlFor="categoryName">
-              Category Name <IoStarSharp className="reqired_symbole" />
+                Category Name <IoStarSharp className="reqired_symbole" />
               </label>
 
               <input
@@ -93,11 +123,10 @@ const CreateContactCategory = () => {
                 name="categoryNote"
                 onChange={formik.handleChange}
                 placeholder="Cognomen Note"
-                value={formik.values.categoryNote}                
-              />             
-            </div>           
+                value={formik.values.categoryNote}
+              />
+            </div>
 
-            
             <div className="col-md-12 inputFiledMiddel">
               <button
                 type="submit"
@@ -114,4 +143,4 @@ const CreateContactCategory = () => {
   );
 };
 
-export default CreateContactCategory;
+export default EditContactCategory;

@@ -1,11 +1,11 @@
-import mysql from 'mysql'
+import mysql from 'mysql2'
 
 // MySQL database connection configuration
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'tojoglobal_tojoglobal'
+    database: 'tojonews'
   });
 
 // Connect to MySQL

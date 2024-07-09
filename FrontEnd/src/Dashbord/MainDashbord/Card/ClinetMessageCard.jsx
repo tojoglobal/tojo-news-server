@@ -24,7 +24,7 @@ const ClinetMessageCard = () => {
           setErrorMessage(result.data.Error);
         }
       })
-      .catch((err) => setErrorMessage(err.message)); // Set only the error message string
+      .catch((err) => setErrorMessage(err.message));
   }, []);
 
   useEffect(() => {
@@ -42,15 +42,16 @@ const ClinetMessageCard = () => {
       <div className="col-sm-12 col-md-6">
         <div className="card card-chart">
           <div className="card-header">
-            <h5 className="card-category">Client Message</h5>
+            <h5 className="card-category">Client Mail</h5>
           </div>
           <div className="card-body">
-            {errorMessage && <p>{errorMessage}</p>} {/* Conditionally render errorMessage */}
+            {errorMessage && <p>{errorMessage}</p>}{" "}
+            {/* Conditionally render errorMessage */}
             <table id="customers">
               <thead>
                 <tr>
                   <th>NAME</th>
-                  <th>SUBJECT</th>
+                  <th>Email</th>
                 </tr>
               </thead>
               <tbody>
@@ -65,7 +66,7 @@ const ClinetMessageCard = () => {
                           {ms.Name}
                         </Link>
                       </td>
-                      <td>{ms.Subject}</td>
+                      <td>{ms.Email}</td>
                     </tr>
                   ))}
               </tbody>

@@ -6,11 +6,11 @@ import {
   editBlogPost,
   editBlogPostId,
   BlogPostToDelete,
-  createFaq,
-  allFaq,
-  editFaqId,
-  faqToDelete,
-  editFaq,
+  createTagName,
+  allTagName,
+  editTagNameId,
+  TagNameToDelete,
+  editTagName,
   memberToDelete,
   uploadMemberImage,
   allMember,
@@ -101,12 +101,12 @@ AdminRouter.get("/member", allMember);
 AdminRouter.post("/member/create", upload.single("file"), uploadMemberImage);
 AdminRouter.delete("/member/delete/:uuid", memberToDelete);
 
-// FAQ Router
-AdminRouter.post("/faq/create", createFaq);
-AdminRouter.get("/faq", allFaq);
-AdminRouter.get("/faq/:id", editFaqId);
-AdminRouter.put("/faq/edit/:id", editFaq);
-AdminRouter.delete("/faq/delete/:uuid", faqToDelete);
+// TagName Router
+AdminRouter.post("/TagName/create", createTagName);
+AdminRouter.get("/TagName", allTagName);
+AdminRouter.get("/TagName/:id", editTagNameId);
+AdminRouter.put("/TagName/edit/:id", editTagName);
+AdminRouter.delete("/TagName/delete/:uuid", TagNameToDelete);
 
 // Blog Router
 AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);

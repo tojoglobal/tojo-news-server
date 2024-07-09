@@ -1,34 +1,34 @@
 import axios from "axios";
-import {useState } from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { IoStarSharp } from "react-icons/io5";
 
-
-const CreateFaqRouter = () => {
+const CreateContactCategory = () => {
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
 
   // state
-  const [errorMessage, setErrorMessage] = useState(null); 
-  
+  const [errorMessage, setErrorMessage] = useState(null);
+
   // use fromik method
   const formik = useFormik({
     initialValues: {
-      question: "",
-      answer: "",
+      categoryName: "",
+      categoryNote: "",
     },
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await axios.post(
-          "https://api.tojoglobal.com/api/admin/faq/create",
+          "http://localhost:8080/api/admin/contactCatagory/create",
           values
-        );        
-        if (response.data.Status) {              
+        );
+        if (response.data.Status) {
           setErrorMessage(null);
-         toast.success(`FAQ Create successfully`, {
+          toast.success(`Catagory Create successfully`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -38,28 +38,27 @@ const CreateFaqRouter = () => {
             progress: undefined,
             theme: "light",
           });
-          const delay = 2000; // 2 seconds delay
+          const delay = 1500; // 1.5 seconds delay
           const timer = setTimeout(() => {
-            navigate("/dashboard/faq");
-          }, delay);      
-          // Clear the timer if the component unmounts before the delay is complete
+            navigate("/dashboard/contact/category");
+          }, delay);
           return () => clearTimeout(timer);
         }
-      } catch (error) {     
+      } catch (error) {
         setErrorMessage(`${error}`);
       }
 
       resetForm();
     },
   });
- 
 
   return (
     <div className="container dashboard_All">
       <ToastContainer />
       <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">Question & Answer</h1>
+      <h1 className="dashboard_name">Create Category</h1>
       <hr />
+      {/* <p>{formattedValue}</p> */}
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       {/* form start */}
       {/* ++++++========part 1 =======++++++++ */}
@@ -71,47 +70,47 @@ const CreateFaqRouter = () => {
         >
           <div className="row">
             <div className="col-md-12 inputfield">
-              <label htmlFor="question">Question</label>
+              <label htmlFor="categoryName">
+                Category Name <IoStarSharp className="reqired_symbole" />
+              </label>
+
               <input
                 className="text_input_field"
                 type="text"
-                name="question"
+                name="categoryName"
                 onChange={formik.handleChange}
-                placeholder="Clinet Question ?"
-                value={formik.values.question}
+                placeholder="Cognomen Name"
+                value={formik.values.categoryName}
                 required
               />
             </div>
+
             <div className="col-md-12 inputfield">
-              <label htmlFor="answer">AnsWer</label>
-              <textarea
-                id="answer"
-                onChange={formik.handleChange}
-                value={formik.values.answer}
+              <label htmlFor="categoryNote">Note</label>
+              <input
                 className="text_input_field"
-                name="answer"
-                rows="2"
-                cols="50"
-                placeholder="Write Your Answer..."
-                required
-              >
-                {" "}
-              </textarea>
+                type="text"
+                name="categoryNote"
+                onChange={formik.handleChange}
+                placeholder="Cognomen Note"
+                value={formik.values.categoryNote}
+              />
             </div>
-            <div className="col-md-12 inputFiledMiddel"> 
+
+            <div className="col-md-12 inputFiledMiddel">
               <button
                 type="submit"
                 className="button-62 cetificate_image_AddBtn "
                 role="button"
               >
-                ADD FAQ
+                ADD CATEGORY
               </button>
             </div>
           </div>
         </form>
-      </div>      
+      </div>
     </div>
   );
 };
 
-export default CreateFaqRouter;
+export default CreateContactCategory;

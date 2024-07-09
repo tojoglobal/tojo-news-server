@@ -14,11 +14,11 @@ import {
   editBlogPostQuery,
   BlogPostToDeleteQuery,
   editBlogPostIdQuery,
-  createFaqQuery,
-  allFaqQuery,
-  faqToDeleteQuery,
-  editFaqQuery,
-  editFaqIdQuery,
+  createTagNameQuery,
+  allTagNameQuery,
+  TagNameToDeleteQuery,
+  editTagNameQuery,
+  editTagNameIdQuery,
   memberImageCreateQuery,
   memberImageQuery,
   memberImageDeleteQuery,
@@ -211,18 +211,18 @@ const jobPostToDelete = (req, res) => {
 };
 
 
-// Faq Router
-const createFaq = (req, res) => {
+// TagName Router
+const createTagName = (req, res) => {
   const uuid = uuidv4();
-  const values = [uuid, req.body.question, req.body.answer];
-  db.query(createFaqQuery, [values], (err, result) => {
+  const values = [uuid, req.body.TagName];
+  db.query(createTagNameQuery, [values], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
 
-const allFaq = (req, res) => {
-  db.query(allFaqQuery, (err, result) => {
+const allTagName = (req, res) => {
+  db.query(allTagNameQuery, (err, result) => {
     if (err) {
       return res.json({ Status: false, Error: "Query Error" });
     } else {
@@ -231,9 +231,9 @@ const allFaq = (req, res) => {
   });
 };
 
-const editFaqId = (req, res) => {
+const editTagNameId = (req, res) => {  
   const id = req.params.id;
-  db.query(editFaqIdQuery, [id], (err, result) => {
+  db.query(editTagNameIdQuery, [id], (err, result) => {
     if (err) {
       return res.json({ Status: false, Error: "Qurey Erro" });
     } else {
@@ -241,19 +241,19 @@ const editFaqId = (req, res) => {
     }
   });
 };
-const editFaq = (req, res) => {
+const editTagName = (req, res) => {
   const id = req.params.id;
-  const values = [req.body.question, req.body.answer];
-  db.query(editFaqQuery, [...values, id], (err, result) => {
+  const values = [req.body.TagName];
+  db.query(editTagNameQuery, [...values, id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
 
-const faqToDelete = (req, res) => {
+const TagNameToDelete = (req, res) => {
   const id = req.params.uuid;
 
-  db.query(faqToDeleteQuery, [id], (err, result) => {
+  db.query(TagNameToDeleteQuery, [id], (err, result) => {
     if (err) {
       return res.json({ Status: false, Error: "Qurey Erro" });
     } else {
@@ -684,11 +684,11 @@ export {
   editBlogPost,
   editBlogPostId,
   BlogPostToDelete,
-  createFaq,
-  editFaqId,
-  faqToDelete,
-  allFaq,
-  editFaq,
+  createTagName,
+  editTagNameId,
+  TagNameToDelete,
+  allTagName,
+  editTagName,
   adminLogout,
   uploadMemberImage,
   allMember,

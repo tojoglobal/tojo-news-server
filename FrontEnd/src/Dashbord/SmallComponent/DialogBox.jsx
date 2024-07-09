@@ -1,4 +1,4 @@
-import{ useState } from 'react'
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,11 +8,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { BsExclamationCircle } from "react-icons/bs";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import axios from 'axios';
-
+import axios from "axios";
 
 const DialogBox = () => {
-    // all state
+  // all state
   const [open, setOpen] = useState(false);
   const [certificateToDelete, setCertificateToDelete] = useState();
   // matrial dialog box
@@ -27,7 +26,7 @@ const DialogBox = () => {
     setOpen(false);
   };
 
-  // data delete and cancel function 
+  // data delete and cancel function
   const handleCancel = () => {
     setOpen(false);
   };
@@ -49,45 +48,34 @@ const DialogBox = () => {
 
   return (
     <div>
-    <Dialog
-    fullScreen={fullScreen}
-    open={open}
-    onClose={handleClose}
-    aria-labelledby="responsive-dialog-title"
-  >
-    <DialogTitle
-      id="responsive-dialog-title "
-      className="icon_div"
-    >
-      <div style={{ textAlign: "center" }}>
-        <BsExclamationCircle className="icon" />
-        <h3 style={{ paddingTop: "20px" }}>Are You sure? </h3>
-      </div>
-    </DialogTitle>
-    <DialogContent>
-      <DialogContentText>
-        Are you sure delete the &quot;Certificate&quot; Image
-      </DialogContentText>
-    </DialogContent>
-    <DialogActions>
-      <Button
-        autoFocus
-        onClick={handleCancel}
-        style={{ color: "#E16565" }}
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
       >
-        Cancel
-      </Button>
-      <Button
-        onClick={handleDelete}
-        autoFocus
-        style={{ color: "#E16565" }}
-      >
-        Yes,delete it!
-      </Button>
-    </DialogActions>
-  </Dialog>
-  </div>
-  )
-}
+        <DialogTitle id="responsive-dialog-title " className="icon_div">
+          <div style={{ textAlign: "center" }}>
+            <BsExclamationCircle className="icon" />
+            <h3 style={{ paddingTop: "20px" }}>Are You sure? </h3>
+          </div>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure delete the &quot;Certificate&quot; Image
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleCancel} style={{ color: "#E16565" }}>
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} autoFocus style={{ color: "#E16565" }}>
+            Yes,delete it!
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+};
 
-export default DialogBox
+export default DialogBox;
