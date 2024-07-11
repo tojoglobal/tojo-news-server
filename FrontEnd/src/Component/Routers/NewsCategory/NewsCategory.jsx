@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { HiPlus } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import {
-  Dialog,  
+  Dialog,
   useTheme,
   useMediaQuery,
   DialogContentText,
@@ -18,14 +18,14 @@ import {
 } from "@mui/material";
 import { BsExclamationCircle } from "react-icons/bs";
 
-const ClientCategoryList = () => {
+const NewsCategory = () => {
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
-  const [clientCatagoryList, setclientCatagoryList] = useState([]);
+  const [NewsCategory, setNewsCategory] = useState([]);
   const [open, setOpen] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState(null);
   const [faqToDelete, setFaqToDelete] = useState();
@@ -33,10 +33,10 @@ const ClientCategoryList = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("https://api.tojoglobal.com/api/admin/clientCatagoryList")
+      .get("http://localhost:8080/api/admin/newsCategory")
       .then((result) => {
         if (result.data.Status) {
-          setclientCatagoryList(result.data.Result);
+          setNewsCategory(result.data.Result);
         } else {
           setErrorMessage(result.data.Error);
         }
@@ -76,11 +76,11 @@ const ClientCategoryList = () => {
   const handleDelete = () => {
     axios
       .delete(
-        `https://api.tojoglobal.com/api/admin/clientCatagoryList/delete/` + dataDeleteId
+        `http://localhost:8080/api/admin/newsCategory/delete/` + dataDeleteId
       )
       .then((result) => {
         if (result.data.Status) {
-          navigate("/dashboard/client/category");
+          navigate("/dashboard/newscategory");
           setFaqToDelete(`deleted successfully`);
           toast.success(`deleted successfully`, {
             position: "top-right",
@@ -105,12 +105,12 @@ const ClientCategoryList = () => {
     <div className="conatiner dashboard_All">
       <ToastContainer />
       <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">client Category List</h1>
+      <h1 className="dashboard_name">News Category </h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       <div>
         <div>
-          <Link to="/dashboard/client/category/create">
+          <Link to="/dashboard/newscategory/create">
             <button className="button-62" role="button">
               New Category
               <span>
@@ -127,26 +127,24 @@ const ClientCategoryList = () => {
             <table id="customers" className="">
               <tr>
                 <th>SL</th>
-                <th>CLIENT CATEGORY</th>
-                <th>CATEGORY NOTE</th>
-                <th>ON BEHALF</th>
+                <th>NEWS CATEGORY</th>
+                {/* <th>ON BEHALF</th> */}
                 <th>ACTIONS</th>
               </tr>
 
-              {clientCatagoryList.length > 0 &&
-                clientCatagoryList.map((cl, index) => (
+              {NewsCategory.length > 0 &&
+                NewsCategory.map((cl, index) => (
                   <tr key={cl.uuid}>
                     <td>{index + 1}</td>
-                    <td>{cl.categoryName}</td>
-                    <td>{cl.categoryNote}</td>
+                    <td>{cl.name}</td>
 
-                    <td>
+                    {/* <td>
                       {cl.OnBehalf === "Complainant" ? (
                         <span className="complainant">{cl.OnBehalf}</span>
                       ) : (
                         <span className="defendant">{cl.OnBehalf}</span>
                       )}
-                    </td>
+                    </td> */}
                     <td>
                       <div className="dropdown">
                         <button className="dropbtn">
@@ -154,7 +152,7 @@ const ClientCategoryList = () => {
                         </button>
                         <div className="dropdown-content">
                           <Link
-                            to={`/dashboard/client/category/edit/${cl.uuid}`}
+                            to={`/dashboard/newscategory/edit/${cl.uuid}`}
                             className="routeLink"
                           >
                             <span className="actionBtn"> Edit</span>
@@ -201,7 +199,7 @@ const ClientCategoryList = () => {
                           </Button>
                           <Button onClick={handleDelete} autoFocus>
                             <Link
-                              to={`/dashboard/client/category/delete`}
+                              to={`/dashboard/newscategory/delete`}
                               style={{
                                 color: "#E16565",
                                 textDecoration: "none",
@@ -224,4 +222,4 @@ const ClientCategoryList = () => {
   );
 };
 
-export default ClientCategoryList;
+export default NewsCategory;

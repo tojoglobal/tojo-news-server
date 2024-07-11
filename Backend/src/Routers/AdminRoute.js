@@ -34,16 +34,16 @@ import {
   contactlistToDelete,
   showContactInfo,
   editContactlist,
-  createContactCatagoryList,
-  getContactCatagoryList,
-  deleteOneContactCatagoryList,
-  editContactCatagoryList,
-  showContactCatagoryListId,
-  createClientCatagoryList,
-  getClientCatagoryList,
-  deleteOneClientCatagoryList,
-  showClientCatagoryListId,
-  editClientCatagoryList,
+  createAuthor,
+  getAuthor,
+  deleteOneAuthor,
+  editAuthor,
+  showAuthorId,
+  createNewsCategory,
+  getNewsCategory,
+  deleteOneNewsCategory,
+  showNewsCategoryId,
+  editNewsCategory,
   createClientList,
   getClientList,
   showClientListId,
@@ -111,7 +111,7 @@ AdminRouter.delete("/TagName/delete/:uuid", TagNameToDelete);
 // Blog Router
 AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);
 AdminRouter.get("/blogpost", allBlogPost);
-AdminRouter.put("/blogpost/edit/:id",editBlogPost);
+AdminRouter.put("/blogpost/edit/:id", upload.single("file") , editBlogPost);
 AdminRouter.get("/blogpost/:id", editBlogPostId);
 AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
 
@@ -136,14 +136,14 @@ AdminRouter.delete("/contactlist/delete/:id", contactlistToDelete);
 AdminRouter.put("/contactlist/edit/:id", editContactlist);
 
 // Contact Category Route
-AdminRouter.post("/contactCatagory/create", createContactCatagoryList);
-AdminRouter.get("/contactCatagoryList", getContactCatagoryList);
-AdminRouter.get("/contactCatagoryList/:id", showContactCatagoryListId);
+AdminRouter.post("/author/create", createAuthor);
+AdminRouter.get("/author", getAuthor);
+AdminRouter.get("/author/:id", showAuthorId);
 AdminRouter.delete(
-  "/contactCatagoryList/delete/:id",
-  deleteOneContactCatagoryList
+  "/author/delete/:id",
+  deleteOneAuthor
 );
-AdminRouter.put("/contactCatagoryList/edit/:id", editContactCatagoryList);
+AdminRouter.put("/author/edit/:id", editAuthor);
 
 // client List Route
 AdminRouter.post("/clientlist/create", createClientList);
@@ -152,15 +152,15 @@ AdminRouter.get("/clientlist/:id", showClientListId);
 AdminRouter.delete("/clientlist/delete/:id", deleteOneClientList);
 AdminRouter.put("/clientlist/edit/:id", editClientList);
 
-// client Category Route
-AdminRouter.post("/clientCatagory/create", createClientCatagoryList);
-AdminRouter.get("/clientCatagoryList", getClientCatagoryList);
-AdminRouter.get("/clientCatagoryList/:id", showClientCatagoryListId);
+// News Category Route
+AdminRouter.post("/newsCategory/create", createNewsCategory);
+AdminRouter.get("/newsCategory", getNewsCategory);
+AdminRouter.get("/newsCategory/:id", showNewsCategoryId);
 AdminRouter.delete(
-  "/clientCatagoryList/delete/:id",
-  deleteOneClientCatagoryList
+  "/newsCategory/delete/:id",
+  deleteOneNewsCategory
 );
-AdminRouter.put("/clientCatagoryList/edit/:id", editClientCatagoryList);
+AdminRouter.put("/newsCategory/edit/:id", editNewsCategory);
 
 // count many Route
 AdminRouter.get("/client-count", clinetCounts);

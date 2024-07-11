@@ -45,8 +45,8 @@ const MenuList = ({ darkTheme }) => {
         key="contactCategory"
         icon={<MdContacts className="dashbord_icon" />}
       >
-        <Link to="/dashboard/contact/category" className="route_link">
-          Authors
+        <Link to="/dashboard/author" className="route_link">
+          Author
         </Link>
       </Menu.Item>
 
@@ -73,7 +73,7 @@ const MenuList = ({ darkTheme }) => {
         key="clientCategory"
         icon={<FaList className="dashbord_icon" />}
       >
-        <Link to="/dashboard/client/category" className="route_link">
+        <Link to="/dashboard/newscategory" className="route_link">
           News Category
         </Link>{" "}
       </Menu.Item>
@@ -83,7 +83,7 @@ const MenuList = ({ darkTheme }) => {
         icon={<FaHashtag className="dashbord_icon" />}
       >
         <Link to="/dashboard/contact" className="route_link">
-          News Tags
+          News Tag
         </Link>
       </Menu.Item>
 

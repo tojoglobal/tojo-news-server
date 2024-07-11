@@ -6,7 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoStarSharp } from "react-icons/io5";
 
-const CreateClientCategory = () => {
+const CreateNewsCategory = () => {
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -18,13 +18,13 @@ const CreateClientCategory = () => {
   const formik = useFormik({
     initialValues: {
       categoryName: "",
-      categoryNote: "",
-      OnBehalf: "Complainant" || "",
+      // OnBehalf: "Complainant" || "",
     },
     onSubmit: async (values, { resetForm }) => {
+      console.log(values);
       try {
         const response = await axios.post(
-          "https://api.tojoglobal.com/api/admin/clientCatagory/create",
+          "http://localhost:8080/api/admin/newsCategory/create",
           values
         );
         if (response.data.Status) {
@@ -41,7 +41,7 @@ const CreateClientCategory = () => {
           });
           const delay = 1500; // 1.5 seconds delay
           const timer = setTimeout(() => {
-            navigate("/dashboard/client/category");
+            navigate("/dashboard/newscategory");
           }, delay);
           return () => clearTimeout(timer);
         }
@@ -80,12 +80,12 @@ const CreateClientCategory = () => {
                 type="text"
                 name="categoryName"
                 onChange={formik.handleChange}
-                placeholder="Client Category Name"
+                placeholder="Write News Category"
                 value={formik.values.categoryName}
                 required
               />
             </div>
-            <div className="col-md-12 inputfield">
+            {/* <div className="col-md-12 inputfield">
               <label htmlFor="OnBehalf">
                 On behalf <IoStarSharp className="reqired_symbole" />
               </label>
@@ -106,19 +106,7 @@ const CreateClientCategory = () => {
                 </option>
                 <option value="Defendant">Defendant</option>
               </select>
-            </div>
-
-            <div className="col-md-12 inputfield">
-              <label htmlFor="categoryNote">Note</label>
-              <input
-                className="text_input_field"
-                type="text"
-                name="categoryNote"
-                onChange={formik.handleChange}
-                placeholder="Client Category Note"
-                value={formik.values.categoryNote}
-              />
-            </div>
+            </div> */}
 
             <div className="col-md-12 inputFiledMiddel">
               <button
@@ -136,4 +124,4 @@ const CreateClientCategory = () => {
   );
 };
 
-export default CreateClientCategory;
+export default CreateNewsCategory;

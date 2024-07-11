@@ -38,7 +38,7 @@ const BlogPost = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("https://api.tojoglobal.com/api/admin/blogpost")
+      .get("http://localhost:8080/api/admin/blogpost")
       .then((result) => {
         if (result.data.Status) {
           setBlogpost(result.data.Result);
@@ -90,7 +90,7 @@ const BlogPost = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`https://api.tojoglobal.com/api/admin/blogpost/delete/` + dataDeleteId)
+      .delete(`http://localhost:8080/api/admin/blogpost/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/blogpost");
@@ -118,14 +118,14 @@ const BlogPost = () => {
     <div className="conatiner dashboard_All">
       <ToastContainer />
       <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All blog post </h1>
+      <h1 className="dashboard_name">All blog </h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       <div>
         <div>
           <Link to="/dashboard/blogpost/create">
             <button className="button-62" role="button">
-              Create Blog Post{" "}
+              Create News Post{" "}
               <span>
                 {" "}
                 <HiPlus />
@@ -149,12 +149,12 @@ const BlogPost = () => {
                 paginatedData.map((bgPost, index) => (
                   <tr key={bgPost.uuid}>
                     <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                    <td>{bgPost.blogtitle}</td>
+                    <td>{bgPost.title}</td>
                     <td>
                       <img
                         className="Team_member_Image"
-                        src={`https://api.tojoglobal.com/Images/${bgPost.blogImg}`}
-                        alt={bgPost.blogImg}
+                        src={`http://localhost:8080/Images/${bgPost.thumble}`}
+                        alt={bgPost.thumble}
                       />
                     </td>
                     <td>

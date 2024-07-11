@@ -21,11 +21,11 @@ const editTagNameQuery = `UPDATE tags SET name = ? WHERE uuid = ?`;
 const TagNameToDeleteQuery = `DELETE FROM tags WHERE uuid = ?`;
 
 // Blog  Area
-const createBlogPostQuery = `INSERT INTO blog (uuid, blogtitle, blogImg , description , authorName , timestamp_column) VALUES ( ? )`;
-const allBlogPostQuery = `SELECT * FROM blog ORDER BY blog.ID DESC`;
-const editBlogPostQuery = `UPDATE blog SET blogtitle = ?, blogImg = ?, description = ? , authorName=? Where uuid = ?`;
-const editBlogPostIdQuery = `SELECT * FROM blog WHERE uuid = ?`;
-const BlogPostToDeleteQuery = `DELETE FROM blog WHERE uuid = ?`;
+const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle , author1_id , author2_id , category_id , thumble , articalpost , dateAndTime ) VALUES ( ? )`;
+const allBlogPostQuery = `SELECT * FROM blognews ORDER BY blognews.ID DESC`;
+const editBlogPostQuery = `UPDATE blognews SET title = ?, subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
+const editBlogPostIdQuery = `SELECT * FROM blognews WHERE uuid = ?`;
+const BlogPostToDeleteQuery = `DELETE FROM blognews WHERE uuid = ?`;
 
 // Team member
 const createTeamMemberQuery = `INSERT INTO team_member ( uuid, name, position , img , BioData, FBurl,LIurl, TWurl , WhatsApurl , YTurl) VALUES ( ? )`;
@@ -33,6 +33,7 @@ const allTeamMemberQuery = `SELECT * FROM team_member ORDER BY team_member.ID DE
 const teamMemberToDeleteQuery = `DELETE FROM team_member WHERE uuid = ?`;
 const editTeamMemberIDQuery = `SELECT * FROM team_member WHERE uuid = ?`;
 const editTeamMemberQuery = `UPDATE team_member SET name = ? , position=? , BioData=?,FBurl=?,LIurl=?, TWurl=? , WhatsApurl=? , YTurl=? WHERE uuid = ?`;
+
 // client Message Query
 const submitedMessageQuery = `INSERT INTO clientmessage (uuid, Name, Email , phoneNumber , Subject , message ) VALUES ( ? )`;
 const AllClientMessageQuery = `SELECT * FROM clientmessage ORDER BY clientmessage.ID DESC`;
@@ -54,19 +55,19 @@ const contactlistToDeleteQuery = `DELETE FROM contactlist WHERE uuid = ?`;
 const showContactInfoQuery = `SELECT * FROM contactlist WHERE uuid = ?`;
 const editContactlistQuery = `UPDATE contactlist SET contactName = ?, category = ? , mobileNo=? , eamil=?, note=? WHERE uuid = ?`;
 
-//Contact CatagoryList Query,
-const createContactCatagoryListQuery = `INSERT INTO contact_category_list(uuid , categoryName , categoryNote) VALUES(?) `;
-const getContactCatagoryListQuery = `SELECT * FROM contact_category_list`;
-const deleteOneContactCatagoryListQuery = `DELETE FROM contact_category_list WHERE uuid = ?`;
-const editContactCatagoryListQuery = `UPDATE contact_category_list SET categoryName = ?, categoryNote = ?  WHERE uuid = ?`;
-const showContactCatagoryListIdQuery = `SELECT * FROM contact_category_list WHERE uuid = ?`;
+//Author Query,
+const createAuthorQuery = `INSERT INTO authors(uuid , name) VALUES(?) `;
+const getAuthorQuery = `SELECT * FROM authors ORDER BY authors.ID ASC`;
+const deleteOneAuthorQuery = `DELETE FROM authors WHERE uuid = ?`;
+const editAuthorQuery = `UPDATE authors SET name = ? WHERE uuid = ?`;
+const showAuthorIdQuery = `SELECT * FROM authors WHERE uuid = ?`;
 
-//clinet CatagoryList Query,
-const createClientCatagoryListQuery = `INSERT INTO client_category_list(uuid , categoryName , categoryNote, OnBehalf ) VALUES(?) `;
-const getClientCatagoryListQuery = `SELECT * FROM client_category_list`;
-const deleteOneClientCatagoryListQuery = `DELETE FROM client_category_list WHERE uuid = ?`;
-const editClientCatagoryListQuery = `UPDATE client_category_list SET categoryName = ?, categoryNote = ? , OnBehalf=?  WHERE uuid = ?`;
-const showClientCatagoryListIdQuery = `SELECT * FROM client_category_list WHERE uuid = ?`;
+//News Catagory Query,
+const createNewsCategoryQuery = `INSERT INTO categories (uuid , name ) VALUES(?) `;
+const getNewsCategoryQuery = `SELECT * FROM categories ORDER BY categories.ID DESC`;
+const deleteOneNewsCategoryQuery = `DELETE FROM categories WHERE uuid = ?`;
+const editNewsCategoryQuery = `UPDATE categories SET name = ? WHERE uuid = ?`;
+const showNewsCategoryIdQuery = `SELECT * FROM categories WHERE uuid = ?`;
 
 //clinet List Query,
 const createClientListQuery = `INSERT INTO clientlist(uuid , clientName , clientmobile, clientemail, gender, clientCategory, clientCountryCode, clientStateCode, clientCity,  clientAddress, note) VALUES(?) `;
@@ -109,16 +110,16 @@ export {
   contactlistToDeleteQuery,
   showContactInfoQuery,
   editContactlistQuery,
-  createContactCatagoryListQuery,
-  getContactCatagoryListQuery,
-  deleteOneContactCatagoryListQuery,
-  editContactCatagoryListQuery,
-  showContactCatagoryListIdQuery,
-  createClientCatagoryListQuery,
-  getClientCatagoryListQuery,
-  deleteOneClientCatagoryListQuery,
-  showClientCatagoryListIdQuery,
-  editClientCatagoryListQuery,
+  createAuthorQuery,
+  getAuthorQuery,
+  deleteOneAuthorQuery,
+  editAuthorQuery,
+  showAuthorIdQuery,
+  createNewsCategoryQuery,
+  getNewsCategoryQuery,
+  deleteOneNewsCategoryQuery,
+  showNewsCategoryIdQuery,
+  editNewsCategoryQuery,
   createClientListQuery,
   getClientListQuery,
   showClientListIdQuery,

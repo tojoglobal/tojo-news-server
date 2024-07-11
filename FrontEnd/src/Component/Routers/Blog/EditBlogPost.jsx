@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
+import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import { Editor } from "@tinymce/tinymce-react";
 const EditBlogPost = () => {
@@ -12,22 +13,23 @@ const EditBlogPost = () => {
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
-  const [practiseArea, setPractiseArea] = useState({});
-  // const [file, setFile] = useState(null);
+  const [BlogPost, setBlogPost] = useState({});
+  const [file, setFile] = useState(null);
+  const [Author, setAuthor] = useState([]);
+  const [NewsCategory, setNewsCategory] = useState([]);
 
   //Data Fetching
+
+  // Fetch blog post data by ID
   useEffect(() => {
     axios
-      .get(`https://api.tojoglobal.com/api/admin/blogpost/${id}`)
+      .get(`http://localhost:8080/api/admin/blogpost/${id}`)
       .then((result) => {
         if (result.data.Status) {
-          setPractiseArea({
-            ...practiseArea,
-            title: result.data.Result[0].blogtitle,
-            file: result.data.Result[0].blogImg,
-            artcl: result.data.Result[0].description,
-            authorName: result.data.Result[0].authorName,
-          });
+          setBlogPost(result.data.Result[0]);
+          setFile(
+            `http://localhost:8080/Images/${result.data.Result[0].thumble}`
+          );
         } else {
           alert(result.data.Error);
         }
@@ -35,39 +37,72 @@ const EditBlogPost = () => {
       .catch((err) => console.log(err));
   }, [id]);
 
+  // fetch data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [authorResponse, newsCategoryResponse] = await Promise.all([
+          axios.get("http://localhost:8080/api/admin/author"),
+          axios.get("http://localhost:8080/api/admin/newsCategory"),
+        ]);
+
+        if (authorResponse.data.Status) {
+          setAuthor(authorResponse.data.Result);
+        } else {
+          setErrorMessage(authorResponse.data.Error);
+        }
+
+        if (newsCategoryResponse.data.Status) {
+          setNewsCategory(newsCategoryResponse.data.Result);
+        } else {
+          setErrorMessage(newsCategoryResponse.data.Error);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setErrorMessage(`${error}`);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   // image file handle
-  // const handleChange = (e) => {
-  //   setFile(URL.createObjectURL(e.target.files[0]));
-  //   formik.setFieldValue("file", e.target.files[0]);
-  // };
+  const handleChange = (e) => {
+    setFile(URL.createObjectURL(e.target.files[0]));
+    formik.setFieldValue("file", e.target.files[0]);
+  };
 
   // use fromik method
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: practiseArea.title || "",
-      file: practiseArea.file,
-      artical: practiseArea.artcl || "",
-      authorName: practiseArea.authorName || "",
+      title: BlogPost.title || "",
+      subTitle: BlogPost.subtitle || "",
+      AuthorOne: BlogPost.author1_id || "",
+      AuthorTwo: BlogPost.author2_id || "",
+      newsCategory: BlogPost.category_id || "",
+      file: BlogPost.thumble || "",
+      artical: BlogPost.articalpost || "",
     },
     onSubmit: async (values, { resetForm }) => {
-      // const formData = new FormData();
-      // formData.append("title", values.title);
-      // formData.append("file", values.file);
-      // if (values.file) {
-      //       formData.append("file", values.file);
-      //   }
-      // formData.append("artical", values.artical);
-      // formData.append("authorName", values.authorName);
+      console.log(values);
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("subTitle", values.subTitle);
+      formData.append("AuthorOne", values.AuthorOne);
+      formData.append("AuthorTwo", values.AuthorTwo);
+      formData.append("newsCategory", values.newsCategory);
+      formData.append("file", values.file);
+      formData.append("artical", values.artical);
       try {
         const response = await axios.put(
-          `https://api.tojoglobal.com/api/admin/blogpost/edit/${id}`,
-          values
-          // {
-          //   headers: {
-          //     "Content-Type": "multipart/form-data",
-          //   },
-          // }
+          `http://localhost:8080/api/admin/blogpost/edit/${id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         );
         if (response.data.Status) {
           setErrorMessage(null);
@@ -101,8 +136,6 @@ const EditBlogPost = () => {
     },
   });
 
-  console.log(practiseArea);
-
   return (
     <div className="container dashboard_All">
       <ToastContainer />
@@ -119,46 +152,126 @@ const EditBlogPost = () => {
         >
           <div className="row">
             <div className="col-md-12 inputfield">
-              <label htmlFor="title">Blog Title</label>
+              <label htmlFor="title">Title</label>
               <input
                 id="title"
                 className="text_input_field"
                 type="text"
                 name="title"
                 onChange={formik.handleChange}
-                placeholder="Write blog Title..."
+                placeholder="Write Title..."
                 value={formik.values.title}
               />
             </div>
+
             <div className="col-md-12 inputfield">
-              <label htmlFor="authorName">Author Name</label>
+              <label htmlFor="subTitle">Sub Title</label>
               <input
-                id="authorName"
+                id="subTitle"
                 className="text_input_field"
                 type="text"
-                name="authorName"
+                name="subTitle"
                 onChange={formik.handleChange}
-                placeholder="Write Author Name..."
-                value={formik.values.authorName}
+                placeholder="Write Sub Title..."
+                value={formik.values.subTitle}
               />
             </div>
-            {/* <div className="col-md-12 inputfield">
-            <h5>Upload Blog image</h5>
-              <div>              
-            <label htmlFor="file">
-              Upload image <FaCloudUploadAlt />
-            </label>
-            <input
-              id="file"
-              type="file"
-              name="file"
-              onChange={handleChange}
-              accept=".jpg, .png"
-              
-            />
-            <img src={file || `/Images/${practiseArea.file}`} alt="blog_Image" className="blog_Image"/>
+
+            <div className="col-md-6 inputfield">
+              <label htmlFor="AuthorOne">Author 1</label>
+
+              <select
+                name="AuthorOne"
+                id="AuthorOne"
+                className="text_input_field"
+                aria-label="Default select example"
+                value={formik.values.AuthorOne}
+                onChange={(e) =>
+                  formik.setFieldValue("AuthorOne", e.target.value)
+                }
+              >
+                {Author.length > 0 &&
+                  Author.map((CaNa) => (
+                    <option value={CaNa.ID} key={CaNa.uuid}>
+                      {CaNa.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="col-md-6 inputfield">
+              <label htmlFor="AuthorTwo">Author 2 (optional)</label>
+
+              <select
+                name="AuthorTwo"
+                id="AuthorTwo"
+                className="text_input_field"
+                aria-label="Default select example"
+                value={formik.values.AuthorTwo}
+                onChange={(e) =>
+                  formik.setFieldValue("AuthorTwo", e.target.value)
+                }
+              >
+                {Author.length > 0 &&
+                  Author.map((CaNa) => (
+                    <option value={CaNa.ID} key={CaNa.uuid}>
+                      {CaNa.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="col-md-12 inputfield">
+              <label htmlFor="newsCategory">News Category</label>
+
+              <select
+                name="newsCategory"
+                id="newsCategory"
+                className="text_input_field"
+                aria-label="Default select example"
+                value={formik.values.newsCategory}
+                onChange={(e) =>
+                  formik.setFieldValue("newsCategory", e.target.value)
+                }
+              >
+                {NewsCategory.length > 0 &&
+                  NewsCategory.map((CaNa) => (
+                    <option value={CaNa.ID} key={CaNa.uuid}>
+                      {CaNa.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="col-md-6 inputfield ">
+              <h5>Upload News Thumbnail</h5>
+              <div className="thumble_inputField_style">
+                <label htmlFor="file">
+                  Upload Thumbnail <FaCloudUploadAlt />
+                </label>
+                <input
+                  id="file"
+                  type="file"
+                  name="file"
+                  onChange={handleChange}
+                  accept=".jpg, .png"
+                />
               </div>
-          </div>             */}
+            </div>
+            <div className="col-md-6 inputfield">
+              <h5>Preview Thumbnail</h5>
+
+              <img
+                src={
+                  file
+                    ? file
+                    : `http://localhost:8080/Images/${BlogPost.thumble}`
+                }
+                alt="Tojo_global_Thumbnail_Image"
+                className="blog_Image"
+                loading="lazy"
+              />
+            </div>
 
             <div className="col-md-12 inputfield">
               <h5>Write Artical</h5>
@@ -169,7 +282,7 @@ const EditBlogPost = () => {
                   formik.setFieldValue("artical", content);
                 }}
                 initialValue={formik.values.artical}
-                apiKey='heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb'
+                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 init={{
                   height: 450,
                   menubar: false,

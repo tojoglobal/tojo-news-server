@@ -25,7 +25,7 @@ const Author = () => {
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
-  const [CatagoryList, setCatagoryList] = useState([]);
+  const [AuthorList, setAuthorList] = useState([]);
   const [open, setOpen] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState(null);
   const [faqToDelete, setFaqToDelete] = useState();
@@ -33,10 +33,10 @@ const Author = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/CatagoryList")
+      .get("http://localhost:8080/api/admin/author")
       .then((result) => {
         if (result.data.Status) {
-          setCatagoryList(result.data.Result);
+          setAuthorList(result.data.Result);
         } else {
           setErrorMessage(result.data.Error);
         }
@@ -75,12 +75,10 @@ const Author = () => {
 
   const handleDelete = () => {
     axios
-      .delete(
-        `http://localhost:8080/api/admin/CatagoryList/delete/` + dataDeleteId
-      )
+      .delete(`http://localhost:8080/api/admin/author/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
-          navigate("/dashboard//category");
+          navigate("/dashboard/author");
           setFaqToDelete(`deleted successfully`);
           toast.success(`deleted successfully`, {
             position: "top-right",
@@ -105,14 +103,14 @@ const Author = () => {
     <div className="conatiner dashboard_All">
       <ToastContainer />
       <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name"> Category List</h1>
+      <h1 className="dashboard_name">Author</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       <div>
         <div>
-          <Link to="/dashboard//category/create">
+          <Link to="/dashboard/author/create">
             <button className="button-62" role="button">
-              New Category
+              New Author
               <span>
                 {" "}
                 <HiPlus />
@@ -127,17 +125,15 @@ const Author = () => {
             <table id="customers" className="">
               <tr>
                 <th>SL</th>
-                <th>CATEGORY NAME</th>
-                <th>CATEGORY NOTE</th>
+                <th>Author NAME</th>
                 <th>ACTIONS</th>
               </tr>
 
-              {CatagoryList.length > 0 &&
-                CatagoryList.map((cl, index) => (
+              {AuthorList.length > 0 &&
+                AuthorList.map((cl, index) => (
                   <tr key={cl.uuid}>
                     <td>{index + 1}</td>
-                    <td>{cl.categoryName}</td>
-                    <td>{cl.categoryNote}</td>
+                    <td>{cl.name}</td>
                     <td>
                       <div className="dropdown">
                         <button className="dropbtn">
@@ -145,7 +141,7 @@ const Author = () => {
                         </button>
                         <div className="dropdown-content">
                           <Link
-                            to={`/dashboard//category/edit/${cl.uuid}`}
+                            to={`/dashboard/author/edit/${cl.uuid}`}
                             className="routeLink"
                           >
                             <span className="actionBtn"> Edit</span>
@@ -192,7 +188,7 @@ const Author = () => {
                           </Button>
                           <Button onClick={handleDelete} autoFocus>
                             <Link
-                              to={`/dashboard//category/delete`}
+                              to={`/dashboard/author/delete`}
                               style={{
                                 color: "#E16565",
                                 textDecoration: "none",

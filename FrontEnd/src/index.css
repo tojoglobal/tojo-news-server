@@ -53,6 +53,9 @@
   margin-left: 3px;
   font-weight: 600;
 }
+.thumble_inputField_style{
+  margin-top: 40px;
+}
 .text_input_field {
   width: 100%;
   border: 2px solid #ddd4d4;
@@ -414,7 +417,7 @@ label[for="file"]:active {
 
 /* blog style */
 .blog_Image {
-  height: 150px;
+  height: 200px;
 }
 .blog_post_Image {
   width: 100%;

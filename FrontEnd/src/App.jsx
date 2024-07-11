@@ -21,10 +21,10 @@ import CreateClinetList from "./Component/Routers/ClientList/CreateClinetList";
 import ShowClinetList from "./Component/Routers/ClientList/ShowClientList";
 import EditClinetList from "./Component/Routers/ClientList/EditClientList";
 
-// clinet category
-import ClientCategoryList from "./Component/Routers/ClientCategoryList/ClientCategoryList";
-import CreateClientCategory from "./Component/Routers/ClientCategoryList/CreateClientCategoryList";
-import EditClientCategory from "./Component/Routers/ClientCategoryList/EditClientCategory";
+// News category
+import NewsCategory from "./Component/Routers/NewsCategory/NewsCategory";
+import EditNewsCategory from "./Component/Routers/NewsCategory/EditNewsCategory";
+import CreateNewsCategory from "./Component/Routers/NewsCategory/CreateNewsCategory";
 
 // Blog post Write
 import BlogPost from "./Component/Routers/Blog/BlogPost";
@@ -75,6 +75,7 @@ function App() {
           }
         >
           <Route path="" element={<MainDashbord />} />
+
           {/* ContactList */}
           <Route path="contact" element={<ContactList />} />
           <Route path="contact/create" element={<CreateContactList />} />
@@ -82,9 +83,9 @@ function App() {
           <Route path="contact/edit/:id" element={<EditContactList />} />
 
           {/* Authors */}
-          <Route path="contact/category" element={<Authors />} />
-          <Route path="contact/category/edit/:id" element={<EditAuthors />} />
-          <Route path="contact/category/create" element={<CreateAuthors />} />
+          <Route path="author" element={<Authors />} />
+          <Route path="author/edit/:id" element={<EditAuthors />} />
+          <Route path="author/create" element={<CreateAuthors />} />
 
           {/* client list  */}
           <Route path="client" element={<ClientList />} />
@@ -93,15 +94,9 @@ function App() {
           <Route path="client/edit/:id" element={<EditClinetList />} />
 
           {/* clinet category */}
-          <Route path="client/category" element={<ClientCategoryList />} />
-          <Route
-            path="client/category/edit/:id"
-            element={<EditClientCategory />}
-          />
-          <Route
-            path="client/category/create"
-            element={<CreateClientCategory />}
-          />
+          <Route path="newscategory" element={<NewsCategory />} />
+          <Route path="newscategory/edit/:id" element={<EditNewsCategory />} />
+          <Route path="newscategory/create" element={<CreateNewsCategory />} />
 
           {/* Blog Post */}
           <Route path="blogpost" element={<BlogPost />} />

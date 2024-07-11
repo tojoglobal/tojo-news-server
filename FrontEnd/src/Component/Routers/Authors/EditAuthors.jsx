@@ -8,26 +8,25 @@ import { IoStarSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-const EditContactCategory = () => {
+const EditAuthors = () => {
   // Router
   const { id } = useParams();
   const navigate = useNavigate();
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
-  const [ContactCatagoryList, setContactCatagoryList] = useState([]);
+  const [author, setAuthor] = useState([]);
 
   // fetch data
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/contactCatagoryList/${id}`)
+      .get(`http://localhost:8080/api/admin/author/${id}`)
       .then((result) => {
         if (result.data.Status) {
-          setContactCatagoryList({
-            ...ContactCatagoryList,
-            categoryName: result.data.Result[0].categoryName,
-            categoryNote: result.data.Result[0].categoryNote,
-          });
+          setAuthor((prevAuthor) => ({
+            ...prevAuthor,
+            authorName: result.data.Result[0].name,
+          }));
         } else {
           alert(result.data.Error);
         }
@@ -35,24 +34,24 @@ const EditContactCategory = () => {
       .catch((err) => setErrorMessage(err));
   }, [id]);
 
-  console.log(ContactCatagoryList);
+  console.log(author);
+
   // use fromik method
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      categoryName: ContactCatagoryList.categoryName || "",
-      categoryNote: ContactCatagoryList.categoryNote || "",
+      authorName: author.authorName || "",
     },
     onSubmit: async (values, { resetForm }) => {
       console.log(values);
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/admin/contactCatagoryList/edit/${id}`,
+          `http://localhost:8080/api/admin/author/edit/${id}`,
           values
         );
         if (response.data.Status) {
           setErrorMessage(null);
-          toast.success(`Catagory Edit successfully`, {
+          toast.success(`Category Edit successfully`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -64,7 +63,7 @@ const EditContactCategory = () => {
           });
           const delay = 1500; // 1.5 seconds delay
           const timer = setTimeout(() => {
-            navigate("/dashboard/contact/category");
+            navigate("/dashboard/author");
           }, delay);
           // Clear the timer if the component unmounts before the delay is complete
           return () => clearTimeout(timer);
@@ -81,15 +80,16 @@ const EditContactCategory = () => {
     <div className="container dashboard_All">
       <ToastContainer />
       <h5>
-        <Link to="/dashboard/contact/category" className="route_link">
+        <Link to="/dashboard/author" className="route_link">
           {" "}
           <IoMdArrowRoundBack /> Back
         </Link>
       </h5>
-      <h1 className="dashboard_name">Edit Category list</h1>
+      <h1 className="dashboard_name">Edit author Name</h1>
       <hr />
-      {/* <p>{formattedValue}</p> */}
+
       {errorMessage && <div className="error-message">{errorMessage}</div>}
+
       {/* form start */}
       {/* ++++++========part 1 =======++++++++ */}
       <div className="from_div">
@@ -107,23 +107,11 @@ const EditContactCategory = () => {
               <input
                 className="text_input_field"
                 type="text"
-                name="categoryName"
+                name="authorName"
                 onChange={formik.handleChange}
-                placeholder="Cognomen Name"
-                value={formik.values.categoryName}
+                placeholder="Update Author Name"
+                value={formik.values.authorName}
                 required
-              />
-            </div>
-
-            <div className="col-md-12 inputfield">
-              <label htmlFor="categoryNote">Note</label>
-              <input
-                className="text_input_field"
-                type="text"
-                name="categoryNote"
-                onChange={formik.handleChange}
-                placeholder="Cognomen Note"
-                value={formik.values.categoryNote}
               />
             </div>
 
@@ -133,7 +121,7 @@ const EditContactCategory = () => {
                 className="button-62 cetificate_image_AddBtn "
                 role="button"
               >
-                ADD CATEGORY
+                Update Author
               </button>
             </div>
           </div>
@@ -143,4 +131,4 @@ const EditContactCategory = () => {
   );
 };
 
-export default EditContactCategory;
+export default EditAuthors;

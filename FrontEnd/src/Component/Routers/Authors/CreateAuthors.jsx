@@ -17,13 +17,13 @@ const CreateContactCategory = () => {
   // use fromik method
   const formik = useFormik({
     initialValues: {
-      categoryName: "",
-      categoryNote: "",
+      authorName: "",
     },
     onSubmit: async (values, { resetForm }) => {
+      console.log(values);
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/admin/contactCatagory/create",
+          "http://localhost:8080/api/admin/author/create",
           values
         );
         if (response.data.Status) {
@@ -40,7 +40,7 @@ const CreateContactCategory = () => {
           });
           const delay = 1500; // 1.5 seconds delay
           const timer = setTimeout(() => {
-            navigate("/dashboard/contact/category");
+            navigate("/dashboard/author");
           }, delay);
           return () => clearTimeout(timer);
         }
@@ -56,7 +56,7 @@ const CreateContactCategory = () => {
     <div className="container dashboard_All">
       <ToastContainer />
       <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">Create Category</h1>
+      <h1 className="dashboard_name">Create author Name</h1>
       <hr />
       {/* <p>{formattedValue}</p> */}
       {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -77,23 +77,11 @@ const CreateContactCategory = () => {
               <input
                 className="text_input_field"
                 type="text"
-                name="categoryName"
+                name="authorName"
                 onChange={formik.handleChange}
-                placeholder="Cognomen Name"
-                value={formik.values.categoryName}
+                placeholder="Write Author Name"
+                value={formik.values.authorName}
                 required
-              />
-            </div>
-
-            <div className="col-md-12 inputfield">
-              <label htmlFor="categoryNote">Note</label>
-              <input
-                className="text_input_field"
-                type="text"
-                name="categoryNote"
-                onChange={formik.handleChange}
-                placeholder="Cognomen Note"
-                value={formik.values.categoryNote}
               />
             </div>
 
@@ -103,7 +91,7 @@ const CreateContactCategory = () => {
                 className="button-62 cetificate_image_AddBtn "
                 role="button"
               >
-                ADD CATEGORY
+                ADD author Name
               </button>
             </div>
           </div>

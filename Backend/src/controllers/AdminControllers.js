@@ -36,16 +36,16 @@ import {
   contactlistToDeleteQuery,
   showContactInfoQuery,
   editContactlistQuery,
-  createContactCatagoryListQuery,
-  getContactCatagoryListQuery,
-  deleteOneContactCatagoryListQuery,
-  editContactCatagoryListQuery,
-  showContactCatagoryListIdQuery,
-  createClientCatagoryListQuery,
-  getClientCatagoryListQuery,
-  deleteOneClientCatagoryListQuery,
-  showClientCatagoryListIdQuery,
-  editClientCatagoryListQuery,
+  createAuthorQuery,
+  getAuthorQuery,
+  deleteOneAuthorQuery,
+  editAuthorQuery,
+  showAuthorIdQuery,
+  createNewsCategoryQuery,
+  getNewsCategoryQuery,
+  deleteOneNewsCategoryQuery,
+  showNewsCategoryIdQuery,
+  editNewsCategoryQuery,
   createClientListQuery,
   getClientListQuery,
   showClientListIdQuery,
@@ -96,11 +96,15 @@ const createBlogPost = (req, res) => {
   const values = [
     uuidv4(),
     req.body.title,
+    req.body.subTitle,
+    req.body.AuthorOne,
+    req.body.AuthorTwo,
+    req.body.newsCategory,
     imageFile,
     req.body.artical,
-    req.body.authorName,
-    formattedDate,
+    currentDate,
   ];
+
   db.query(createBlogPostQuery, [values], (err, result) => {
     if (err) {
       return res.json({ Status: false, Error: "Query Error" });
@@ -121,15 +125,18 @@ const allBlogPost = (req, res) => {
 };
 
 const editBlogPost = (req, res) => {
+  const currentDate = new Date();
   const id = req.params.id;
-  // const newImage = req.file ? req.file.filename : null;
-  //  const imageFile = req.file ? req.file.filename : req.body.file;
+  const newImage = req.file ? req.file.filename : req.body.file;
   const values = [
     req.body.title,
-    req.body.file,
-    // newImage,
+    req.body.subTitle,
+    req.body.AuthorOne,
+    req.body.AuthorTwo,
+    req.body.newsCategory,
+    newImage,
     req.body.artical,
-    req.body.authorName,
+    currentDate,
   ];
   
   console.log(values);
@@ -494,88 +501,87 @@ const editContactlist = (req, res) => {
   });
 };
 
-// Contact Catagory List
-const createContactCatagoryList = (req, res) => {
-  const values = [uuidv4(), req.body.categoryName, req.body.categoryNote];
-  db.query(createContactCatagoryListQuery, [values], (err, result) => {
+// Author
+const createAuthor = (req, res) => {
+  const values = [uuidv4(), req.body.authorName];
+  db.query(createAuthorQuery, [values], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
 
-const getContactCatagoryList = (req, res) => {
-  db.query(getContactCatagoryListQuery, (err, result) => {
+const getAuthor = (req, res) => {
+  db.query(getAuthorQuery, (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
 
-const deleteOneContactCatagoryList = (req, res) => {
+const deleteOneAuthor = (req, res) => {
   const uuid = req.params.id;
-  db.query(deleteOneContactCatagoryListQuery, [uuid], (err, result) => {
+  db.query(deleteOneAuthorQuery, [uuid], (err, result) => {
     if (err) return res.json({ Status: false, Error: "Query Error" + err });
     return res.json({ Status: true, Result: result });
   });
 };
 
-const editContactCatagoryList = (req, res) => {
+const editAuthor = (req, res) => {
   const id = [req.params.id];
-  const values = [req.body.categoryName, req.body.categoryNote];
-  db.query(editContactCatagoryListQuery, [...values, id], (err, result) => {
+  const values = [req.body.authorName];
+  db.query(editAuthorQuery, [...values, id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
 
-const showContactCatagoryListId = (req, res) => {
+const showAuthorId = (req, res) => {
   const id = [req.params.id];
-  db.query(showContactCatagoryListIdQuery, [id], (err, result) => {
+  db.query(showAuthorIdQuery, [id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
 
-// Client Catagory List router
-const createClientCatagoryList = (req, res) => {
+// News Catagory Admin Control
+const createNewsCategory = (req, res) => {
   const values = [
     uuidv4(),
     req.body.categoryName,
-    req.body.categoryNote,
-    req.body.OnBehalf,
+    // req.body.OnBehalf,
   ];
-  db.query(createClientCatagoryListQuery, [values], (err, result) => {
+  db.query(createNewsCategoryQuery, [values], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
-const getClientCatagoryList = (req, res) => {
-  db.query(getClientCatagoryListQuery, (err, result) => {
+const getNewsCategory = (req, res) => {
+  db.query(getNewsCategoryQuery, (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
-const deleteOneClientCatagoryList = (req, res) => {
+const deleteOneNewsCategory = (req, res) => {
   const uuid = req.params.id;
-  db.query(deleteOneClientCatagoryListQuery, [uuid], (err, result) => {
+  db.query(deleteOneNewsCategoryQuery, [uuid], (err, result) => {
     if (err) return res.json({ Status: false, Error: "Query Error" + err });
     return res.json({ Status: true, Result: result });
   });
 };
-const showClientCatagoryListId = (req, res) => {
+const showNewsCategoryId = (req, res) => {
   const id = [req.params.id];
-  db.query(showClientCatagoryListIdQuery, [id], (err, result) => {
+  db.query(showNewsCategoryIdQuery, [id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
-const editClientCatagoryList = (req, res) => {
+const editNewsCategory = (req, res) => {
   const id = [req.params.id];
   const values = [
     req.body.categoryName,
-    req.body.categoryNote,
-    req.body.OnBehalf,
+    // req.body.categoryNote,
+    // req.body.OnBehalf,
   ];
-  db.query(editClientCatagoryListQuery, [...values, id], (err, result) => {
+  db.query(editNewsCategoryQuery, [...values, id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
@@ -707,16 +713,16 @@ export {
   contactlistToDelete,
   showContactInfo,
   editContactlist,
-  createContactCatagoryList,
-  getContactCatagoryList,
-  deleteOneContactCatagoryList,
-  editContactCatagoryList,
-  showContactCatagoryListId,
-  createClientCatagoryList,
-  getClientCatagoryList,
-  deleteOneClientCatagoryList,
-  showClientCatagoryListId,
-  editClientCatagoryList,
+  createAuthor,
+  getAuthor,
+  deleteOneAuthor,
+  editAuthor,
+  showAuthorId,
+  createNewsCategory,
+  getNewsCategory,
+  deleteOneNewsCategory,
+  showNewsCategoryId,
+  editNewsCategory,
   createClientList,
   getClientList,
   showClientListId,

@@ -15,7 +15,7 @@ const ShowBlogPost = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`https://api.tojoglobal.com/api/admin/blogpost/${id}`)
+      .get(`http://localhost:8080/api/admin/blogpost/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setBlogpost({
@@ -73,7 +73,7 @@ const ShowBlogPost = () => {
                   {" "}
                   <img
                     className="img-fluid"
-                    src={`https://api.tojoglobal.com/Images/${blogpost.file}`}
+                    src={`http://localhost:8080/Images/${blogpost.file}`}
                     alt={blogpost.img}
                   />{" "}
                 </td>

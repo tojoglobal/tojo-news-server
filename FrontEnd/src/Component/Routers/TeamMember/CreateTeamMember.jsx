@@ -153,7 +153,9 @@ const CreateTeamMember = () => {
                 </div>
                 <div className="col-md-4">
                   <img
-                    src={file ? file : "https://rb.gy/u0q1so"}
+                    src={
+                      file ? file : "https://i.postimg.cc/KzNdw0LX/Group.png"
+                    }
                     alt="blog_Image"
                     className="blog_Image"
                   />
