@@ -90,7 +90,9 @@ const EditBlogPost = () => {
       formData.append("title", values.title);
       formData.append("subTitle", values.subTitle);
       formData.append("AuthorOne", values.AuthorOne);
-      formData.append("AuthorTwo", values.AuthorTwo);
+      if (values.AuthorTwo) {
+        formData.append("AuthorTwo", values.AuthorTwo);
+      }
       formData.append("newsCategory", values.newsCategory);
       formData.append("file", values.file);
       formData.append("artical", values.artical);
@@ -212,6 +214,7 @@ const EditBlogPost = () => {
                   formik.setFieldValue("AuthorTwo", e.target.value)
                 }
               >
+                <option value="">Choose Author 2</option>
                 {Author.length > 0 &&
                   Author.map((CaNa) => (
                     <option value={CaNa.ID} key={CaNa.uuid}>

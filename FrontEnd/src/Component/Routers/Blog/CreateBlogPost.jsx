@@ -6,50 +6,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { Editor } from "@tinymce/tinymce-react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { IoStarSharp } from "react-icons/io5";
 
 const CreateBlogPost = () => {
-  // path
-  const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
-  // state
   const [file, setFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [Author, setAuthor] = useState([]);
   const [NewsCategory, setNewsCategory] = useState([]);
 
-  // fetch Data
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const AuthorResponse = await axios.get(
-  //         "http://localhost:8080/api/admin/author"
-  //       );
-  //       setAuthor(AuthorResponse.data.Status ? AuthorResponse.data.Result : []);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //       setErrorMessage(`${error}`);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  // useEffect(() => {
-  //   axios
-  //     .get("http://localhost:8080/api/admin/newsCategory")
-  //     .then((result) => {
-  //       if (result.data.Status) {
-  //         setNewsCategory(result.data.Result);
-  //       } else {
-  //         setErrorMessage(result.data.Error);
-  //       }
-  //     })
-  //     .catch((err) => console.log(err));
-  // }, []);
-
-  // fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -78,14 +42,12 @@ const CreateBlogPost = () => {
     fetchData();
   }, []);
 
-  // image file handle
   const handleChange = (e) => {
     setFile(URL.createObjectURL(e.target.files[0]));
     formik.setFieldValue("file", e.target.files[0]);
   };
-  // use fromik method
+
   const formik = useFormik({
-    //enableReinitialize: true,
     initialValues: {
       title: "",
       subTitle: "",
@@ -100,10 +62,13 @@ const CreateBlogPost = () => {
       formData.append("title", values.title);
       formData.append("subTitle", values.subTitle);
       formData.append("AuthorOne", values.AuthorOne);
-      formData.append("AuthorTwo", values.AuthorTwo);
+      if (values.AuthorTwo) {
+        formData.append("AuthorTwo", values.AuthorTwo);
+      }
       formData.append("newsCategory", values.newsCategory);
       formData.append("file", values.file);
       formData.append("artical", values.artical);
+
       try {
         const response = await axios.post(
           "http://localhost:8080/api/admin/blogpost/create",
@@ -126,11 +91,9 @@ const CreateBlogPost = () => {
             progress: undefined,
             theme: "light",
           });
-          const delay = 1500; // 1.5 seconds delay
-          const timer = setTimeout(() => {
+          setTimeout(() => {
             navigate(`/dashboard/blogpost`);
-          }, delay);
-          return () => clearTimeout(timer);
+          }, 1500);
         }
       } catch (error) {
         setErrorMessage(`${error}`);
@@ -143,12 +106,9 @@ const CreateBlogPost = () => {
   return (
     <div className="container dashboard_All">
       <ToastContainer />
-      <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">Create News</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {/* form start */}
-      {/* ++++++========part 1 =======++++++++ */}
       <div className="from_div">
         <form
           onSubmit={formik.handleSubmit}
@@ -186,74 +146,67 @@ const CreateBlogPost = () => {
 
             <div className="col-md-6 inputfield">
               <label htmlFor="AuthorOne">Author 1</label>
-
               <select
                 name="AuthorOne"
                 id="AuthorOne"
                 className="text_input_field"
-                aria-label="Default select example"
                 value={formik.values.AuthorOne}
                 onChange={(e) =>
                   formik.setFieldValue("AuthorOne", e.target.value)
                 }
+                required
               >
                 <option value="">Choose Author 1</option>
-                {Author.length > 0 &&
-                  Author.map((CaNa) => (
-                    <option value={CaNa.ID} key={CaNa.uuid}>
-                      {CaNa.name}
-                    </option>
-                  ))}
+                {Author.map((author) => (
+                  <option value={author.ID} key={author.uuid}>
+                    {author.name}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div className="col-md-6 inputfield">
               <label htmlFor="AuthorTwo">Author 2 (optional)</label>
-
               <select
                 name="AuthorTwo"
                 id="AuthorTwo"
                 className="text_input_field"
-                aria-label="Default select example"
                 value={formik.values.AuthorTwo}
                 onChange={(e) =>
                   formik.setFieldValue("AuthorTwo", e.target.value)
                 }
               >
                 <option value="">Choose Author 2</option>
-                {Author.length > 0 &&
-                  Author.map((CaNa) => (
-                    <option value={CaNa.ID} key={CaNa.uuid}>
-                      {CaNa.name}
-                    </option>
-                  ))}
+                {Author.map((author) => (
+                  <option value={author.ID} key={author.uuid}>
+                    {author.name}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div className="col-md-12 inputfield">
               <label htmlFor="newsCategory">News Category</label>
-
               <select
                 name="newsCategory"
                 id="newsCategory"
                 className="text_input_field"
-                aria-label="Default select example"
                 value={formik.values.newsCategory}
                 onChange={(e) =>
                   formik.setFieldValue("newsCategory", e.target.value)
                 }
+                required
               >
                 <option value="">Choose News Category</option>
-                {NewsCategory.length > 0 &&
-                  NewsCategory.map((CaNa) => (
-                    <option value={CaNa.ID} key={CaNa.uuid}>
-                      {CaNa.name}
-                    </option>
-                  ))}
+                {NewsCategory.map((category) => (
+                  <option value={category.ID} key={category.uuid}>
+                    {category.name}
+                  </option>
+                ))}
               </select>
             </div>
 
-            <div className="col-md-6 inputfield ">
+            <div className="col-md-6 inputfield">
               <h5>Upload News Thumbnail</h5>
               <div className="thumble_inputField_style">
                 <label htmlFor="file">
@@ -280,7 +233,7 @@ const CreateBlogPost = () => {
             </div>
 
             <div className="col-md-12 inputfield">
-              <h5>Write News Artical</h5>
+              <h5>Write News Article</h5>
               <Editor
                 apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 id="artical"

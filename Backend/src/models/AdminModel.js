@@ -6,7 +6,7 @@ const memberImageCreateQuery = `INSERT INTO member_firm (uuid, img, imageTitle) 
 const memberImageQuery = "SELECT * FROM member_firm";
 const memberImageDeleteQuery = `DELETE FROM member_firm WHERE uuid = ? `;
 
-//job router query 
+//job router query
 const createJobPostQuery = `INSERT INTO jobpost (uuid, jobTitle, jobPosition , jobTime	, applyLink ) VALUES ( ? )`;
 const allJobPostQuery = `SELECT * FROM jobpost ORDER BY jobpost.ID DESC`;
 const editJobPostIdQuery = `SELECT * FROM jobpost WHERE uuid = ?`;
@@ -22,6 +22,7 @@ const TagNameToDeleteQuery = `DELETE FROM tags WHERE uuid = ?`;
 
 // Blog  Area
 const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle , author1_id , author2_id , category_id , thumble , articalpost , dateAndTime ) VALUES ( ? )`;
+
 const allBlogPostQuery = `SELECT * FROM blognews ORDER BY blognews.ID DESC`;
 const editBlogPostQuery = `UPDATE blognews SET title = ?, subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
 const editBlogPostIdQuery = `SELECT * FROM blognews WHERE uuid = ?`;
@@ -129,5 +130,5 @@ export {
   allJobPostQuery,
   editJobPostIdQuery,
   editJobPostQuery,
-  jobPostToDeleteQuery
+  jobPostToDeleteQuery,
 };

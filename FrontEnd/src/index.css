@@ -23,6 +23,10 @@
   --font-main: "DM Sans", sans-serif;
 }
 
+/* tiny blog write  */
+.tox-statusbar__branding , .tox-statusbar__help-text{
+  display: none;
+}
 .route_link {
   text-decoration: none;
   text-transform: capitalize;

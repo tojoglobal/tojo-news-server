@@ -29,18 +29,6 @@ const MenuList = ({ darkTheme }) => {
         </Link>
       </Menu.Item>
 
-      {/* <Menu.SubMenu
-        key="Contact"
-        icon={<MdContacts className="dashbord_icon" />}
-        title="Contact"
-      >
-        <Menu.Item key="contactList">
-          <Link to="/dashboard/contact" className="route_link">
-            Contact List
-          </Link>
-        </Menu.Item>        
-      </Menu.SubMenu> */}
-
       <Menu.Item
         key="contactCategory"
         icon={<MdContacts className="dashbord_icon" />}
@@ -55,19 +43,6 @@ const MenuList = ({ darkTheme }) => {
           News
         </Link>
       </Menu.Item>
-
-      {/* <Menu.SubMenu
-        key="client"
-        icon={<TiGroup className="dashbord_icon" />}
-        title="Client"
-      >
-        <Menu.Item key="clientList">
-          <Link to="/dashboard/client" className="route_link">
-            List of Client
-          </Link>
-        </Menu.Item>
-       
-      </Menu.SubMenu> */}
 
       <Menu.Item
         key="clientCategory"
@@ -108,28 +83,6 @@ const MenuList = ({ darkTheme }) => {
           Job Offer
         </Link>
       </Menu.Item>
-
-      {/* <Menu.Item
-        key="appointments"
-        icon={<FaHandsHelping className="dashbord_icon" />}
-      >
-        <Link to="/dashboard/appointment" className="route_link">
-          Appointments
-        </Link>
-      </Menu.Item> */}
-
-      {/* <Menu.SubMenu
-        key="siteManagement"
-        icon={<MdManageAccounts className="dashbord_icon" />}
-        title="WebSite Management"
-      >
-        <Menu.Item key="memberFirm">
-          {" "}
-          <Link to="/dashboard/member" className="route_link">
-            Patner
-          </Link>
-        </Menu.Item>
-      </Menu.SubMenu> */}
 
       <Menu.Item
         key="setting"

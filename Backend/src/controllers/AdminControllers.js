@@ -55,7 +55,7 @@ import {
   allJobPostQuery,
   editJobPostIdQuery,
   editJobPostQuery,
-  jobPostToDeleteQuery
+  jobPostToDeleteQuery,
 } from "../models/AdminModel.js";
 
 const adminLogin = (req, res) => {
@@ -87,18 +87,21 @@ const adminLogin = (req, res) => {
 const createBlogPost = (req, res) => {
   // Generate the current date and time
   const currentDate = new Date();
-  const formattedDate = currentDate
-    .toISOString()
-    .slice(0, 19)
-    .replace("T", " "); // Format to 'YYYY-MM-DD HH:MM:SS'
+  // const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' '); // Format to 'YYYY-MM-DD HH:MM:SS'
+
+  // Check if file was uploaded
+  // if (!req.file) {
+  //   return res.json({ Status: false, Error: 'No file uploaded' });
+  // }
 
   const imageFile = req.file.filename;
+
   const values = [
     uuidv4(),
     req.body.title,
     req.body.subTitle,
     req.body.AuthorOne,
-    req.body.AuthorTwo,
+    req.body.AuthorTwo || null,
     req.body.newsCategory,
     imageFile,
     req.body.artical,
@@ -132,14 +135,12 @@ const editBlogPost = (req, res) => {
     req.body.title,
     req.body.subTitle,
     req.body.AuthorOne,
-    req.body.AuthorTwo,
+    req.body.AuthorTwo || null,
     req.body.newsCategory,
     newImage,
     req.body.artical,
     currentDate,
   ];
-  
-  console.log(values);
 
   db.query(editBlogPostQuery, [...values, id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
@@ -169,7 +170,13 @@ const BlogPostToDelete = (req, res) => {
 // job post router
 const createJobPost = (req, res) => {
   const uuid = uuidv4();
-  const values = [uuid, req.body.jobTitle, req.body.jobPosition , req.body.jobTime , req.body.applyLink];
+  const values = [
+    uuid,
+    req.body.jobTitle,
+    req.body.jobPosition,
+    req.body.jobTime,
+    req.body.applyLink,
+  ];
   db.query(createJobPostQuery, [values], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
@@ -186,7 +193,7 @@ const allJobPost = (req, res) => {
   });
 };
 
-const  editJobPostID = (req, res) => {
+const editJobPostID = (req, res) => {
   const id = req.params.id;
   db.query(editJobPostIdQuery, [id], (err, result) => {
     if (err) {
@@ -198,7 +205,12 @@ const  editJobPostID = (req, res) => {
 };
 const editJobPost = (req, res) => {
   const id = req.params.id;
-  const values = [req.body.jobTitle, req.body.jobPosition , req.body.jobTime , req.body.applyLink];
+  const values = [
+    req.body.jobTitle,
+    req.body.jobPosition,
+    req.body.jobTime,
+    req.body.applyLink,
+  ];
   db.query(editJobPostQuery, [...values, id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
@@ -216,7 +228,6 @@ const jobPostToDelete = (req, res) => {
     }
   });
 };
-
 
 // TagName Router
 const createTagName = (req, res) => {
@@ -238,7 +249,7 @@ const allTagName = (req, res) => {
   });
 };
 
-const editTagNameId = (req, res) => {  
+const editTagNameId = (req, res) => {
   const id = req.params.id;
   db.query(editTagNameIdQuery, [id], (err, result) => {
     if (err) {
@@ -735,5 +746,5 @@ export {
   allJobPost,
   jobPostToDelete,
   editJobPostID,
-  editJobPost
+  editJobPost,
 };

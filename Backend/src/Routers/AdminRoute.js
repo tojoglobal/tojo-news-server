@@ -56,25 +56,45 @@ import {
   allJobPost,
   jobPostToDelete,
   editJobPostID,
-  editJobPost
-
+  editJobPost,
 } from "../controllers/AdminControllers.js";
 import multer from "multer";
 import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
-const CaseFileStorage = multer.diskStorage({
+// Set storage engine
+const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public/Images");
   },
   filename: (req, file, cb) => {
-    const name = Date.now() + "-" + file.originalname;
+    const name = uuidv4() + "_" + Date.now() + "-" + file.originalname;
     cb(null, name);
   },
 });
+// Initialize upload
 const upload = multer({
-  storage: CaseFileStorage,
+  storage: fileStorage,
+  // limits: { fileSize: 2000000 }, // 2MB limit
+  // fileFilter: function (req, file, cb) {
+  //   checkFileType(file, cb);
+  // },
   dest: "uploads/",
 });
+// .single('file');
+
+// Check file type
+// function checkFileType(file, cb) {
+//   const filetypes = /jpeg|jpg|png|gif/;
+//   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+//   const mimetype = filetypes.test(file.mimetype);
+
+//   if (mimetype && extname) {
+//     return cb(null, true);
+//   } else {
+//     cb('Error: Images Only!');
+//   }
+// }
 
 // end image uplode
 
@@ -82,7 +102,7 @@ const upload = multer({
 const AdminRouter = express.Router();
 AdminRouter.post("/adminlogin", adminLogin);
 
-// job post 
+// job post
 AdminRouter.post("/jobPost/create", createJobPost);
 AdminRouter.get("/jobPost", allJobPost);
 AdminRouter.delete("/jobPost/delete/:uuid", jobPostToDelete);
@@ -90,6 +110,7 @@ AdminRouter.get("/jobPost/:id", editJobPostID);
 AdminRouter.put("/jobPost/edit/:id", editJobPost);
 
 // Team Member
+// upload.single("file")
 AdminRouter.post("/teamMember/create", upload.single("file"), createTeamMember);
 AdminRouter.get("/teamMember", allTeamMember);
 AdminRouter.delete("/teamMember/delete/:uuid", teamMemberToDelete);
@@ -97,9 +118,9 @@ AdminRouter.get("/teamMember/:id", editTeamMemberID);
 AdminRouter.put("/teamMember/edit/:id", editTeamMember);
 
 // allMember
-AdminRouter.get("/member", allMember);
-AdminRouter.post("/member/create", upload.single("file"), uploadMemberImage);
-AdminRouter.delete("/member/delete/:uuid", memberToDelete);
+// AdminRouter.get("/member", allMember);
+// AdminRouter.post("/member/create", upload.single("file"), uploadMemberImage);
+// AdminRouter.delete("/member/delete/:uuid", memberToDelete);
 
 // TagName Router
 AdminRouter.post("/TagName/create", createTagName);
@@ -109,9 +130,10 @@ AdminRouter.put("/TagName/edit/:id", editTagName);
 AdminRouter.delete("/TagName/delete/:uuid", TagNameToDelete);
 
 // Blog Router
+// upload.single("file")
 AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);
 AdminRouter.get("/blogpost", allBlogPost);
-AdminRouter.put("/blogpost/edit/:id", upload.single("file") , editBlogPost);
+AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);
 AdminRouter.get("/blogpost/:id", editBlogPostId);
 AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
 
@@ -139,10 +161,7 @@ AdminRouter.put("/contactlist/edit/:id", editContactlist);
 AdminRouter.post("/author/create", createAuthor);
 AdminRouter.get("/author", getAuthor);
 AdminRouter.get("/author/:id", showAuthorId);
-AdminRouter.delete(
-  "/author/delete/:id",
-  deleteOneAuthor
-);
+AdminRouter.delete("/author/delete/:id", deleteOneAuthor);
 AdminRouter.put("/author/edit/:id", editAuthor);
 
 // client List Route
@@ -156,10 +175,7 @@ AdminRouter.put("/clientlist/edit/:id", editClientList);
 AdminRouter.post("/newsCategory/create", createNewsCategory);
 AdminRouter.get("/newsCategory", getNewsCategory);
 AdminRouter.get("/newsCategory/:id", showNewsCategoryId);
-AdminRouter.delete(
-  "/newsCategory/delete/:id",
-  deleteOneNewsCategory
-);
+AdminRouter.delete("/newsCategory/delete/:id", deleteOneNewsCategory);
 AdminRouter.put("/newsCategory/edit/:id", editNewsCategory);
 
 // count many Route
