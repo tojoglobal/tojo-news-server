@@ -65,7 +65,7 @@ const showAuthorIdQuery = `SELECT * FROM authors WHERE uuid = ?`;
 
 //News Catagory Query,
 const createNewsCategoryQuery = `INSERT INTO categories (uuid , name ) VALUES(?) `;
-const getNewsCategoryQuery = `SELECT * FROM categories ORDER BY categories.ID DESC`;
+const getNewsCategoryQuery = `SELECT * FROM categories`;
 const deleteOneNewsCategoryQuery = `DELETE FROM categories WHERE uuid = ?`;
 const editNewsCategoryQuery = `UPDATE categories SET name = ? WHERE uuid = ?`;
 const showNewsCategoryIdQuery = `SELECT * FROM categories WHERE uuid = ?`;

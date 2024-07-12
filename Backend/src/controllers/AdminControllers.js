@@ -573,7 +573,7 @@ const getNewsCategory = (req, res) => {
 };
 const deleteOneNewsCategory = (req, res) => {
   const uuid = req.params.id;
-  db.query(deleteOneNewsCategoryQuery, [uuid], (err, result) => {
+  db.query(deleteOneNewsCategoryQuery, [uuid], (err, result) => {    
     if (err) return res.json({ Status: false, Error: "Query Error" + err });
     return res.json({ Status: true, Result: result });
   });
