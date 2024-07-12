@@ -21,7 +21,7 @@ import Pagination from "../../Pagination/Pagination";
 const Message = () => {
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
-  
+
   const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState([]);
   const [open, setOpen] = useState(false);
@@ -34,7 +34,7 @@ const Message = () => {
 
   useEffect(() => {
     axios
-      .get("https://api.tojoglobal.com/api/admin/clientMessage")
+      .get("http://localhost:8080/api/admin/newsletteremail")
       .then((result) => {
         if (result.data.Status) {
           setMessage(result.data.Result);
@@ -62,7 +62,7 @@ const Message = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  
+
   const handleCancel = () => {
     toast.error(`Cancel`, {
       position: "top-right",
@@ -80,7 +80,9 @@ const Message = () => {
   const handleDelete = () => {
     console.log(dataDeleteId);
     axios
-      .delete(`https://api.tojoglobal.com/api/admin/clientMessage/delete/` + dataDeleteId)
+      .delete(
+        `http://localhost:8080/api/admin/newsletteremail/delete/` + dataDeleteId
+      )
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/message");
@@ -95,7 +97,7 @@ const Message = () => {
             progress: undefined,
             theme: "light",
           });
-          setMessage(message.filter(ms => ms.uuid !== dataDeleteId));
+          setMessage(message.filter((ms) => ms.uuid !== dataDeleteId));
         } else {
           setFaqToDelete(result.data.Error);
         }
@@ -113,7 +115,7 @@ const Message = () => {
     <div className="conatiner dashboard_All">
       <ToastContainer />
       <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All Client Message</h1>
+      <h1 className="dashboard_name">All Client Email</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       <div>
@@ -121,35 +123,27 @@ const Message = () => {
           <table id="customers">
             <tr>
               <th>SL</th>
-              <th>NAME</th>
-              <th>SUBJECT</th>
               <th>EMAIL</th>
-              <th>NUMBER</th>
-              <th>MESSAGE</th>
               <th>ACTIONS</th>
             </tr>
 
-            {paginatedData.length > 0 && 
+            {paginatedData.length > 0 &&
               paginatedData.map((ms, index) => (
                 <tr key={ms.uuid}>
                   <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                  <td>{ms.Name}</td>
-                  <td>{ms.Subject}</td>
-                  <td>{ms.Email}</td>
-                  <td>{ms.phoneNumber}</td>
-                  <td>{ms.message && ms.message.slice(0, 90) + `...`}</td>
+                  <td>{ms.email}</td>
                   <td>
                     <div className="dropdown">
                       <button className="dropbtn">
                         Select <MdOutlineArrowDownward />
                       </button>
                       <div className="dropdown-content">
-                        <Link
+                        {/* <Link
                           to={`/dashboard/message/${ms.uuid}`}
                           className="routeLink"
                         >
                           <span className="actionBtn"> SHOW</span>
-                        </Link>
+                        </Link> */}
                         <span
                           onClick={() => handleClickOpen(ms.uuid)}
                           className="actionBtn"
@@ -171,9 +165,7 @@ const Message = () => {
                       >
                         <div style={{ textAlign: "center" }}>
                           <BsExclamationCircle className="icon" />
-                          <h3 style={{ paddingTop: "20px" }}>
-                            Are You sure?{" "}
-                          </h3>
+                          <h3 style={{ paddingTop: "20px" }}>Are You sure? </h3>
                         </div>
                       </DialogTitle>
                       <DialogContent>

@@ -22,10 +22,10 @@ import {
   memberImageCreateQuery,
   memberImageQuery,
   memberImageDeleteQuery,
-  submitedMessageQuery,
-  AllClientMessageQuery,
-  clientMessageToDeleteQuery,
-  clientMessageToShowQuery,
+  submitedNewsLetterEmailQuery,
+  AllClientNewsLetterEmailQuery,
+  clientNewsLetterEmailToDeleteQuery,
+  // clientNewsLetterEmailToShowQuery,
   appointmentContactNameQuery,
   createAppointmentQuery,
   AllAppointmentQuery,
@@ -367,44 +367,40 @@ const editTeamMember = (req, res) => {
   });
 };
 
-// client Message Router
-const submitedMessage = (req, res) => {
+// client NewsLetterEmail Router
+const submitedNewsLetterEmail = (req, res) => {
   const values = [
     uuidv4(),
-    req.body.fullName,
-    req.body.email,
-    req.body.phoneNumber,
-    req.body.subject,
-    req.body.message,
+    req.body.email
   ];
-  console.log(values);
-  db.query(submitedMessageQuery, [values], (err, result) => {
+  db.query(submitedNewsLetterEmailQuery, [values], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
 
-const AllClientMessage = (req, res) => {
-  db.query(AllClientMessageQuery, (err, result) => {
+const AllClientNewsLetterEmail = (req, res) => {
+  db.query(AllClientNewsLetterEmailQuery, (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
 
-const clientMessageToDelete = (req, res) => {
+const clientNewsLetterEmailToDelete = (req, res) => {
   const uuid = req.params.id;
-  db.query(clientMessageToDeleteQuery, [uuid], (err, result) => {
+  db.query(clientNewsLetterEmailToDeleteQuery, [uuid], (err, result) => {
     if (err) return res.json({ Status: false, Error: "Query Error" + err });
     return res.json({ Status: true, Result: result });
   });
 };
-const clientMessageToShow = (req, res) => {
-  const uuid = req.params.id;
-  db.query(clientMessageToShowQuery, [uuid], (err, result) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" + err });
-    return res.json({ Status: true, Result: result });
-  });
-};
+
+// const clientNewsLetterEmailToShow = (req, res) => {
+//   const uuid = req.params.id;
+//   db.query(clientNewsLetterEmailToShowQuery, [uuid], (err, result) => {
+//     if (err) return res.json({ Status: false, Error: "Query Error" + err });
+//     return res.json({ Status: true, Result: result });
+//   });
+// };
 
 // Appointment Router
 const appointmentContactName = (req, res) => {
@@ -710,10 +706,10 @@ export {
   uploadMemberImage,
   allMember,
   memberToDelete,
-  submitedMessage,
-  AllClientMessage,
-  clientMessageToDelete,
-  clientMessageToShow,
+  submitedNewsLetterEmail,
+  AllClientNewsLetterEmail,
+  clientNewsLetterEmailToDelete,
+  // clientNewsLetterEmailToShow,
   appointmentContactName,
   createAppointment,
   AllAppointment,

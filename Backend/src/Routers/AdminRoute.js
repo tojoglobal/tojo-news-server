@@ -20,10 +20,10 @@ import {
   teamMemberToDelete,
   editTeamMemberID,
   editTeamMember,
-  submitedMessage,
-  AllClientMessage,
-  clientMessageToDelete,
-  clientMessageToShow,
+  submitedNewsLetterEmail,
+  AllClientNewsLetterEmail,
+  clientNewsLetterEmailToDelete,
+  // clientNewsLetterEmailToShow,
   appointmentContactName,
   createAppointment,
   AllAppointment,
@@ -137,11 +137,11 @@ AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);
 AdminRouter.get("/blogpost/:id", editBlogPostId);
 AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
 
-// clientMessage
-AdminRouter.post("/message/submited", submitedMessage);
-AdminRouter.get("/clientMessage", AllClientMessage);
-AdminRouter.delete("/clientMessage/delete/:id", clientMessageToDelete);
-AdminRouter.get("/clientMessage/:id", clientMessageToShow);
+// clientNewsLetterEmail
+AdminRouter.post("/newsletteremail/submite", submitedNewsLetterEmail);
+AdminRouter.get("/newsletteremail", AllClientNewsLetterEmail);
+AdminRouter.delete("/newsletteremail/delete/:id", clientNewsLetterEmailToDelete);
+// AdminRouter.get("/clientNewsLetterEmail/:id", clientNewsLetterEmailToShow);
 
 //Appointment Route
 AdminRouter.get("/contactName", appointmentContactName);

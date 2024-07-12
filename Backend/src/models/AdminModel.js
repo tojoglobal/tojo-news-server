@@ -35,16 +35,16 @@ const teamMemberToDeleteQuery = `DELETE FROM team_member WHERE uuid = ?`;
 const editTeamMemberIDQuery = `SELECT * FROM team_member WHERE uuid = ?`;
 const editTeamMemberQuery = `UPDATE team_member SET name = ? , position=? , BioData=?,FBurl=?,LIurl=?, TWurl=? , WhatsApurl=? , YTurl=? WHERE uuid = ?`;
 
-// client Message Query
-const submitedMessageQuery = `INSERT INTO clientmessage (uuid, Name, Email , phoneNumber , Subject , message ) VALUES ( ? )`;
-const AllClientMessageQuery = `SELECT * FROM clientmessage ORDER BY clientmessage.ID DESC`;
-const clientMessageToDeleteQuery = `DELETE FROM clientmessage WHERE uuid = ?`;
-const clientMessageToShowQuery = `SELECT * FROM clientmessage WHERE uuid = ?`;
+// client NewsLetterEmail Query
+const submitedNewsLetterEmailQuery = `INSERT INTO newsletteremail (uuid, email) VALUES ( ? )`;
+const AllClientNewsLetterEmailQuery = `SELECT * FROM newsletteremail ORDER BY newsletteremail.ID DESC`;
+const clientNewsLetterEmailToDeleteQuery = `DELETE FROM newsletteremail WHERE uuid = ?`;
+// const clientNewsLetterEmailToShowQuery = `SELECT * FROM newsletteremail WHERE uuid = ?`;
 
 // Appointment Query
 const AllAppointmentQuery =
   "SELECT * FROM appointment  ORDER BY appointment.ID DESC";
-const appointmentContactNameQuery = "SELECT  uuid , Name  FROM clientmessage";
+const appointmentContactNameQuery = "SELECT  uuid , Name  FROM clientNewsLetterEmail";
 const createAppointmentQuery = `INSERT INTO appointment (uuid, problemTitle, contactName, ApoDate, reason, note, ApoTime) VALUES (?)`;
 const showAppointmentQuery = "SELECT * FROM appointment WHERE uuid = ?";
 const editAppointmentQuery = `UPDATE appointment SET problemTitle = ?, contactName = ? , ApoDate=? , reason=?, note=?,  ApoTime=? WHERE uuid = ?`;
@@ -97,10 +97,10 @@ export {
   memberImageDeleteQuery,
   memberImageCreateQuery,
   memberImageQuery,
-  submitedMessageQuery,
-  AllClientMessageQuery,
-  clientMessageToDeleteQuery,
-  clientMessageToShowQuery,
+  submitedNewsLetterEmailQuery,
+  AllClientNewsLetterEmailQuery,
+  clientNewsLetterEmailToDeleteQuery,
+  // clientNewsLetterEmailToShowQuery,
   appointmentContactNameQuery,
   createAppointmentQuery,
   AllAppointmentQuery,
