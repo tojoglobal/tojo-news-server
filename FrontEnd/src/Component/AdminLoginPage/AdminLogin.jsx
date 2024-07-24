@@ -1,24 +1,25 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
 const AdminLogin = () => {
+  const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
+  //state
+  const [error, setError] = useState(null);
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
-  console.log(values)
-  const [error, setError] = useState(null);
-  const navigate = useNavigate()
-  axios.defaults.withCredentials = true;
+
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post("https://api.tojoglobal.com/api/admin/adminlogin", values)
+      .post("http://localhost:8080/api/admin/adminlogin", values)
       .then((result) => {
         if (result.data.loginStatus) {
           localStorage.setItem("valid", true);
-          navigate('/dashboard')
+          navigate("/dashboard");
         } else {
           setError(result.data.Error);
         }
@@ -27,11 +28,12 @@ const AdminLogin = () => {
   };
 
   return (
-
-   <div className="d-flex justify-content-center align-items-center vh-100 loginPage">
-      <div className="w-25 loginForm">        
-        <h2 className="text-center">Login Admin</h2><br/>
-        <div className="text-warning">{error && error}</div><br/>
+    <div className="d-flex justify-content-center align-items-center vh-100 loginPage">
+      <div className="w-25 loginForm">
+        <h2 className="text-center">Login Admin</h2>
+        <br />
+        <div className="text-warning">{error && error}</div>
+        <br />
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="email">
