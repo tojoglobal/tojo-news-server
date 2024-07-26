@@ -33,7 +33,7 @@ const TeamMember = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("https://api.tojoglobal.com/api/admin/teamMember")
+      .get("http://localhost:8080/api/admin/teamMember")
       .then((result) => {
         if (result.data.Status) {
           setTeamMember(result.data.Result);
@@ -74,7 +74,9 @@ const TeamMember = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`https://api.tojoglobal.com/api/admin/teamMember/delete/` + dataDeleteId)
+      .delete(
+        `http://localhost:8080/api/admin/teamMember/delete/` + dataDeleteId
+      )
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/teamMember");
@@ -141,7 +143,7 @@ const TeamMember = () => {
                     <td>
                       <img
                         className="Team_member_Image"
-                        src={`https://api.tojoglobal.com/Images/${tm.img}`}
+                        src={`http://localhost:8080/Images/${tm.img}`}
                         alt={tm.img}
                       />
                     </td>

@@ -59,6 +59,10 @@ import JobPost from "./Component/Routers/jobPost/JobPost";
 import CreateJobPostRouter from "./Component/Routers/jobPost/CreateJobPost";
 import ShowJobPost from "./Component/Routers/jobPost/ShowJobPost";
 import EditJobPost from "./Component/Routers/jobPost/editJobPost";
+import Podcasts from "./Component/Routers/Podcasts/Podcasts";
+import CreatePodcasts from "./Component/Routers/Podcasts/CreatePodcasts";
+import ShowPodcasts from "./Component/Routers/Podcasts/ShowPodcasts";
+import EditPodcasts from "./Component/Routers/Podcasts/EditPodcasts";
 
 function App() {
   return (
@@ -121,6 +125,12 @@ function App() {
           <Route path="teamMember/create" element={<CreateTeamMember />} />
           <Route path="teamMember/:id" element={<ShowTeamMember />} />
           <Route path="teamMember/edit/:id" element={<EditTeamMember />} />
+
+          {/* Podcasts */}
+          <Route path="podcasts" element={<Podcasts />} />
+          <Route path="podcasts/create" element={<CreatePodcasts />} />
+          <Route path="podcasts/:id" element={<ShowPodcasts />} />
+          <Route path="podcasts/edit/:id" element={<EditPodcasts />} />
 
           {/* clinet Message */}
           <Route path="message" element={<Message />} />

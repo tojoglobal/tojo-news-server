@@ -50,6 +50,7 @@ const CreateBlogPost = () => {
   const formik = useFormik({
     initialValues: {
       title: "",
+      permalink: "",
       subTitle: "",
       AuthorOne: "",
       AuthorTwo: "",
@@ -60,6 +61,7 @@ const CreateBlogPost = () => {
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
       formData.append("title", values.title);
+      formData.append("permalink", values.permalink);
       formData.append("subTitle", values.subTitle);
       formData.append("AuthorOne", values.AuthorOne);
       if (values.AuthorTwo) {
@@ -128,6 +130,42 @@ const CreateBlogPost = () => {
                 value={formik.values.title}
                 required
               />
+            </div>
+            <div className="col-md-12 inputfield">
+              <label htmlFor="permalink">Permalink</label>
+              <input
+                id="permalink"
+                className="text_input_field"
+                type="text"
+                name="permalink"
+                onChange={formik.handleChange}
+                placeholder="Write permalink..."
+                value={formik.values.permalink}
+                required
+              />
+              {formik.values.permalink && (
+                <>
+                  <small>example </small>
+                  <small>
+                    <a
+                      href={
+                        formik.values.permalink
+                          ? `http://localhost:5173/news/${formik.values.permalink
+                              .replaceAll(/ /g, "-")
+                              .toLowerCase()}`
+                          : "/fallback-url"
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      http://localhost:5173/news/
+                      {formik.values.permalink
+                        .replaceAll(/ /g, "-")
+                        .toLowerCase()}
+                    </a>
+                  </small>
+                </>
+              )}
             </div>
 
             <div className="col-md-12 inputfield">

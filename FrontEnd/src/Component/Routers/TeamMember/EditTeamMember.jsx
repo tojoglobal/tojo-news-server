@@ -20,7 +20,7 @@ const EditTeamMember = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`https://api.tojoglobal.com/api/admin/teamMember/${id}`)
+      .get(`http://localhost:8080/api/admin/teamMember/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setTeamMember({
@@ -60,7 +60,7 @@ const EditTeamMember = () => {
       console.log(values);
       try {
         const response = await axios.put(
-          `https://api.tojoglobal.com/api/admin/teamMember/edit/${id}`,
+          `http://localhost:8080/api/admin/teamMember/edit/${id}`,
           values
         );
         if (response.data.Status) {
@@ -148,7 +148,7 @@ const EditTeamMember = () => {
                 onEditorChange={(content) => {
                   formik.setFieldValue("BioData", content);
                 }}
-                apiKey='heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb'
+                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 init={{
                   height: 250,
                   menubar: false,

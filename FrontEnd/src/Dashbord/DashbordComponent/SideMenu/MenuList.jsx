@@ -7,7 +7,13 @@ import { TiGroup } from "react-icons/ti";
 import { FaList } from "react-icons/fa";
 import { AiFillTags } from "react-icons/ai";
 import PropTypes from "prop-types";
-import { FaDesktop, FaHashtag, FaRegNewspaper } from "react-icons/fa6";
+import {
+  FaDesktop,
+  FaHashtag,
+  FaRegNewspaper,
+  FaPodcast,
+} from "react-icons/fa6";
+import { FaHandsHelping } from "react-icons/fa";
 import { SlEnvolopeLetter } from "react-icons/sl";
 
 const MenuList = ({ darkTheme }) => {
@@ -72,9 +78,25 @@ const MenuList = ({ darkTheme }) => {
         </Link>
       </Menu.Item>
 
-      <Menu.Item key="teamMember" icon={<TiGroup className="dashbord_icon" />}>
+      {/* <Menu.Item key="teamMember" icon={<TiGroup className="dashbord_icon" />}>
         <Link to="/dashboard/teamMember" className="route_link">
           Team Member
+        </Link>
+      </Menu.Item> */}
+
+      <Menu.Item
+        key="memberFirm"
+        icon={<FaHandsHelping className="dashbord_icon" />}
+      >
+        <Link to="/dashboard/member" className="route_link">
+          Patner
+        </Link>
+      </Menu.Item>
+
+      <Menu.Item key="podcast" icon={<FaPodcast className="dashbord_icon" />}>
+        {" "}
+        <Link to="/dashboard/podcasts" className="route_link">
+          Podcast
         </Link>
       </Menu.Item>
 

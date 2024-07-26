@@ -24,7 +24,7 @@ const CreateJobPostRouter = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await axios.post(
-          "https://api.tojoglobal.com/api/admin/jobpost/create",
+          "http://localhost:8080/api/admin/jobpost/create",
           values
         );
         if (response.data.Status) {

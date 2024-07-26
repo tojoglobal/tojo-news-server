@@ -15,11 +15,19 @@ import {
   uploadMemberImage,
   allMember,
   adminLogout,
+
   createTeamMember,
   allTeamMember,
   teamMemberToDelete,
   editTeamMemberID,
   editTeamMember,
+
+  createPodcasts,
+  allPodcasts,
+  PodcastsToDelete,
+  editPodcastsID,
+  editPodcasts,
+
   submitedNewsLetterEmail,
   AllClientNewsLetterEmail,
   clientNewsLetterEmailToDelete,
@@ -110,17 +118,23 @@ AdminRouter.get("/jobPost/:id", editJobPostID);
 AdminRouter.put("/jobPost/edit/:id", editJobPost);
 
 // Team Member
-// upload.single("file")
 AdminRouter.post("/teamMember/create", upload.single("file"), createTeamMember);
 AdminRouter.get("/teamMember", allTeamMember);
 AdminRouter.delete("/teamMember/delete/:uuid", teamMemberToDelete);
 AdminRouter.get("/teamMember/:id", editTeamMemberID);
 AdminRouter.put("/teamMember/edit/:id", editTeamMember);
 
+// Podcasts
+AdminRouter.post("/Podcasts/create", upload.single("file"), createPodcasts);
+AdminRouter.get("/Podcasts", allPodcasts);
+AdminRouter.delete("/Podcasts/delete/:uuid", PodcastsToDelete);
+AdminRouter.get("/Podcasts/:id", editPodcastsID);
+AdminRouter.put("/Podcasts/edit/:id", editPodcasts);
+
 // allMember
-// AdminRouter.get("/member", allMember);
-// AdminRouter.post("/member/create", upload.single("file"), uploadMemberImage);
-// AdminRouter.delete("/member/delete/:uuid", memberToDelete);
+AdminRouter.get("/member", allMember);
+AdminRouter.post("/member/create", upload.single("file"), uploadMemberImage);
+AdminRouter.delete("/member/delete/:uuid", memberToDelete);
 
 // TagName Router
 AdminRouter.post("/TagName/create", createTagName);
@@ -130,7 +144,6 @@ AdminRouter.put("/TagName/edit/:id", editTagName);
 AdminRouter.delete("/TagName/delete/:uuid", TagNameToDelete);
 
 // Blog Router
-// upload.single("file")
 AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);
 AdminRouter.get("/blogpost", allBlogPost);
 AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);

@@ -15,7 +15,7 @@ const ShowJobPost = () => {
   // Data Fetching
   useEffect(() => {
     axios
-      .get(`https://api.tojoglobal.com/api/admin/jobpost/${id}`)
+      .get(`http://localhost:8080/api/admin/jobpost/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setJob({

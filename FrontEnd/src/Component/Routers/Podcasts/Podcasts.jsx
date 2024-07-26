@@ -16,27 +16,27 @@ import {
   DialogContent,
 } from "@mui/material";
 import { BsExclamationCircle } from "react-icons/bs";
-
 import { MdOutlineArrowDownward } from "react-icons/md";
 
-const JobPost = () => {
+const Podcasts = () => {
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
+
   // state
   const [errorMessage, setErrorMessage] = useState(null);
-  const [Job, setJob] = useState([]);
+  const [Podcasts, setPodcasts] = useState([]);
   const [open, setOpen] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState(null);
-  const [faqToDelete, setFaqToDelete] = useState();
+  const [BlogPostToDelete, setBlogPostToDelete] = useState();
 
   // fetch data
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/jobpost")
+      .get("http://localhost:8080/api/admin/Podcasts")
       .then((result) => {
         if (result.data.Status) {
-          setJob(result.data.Result);
+          setPodcasts(result.data.Result);
         } else {
           setErrorMessage(result.data.Error);
         }
@@ -69,15 +69,16 @@ const JobPost = () => {
       theme: "light",
     });
     setOpen(false);
+    // setDataDeleteCancel(true)
   };
 
   const handleDelete = () => {
     axios
-      .delete(`http://localhost:8080/api/admin/jobpost/delete/` + dataDeleteId)
+      .delete(`http://localhost:8080/api/admin/Podcasts/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
-          navigate("/dashboard/job");
-          setFaqToDelete(`deleted successfully`);
+          navigate("/dashboard/Podcasts");
+          setBlogPostToDelete(`deleted successfully`);
           toast.success(`deleted successfully`, {
             position: "top-right",
             autoClose: 5000,
@@ -89,7 +90,7 @@ const JobPost = () => {
             theme: "light",
           });
         } else {
-          setFaqToDelete(result.data.Error);
+          setBlogPostToDelete(result.data.Error);
         }
       })
       .catch((err) => console.error(err));
@@ -101,39 +102,47 @@ const JobPost = () => {
     <div className="conatiner dashboard_All">
       <ToastContainer />
       <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All Job</h1>
+      <h1 className="dashboard_name">All Podcast </h1>
       <hr />
-      <div className="">
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      <div>
         <div>
-          <Link to="/dashboard/job/create">
+          <Link to="/dashboard/Podcasts/create">
             <button className="button-62" role="button">
-              Create Job Offer
+              New Podcast{" "}
               <span>
+                {" "}
                 <HiPlus />
               </span>
             </button>
           </Link>
-          <p className="success-message">{faqToDelete}</p>
-          <p>{errorMessage}</p>
+          <p className="success-message">{BlogPostToDelete}</p>
         </div>
-        {/* ++++++========part 2 =======++++++++ */}
-        {/* table start */}
+        {/* ++++++========part 3 =======++++++++ */}
         <div>
           <div>
-            <table id="customers" className="">
+            <table id="customers">
               <tr>
                 <th>SL</th>
-                <th>JOB</th>
-                <th>JOB POSITION</th>
+                <th>Hosted NAME</th>
+                <th>Hosted INFO</th>
+                <th>IMG</th>
                 <th>ACTIONS</th>
               </tr>
 
-              {Job.length > 0 &&
-                Job.map((fq, index) => (
-                  <tr key={fq.uuid}>
+              {Podcasts.length > 0 &&
+                Podcasts.map((tm, index) => (
+                  <tr key={tm.uuid}>
                     <td>{index + 1}</td>
-                    <td>{fq.jobTitle}</td>
-                    <td>{fq.jobPosition}</td>
+                    <td>{tm.name}</td>
+                    <td>{tm.hostedInfo}</td>
+                    <td>
+                      <img
+                        className="Team_member_Image"
+                        src={`http://localhost:8080/Images/${tm.image}`}
+                        alt={tm.image}
+                      />
+                    </td>
                     <td>
                       <div className="dropdown">
                         <button className="dropbtn">
@@ -141,7 +150,7 @@ const JobPost = () => {
                         </button>
                         <div className="dropdown-content">
                           <Link
-                            to={`/dashboard/job/edit/${fq.uuid}`}
+                            to={`/dashboard/Podcasts/edit/${tm.uuid}`}
                             className="routeLink"
                           >
                             <span className="actionBtn"> Edit</span>
@@ -149,14 +158,14 @@ const JobPost = () => {
                           {/* </span> */}
 
                           <Link
-                            to={`/dashboard/job/${fq.uuid}`}
+                            to={`/dashboard/Podcasts/${tm.uuid}`}
                             className="routeLink"
                           >
                             <span className="actionBtn"> SHOW</span>
                           </Link>
 
                           <span
-                            onClick={() => handleClickOpen(fq.uuid)}
+                            onClick={() => handleClickOpen(tm.uuid)}
                             className="actionBtn"
                           >
                             {" "}
@@ -183,7 +192,7 @@ const JobPost = () => {
                         </DialogTitle>
                         <DialogContent>
                           <DialogContentText>
-                            Are you sure delete this Job
+                            Are you sure delete this contact Info
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -196,7 +205,7 @@ const JobPost = () => {
                           </Button>
                           <Button onClick={handleDelete} autoFocus>
                             <Link
-                              to={`/dashboard/job/delete`}
+                              to={`/dashboard/Podcasts/delete`}
                               style={{
                                 color: "#E16565",
                                 textDecoration: "none",
@@ -219,4 +228,4 @@ const JobPost = () => {
   );
 };
 
-export default JobPost;
+export default Podcasts;

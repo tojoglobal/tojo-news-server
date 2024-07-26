@@ -77,6 +77,7 @@ const EditBlogPost = () => {
     enableReinitialize: true,
     initialValues: {
       title: BlogPost.title || "",
+      permalink: BlogPost.permalink || "",
       subTitle: BlogPost.subtitle || "",
       AuthorOne: BlogPost.author1_id || "",
       AuthorTwo: BlogPost.author2_id || "",
@@ -88,6 +89,7 @@ const EditBlogPost = () => {
       console.log(values);
       const formData = new FormData();
       formData.append("title", values.title);
+      formData.append("permalink", values.permalink);
       formData.append("subTitle", values.subTitle);
       formData.append("AuthorOne", values.AuthorOne);
       if (values.AuthorTwo) {
@@ -163,6 +165,18 @@ const EditBlogPost = () => {
                 onChange={formik.handleChange}
                 placeholder="Write Title..."
                 value={formik.values.title}
+              />
+            </div>
+            <div className="col-md-12 inputfield">
+              <label htmlFor="permalink">Permalink</label>
+              <input
+                id="permalink"
+                className="text_input_field"
+                type="text"
+                name="permalink"
+                onChange={formik.handleChange}
+                placeholder="Write permalink..."
+                value={formik.values.permalink}
               />
             </div>
 

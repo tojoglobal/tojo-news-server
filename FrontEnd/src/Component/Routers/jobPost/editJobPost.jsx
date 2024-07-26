@@ -17,7 +17,7 @@ const EditJobPost = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`https://api.tojoglobal.com/api/admin/jobpost/${id}`)
+      .get(`http://localhost:8080/api/admin/jobpost/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setJob({
@@ -48,7 +48,7 @@ const EditJobPost = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await axios.put(
-          `https://api.tojoglobal.com/api/admin/jobpost/edit/${id}`,
+          `http://localhost:8080/api/admin/jobpost/edit/${id}`,
           values
         );
         if (response.data.Status) {

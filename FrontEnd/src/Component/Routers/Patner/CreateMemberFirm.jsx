@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 
 const CreateMemberFirm = () => {
   const isHomePageRoute = location.pathname;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   //  state
   const [file, setFile] = useState(null);
@@ -18,6 +18,7 @@ const CreateMemberFirm = () => {
     setFile(URL.createObjectURL(e.target.files[0]));
     formik.setFieldValue("file", e.target.files[0]);
   };
+
   //  use formike method
   const formik = useFormik({
     initialValues: {
@@ -30,20 +31,20 @@ const CreateMemberFirm = () => {
       formData.append("file", values.file);
       try {
         const response = await axios.post(
-            'https://api.tojoglobal.com/api/admin/member/create',
-            formData,
-            {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-        )
+          "http://localhost:8080/api/admin/member/create",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         // console.log(response.data.Status);
-        if(response.data.Status) {            
-        setSuccessMessage("File uploaded successfully!");
-        setErrorMessage(null);
-        navigate('/dashboard/member')
-        } 
+        if (response.data.Status) {
+          setSuccessMessage("File uploaded successfully!");
+          setErrorMessage(null);
+          navigate("/dashboard/member");
+        }
       } catch (error) {
         setErrorMessage("Error uploading file. Please try again.");
         setSuccessMessage(null);

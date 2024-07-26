@@ -33,7 +33,7 @@ const AllMemberFirm = () => {
   // memember data get method
   useEffect(() => {
     axios
-      .get("https://api.tojoglobal.com/api/admin/member")
+      .get("http://localhost:8080/api/admin/member")
       .then((result) => {
         if (result.data.Status) {
           setMember(result.data.Result);
@@ -71,7 +71,7 @@ const AllMemberFirm = () => {
   const handleDelete = () => {
     if (dataDeleteId) {
       axios
-        .delete(`https://api.tojoglobal.com/api/admin/member/delete/${dataDeleteId}`)
+        .delete(`http://localhost:8080/api/admin/member/delete/${dataDeleteId}`)
         .then((result) => {
           if (result.data.Status) {
             toast.success(`${dataDeleteId} deleted successfully`, {
@@ -120,7 +120,7 @@ const AllMemberFirm = () => {
               <li key={im.uuid}>
                 <img
                   className="cetificate_image"
-                  src={`https://api.tojoglobal.com/Images/${im.img}`}
+                  src={`http://localhost:8080/Images/${im.img}`}
                   alt={im.imageTitle}
                 />
                 <span style={{ marginLeft: "30px", color: "#01b5e8" }}>

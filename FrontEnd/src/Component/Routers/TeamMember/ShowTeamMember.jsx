@@ -23,7 +23,7 @@ const ShowTeamMember = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`https://api.tojoglobal.com/api/admin/teamMember/${id}`)
+      .get(`http://localhost:8080/api/admin/teamMember/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setTeamMember({
@@ -87,7 +87,7 @@ const ShowTeamMember = () => {
                   {" "}
                   <img
                     className="img-fluid"
-                    src={`https://api.tojoglobal.com/Images/${teamMember.img}`}
+                    src={`http://localhost:8080/Images/${teamMember.img}`}
                     alt={teamMember.img}
                   />{" "}
                 </td>

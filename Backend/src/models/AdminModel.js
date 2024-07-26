@@ -21,10 +21,10 @@ const editTagNameQuery = `UPDATE tags SET name = ? WHERE uuid = ?`;
 const TagNameToDeleteQuery = `DELETE FROM tags WHERE uuid = ?`;
 
 // Blog  Area
-const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle , author1_id , author2_id , category_id , thumble , articalpost , dateAndTime ) VALUES ( ? )`;
+const createBlogPostQuery = `INSERT INTO blognews (uuid, title,permalink, subtitle , author1_id , author2_id , category_id , thumble , articalpost , dateAndTime ) VALUES ( ? )`;
 
 const allBlogPostQuery = `SELECT * FROM blognews ORDER BY blognews.ID DESC`;
-const editBlogPostQuery = `UPDATE blognews SET title = ?, subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
+const editBlogPostQuery = `UPDATE blognews SET title = ?,permalink=?, subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
 const editBlogPostIdQuery = `SELECT * FROM blognews WHERE uuid = ?`;
 const BlogPostToDeleteQuery = `DELETE FROM blognews WHERE uuid = ?`;
 
@@ -34,6 +34,17 @@ const allTeamMemberQuery = `SELECT * FROM team_member ORDER BY team_member.ID DE
 const teamMemberToDeleteQuery = `DELETE FROM team_member WHERE uuid = ?`;
 const editTeamMemberIDQuery = `SELECT * FROM team_member WHERE uuid = ?`;
 const editTeamMemberQuery = `UPDATE team_member SET name = ? , position=? , BioData=?,FBurl=?,LIurl=?, TWurl=? , WhatsApurl=? , YTurl=? WHERE uuid = ?`;
+
+// Podcasts sql
+const createPodcastsQuery = `INSERT INTO podcasts ( uuid, name, hostedInfo , image , spotify, apple) VALUES ( ? )`;
+
+const allPodcastsQuery = `SELECT * FROM podcasts ORDER BY podcasts.ID DESC`;
+
+const PodcastsToDeleteQuery = `DELETE FROM podcasts WHERE uuid = ?`;
+
+const editPodcastsIDQuery = `SELECT * FROM podcasts WHERE uuid = ?`;
+
+const editPodcastsQuery = `UPDATE podcasts SET name = ? , hostedInfo=? , image=?, spotify=?, apple=? WHERE uuid = ?`;
 
 // client NewsLetterEmail Query
 const submitedNewsLetterEmailQuery = `INSERT INTO newsletteremail (uuid, email) VALUES ( ? )`;
@@ -83,8 +94,15 @@ export {
   teamMemberToDeleteQuery,
   editTeamMemberIDQuery,
   createTeamMemberQuery,
-  createBlogPostQuery,
   editTeamMemberQuery,
+
+  allPodcastsQuery,
+  PodcastsToDeleteQuery,
+  editPodcastsIDQuery,
+  createPodcastsQuery,
+  editPodcastsQuery,
+
+  createBlogPostQuery,
   allBlogPostQuery,
   editBlogPostQuery,
   BlogPostToDeleteQuery,

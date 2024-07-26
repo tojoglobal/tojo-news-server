@@ -4,12 +4,20 @@ import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import {
   adminLoginData,
+
   allTeamMemberQuery,
   teamMemberToDeleteQuery,
   createTeamMemberQuery,
   editTeamMemberIDQuery,
-  createBlogPostQuery,
   editTeamMemberQuery,
+
+  allPodcastsQuery,
+  PodcastsToDeleteQuery,
+  createPodcastsQuery,
+  editPodcastsIDQuery,
+  editPodcastsQuery,
+
+  createBlogPostQuery,
   allBlogPostQuery,
   editBlogPostQuery,
   BlogPostToDeleteQuery,
@@ -88,18 +96,12 @@ const adminLogin = (req, res) => {
 const createBlogPost = (req, res) => {
   // Generate the current date and time
   const currentDate = new Date();
-  // const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' '); // Format to 'YYYY-MM-DD HH:MM:SS'
-
-  // Check if file was uploaded
-  // if (!req.file) {
-  //   return res.json({ Status: false, Error: 'No file uploaded' });
-  // }
-
   const imageFile = req.file.filename;
 
   const values = [
     uuidv4(),
     req.body.title,
+    req.body.permalink,
     req.body.subTitle,
     req.body.AuthorOne,
     req.body.AuthorTwo || null,
@@ -134,6 +136,7 @@ const editBlogPost = (req, res) => {
   const newImage = req.file ? req.file.filename : req.body.file;
   const values = [
     req.body.title,
+    req.body.permalink,
     req.body.subTitle,
     req.body.AuthorOne,
     req.body.AuthorTwo || null,
@@ -292,6 +295,7 @@ const allMember = (req, res) => {
 const uploadMemberImage = (req, res) => {
   const uuid = uuidv4();
   const values = [uuid, req.file.filename, req.body.ImageTitle];
+  console.log(values);
   db.query(memberImageCreateQuery, [values], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true });
@@ -363,6 +367,65 @@ const editTeamMember = (req, res) => {
   ];
 
   db.query(editTeamMemberQuery, [...values, id], (err, result) => {
+    if (err) return res.json({ Status: false, Error: err });
+    return res.json({ Status: true, Result: result });
+  });
+};
+
+// Podcasts Router
+const createPodcasts = (req, res) => {  
+  const imageFile = req.file.filename;
+
+  const values = [
+    uuidv4(),
+    req.body.HostedName,
+    req.body.HostedInfo,
+    imageFile,
+    req.body.SpotifyUrl,
+    req.body.AppleUrl,
+  ];
+  db.query(createPodcastsQuery, [values], (err, result) => {
+    if (err) return res.json({ Status: false, Error: err });
+    return res.json({ Status: true, Result: result });
+  });
+};
+const allPodcasts = (req, res) => {
+  db.query(allPodcastsQuery, (err, result) => {
+    if (err) return res.json({ Status: false, Error: err });
+    return res.json({ Status: true, Result: result });
+  });
+};
+
+const PodcastsToDelete = (req, res) => {
+  const uuid = req.params.uuid;
+  db.query(PodcastsToDeleteQuery, [uuid], (err, result) => {
+    if (err) return res.json({ Status: false, Error: "Query Error" + err });
+    return res.json({ Status: true, Result: result });
+  });
+};
+
+const editPodcastsID = (req, res) => {
+  const id = req.params.id;
+  db.query(editPodcastsIDQuery, [id], (err, result) => {
+    if (err) return res.json({ Status: false, Error: "Query Error" });
+    return res.json({ Status: true, Result: result });
+  });
+};
+
+const editPodcasts = (req, res) => {
+  const id = req.params.id;
+  const values = [
+    req.body.name,
+    req.body.positionName,
+    req.body.BioData,
+    req.body.facebookName,
+    req.body.linkedinName,
+    req.body.twitterName,
+    req.body.WhatsAppNumber,
+    req.body.youtubeName,
+  ];
+
+  db.query(editPodcastsQuery, [...values, id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
@@ -688,11 +751,19 @@ const adminLogout = (req, res) => {
 
 export {
   adminLogin,
+
   editTeamMember,
   allTeamMember,
   teamMemberToDelete,
   editTeamMemberID,
   createTeamMember,
+
+  editPodcasts,
+  allPodcasts,
+  PodcastsToDelete,
+  editPodcastsID,
+  createPodcasts,
+
   createBlogPost,
   allBlogPost,
   editBlogPost,
