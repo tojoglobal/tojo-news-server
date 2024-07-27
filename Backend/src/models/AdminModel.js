@@ -26,6 +26,7 @@ const createBlogPostQuery = `INSERT INTO blognews (uuid, title,permalink, subtit
 const allBlogPostQuery = `SELECT * FROM blognews ORDER BY blognews.ID DESC`;
 const editBlogPostQuery = `UPDATE blognews SET title = ?,permalink=?, subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
 const editBlogPostIdQuery = `SELECT * FROM blognews WHERE uuid = ?`;
+
 const BlogPostToDeleteQuery = `DELETE FROM blognews WHERE uuid = ?`;
 
 // Team member

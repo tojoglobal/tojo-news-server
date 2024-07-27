@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -17,11 +17,13 @@ import {
 } from "@mui/material";
 import { BsExclamationCircle } from "react-icons/bs";
 import { MdOutlineArrowDownward } from "react-icons/md";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const Podcasts = () => {
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
+  const { state } = useContext(AppContext);
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
@@ -33,7 +35,7 @@ const Podcasts = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/Podcasts")
+      .get(`${state.port}/api/admin/Podcasts`)
       .then((result) => {
         if (result.data.Status) {
           setPodcasts(result.data.Result);
@@ -74,7 +76,7 @@ const Podcasts = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`http://localhost:8080/api/admin/Podcasts/delete/` + dataDeleteId)
+      .delete(`${state.port}/api/admin/Podcasts/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/Podcasts");
@@ -139,7 +141,7 @@ const Podcasts = () => {
                     <td>
                       <img
                         className="Team_member_Image"
-                        src={`http://localhost:8080/Images/${tm.image}`}
+                        src={`${state.port}/Images/${tm.image}`}
                         alt={tm.image}
                       />
                     </td>

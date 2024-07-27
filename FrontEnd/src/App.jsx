@@ -48,106 +48,120 @@ import AllAppointment from "./Component/Routers/Appointment/AllAppointment";
 import CreateAppointment from "./Component/Routers/Appointment/CreateAppointment";
 import ShowAppointment from "./Component/Routers/Appointment/ShowAppointment";
 import EditAppointment from "./Component/Routers/Appointment/EditAppointment";
+
 // patner
 import AllMemberFirm from "./Component/Routers/Patner/AllMemberFirm";
 import CreateMemberFirm from "./Component/Routers/Patner/CreateMemberFirm";
 import ShowTeamMember from "./Component/Routers/TeamMember/ShowTeamMember";
 import ShowBlogPost from "./Component/Routers/Blog/ShowBlogPost";
 
-// job poost
+// job post
 import JobPost from "./Component/Routers/jobPost/JobPost";
 import CreateJobPostRouter from "./Component/Routers/jobPost/CreateJobPost";
 import ShowJobPost from "./Component/Routers/jobPost/ShowJobPost";
 import EditJobPost from "./Component/Routers/jobPost/editJobPost";
+
+// podcasts router
 import Podcasts from "./Component/Routers/Podcasts/Podcasts";
 import CreatePodcasts from "./Component/Routers/Podcasts/CreatePodcasts";
 import ShowPodcasts from "./Component/Routers/Podcasts/ShowPodcasts";
 import EditPodcasts from "./Component/Routers/Podcasts/EditPodcasts";
 
+// app provider
+import { AppProvider } from "./Dashbord/SmallComponent/AppContext";
+
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route exact path="/" element={<AdminLogin />} />
-        <Route path="/adminlogin" element={<AdminLogin />} />
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        >
-          <Route path="" element={<MainDashbord />} />
+    <AppProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<AdminLogin />} />
+          <Route path="/adminlogin" element={<AdminLogin />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          >
+            <Route path="" element={<MainDashbord />} />
 
-          {/* ContactList */}
-          <Route path="contact" element={<ContactList />} />
-          <Route path="contact/create" element={<CreateContactList />} />
-          <Route path="contact/:id" element={<ShowContactList />} />
-          <Route path="contact/edit/:id" element={<EditContactList />} />
+            {/* ContactList */}
+            <Route path="contact" element={<ContactList />} />
+            <Route path="contact/create" element={<CreateContactList />} />
+            <Route path="contact/:id" element={<ShowContactList />} />
+            <Route path="contact/edit/:id" element={<EditContactList />} />
 
-          {/* Authors */}
-          <Route path="author" element={<Authors />} />
-          <Route path="author/edit/:id" element={<EditAuthors />} />
-          <Route path="author/create" element={<CreateAuthors />} />
+            {/* Authors */}
+            <Route path="author" element={<Authors />} />
+            <Route path="author/edit/:id" element={<EditAuthors />} />
+            <Route path="author/create" element={<CreateAuthors />} />
 
-          {/* client list  */}
-          <Route path="client" element={<ClientList />} />
-          <Route path="client/create" element={<CreateClinetList />} />
-          <Route path="client/:id" element={<ShowClinetList />} />
-          <Route path="client/edit/:id" element={<EditClinetList />} />
+            {/* client list  */}
+            <Route path="client" element={<ClientList />} />
+            <Route path="client/create" element={<CreateClinetList />} />
+            <Route path="client/:id" element={<ShowClinetList />} />
+            <Route path="client/edit/:id" element={<EditClinetList />} />
 
-          {/* clinet category */}
-          <Route path="newscategory" element={<NewsCategory />} />
-          <Route path="newscategory/edit/:id" element={<EditNewsCategory />} />
-          <Route path="newscategory/create" element={<CreateNewsCategory />} />
+            {/* clinet category */}
+            <Route path="newscategory" element={<NewsCategory />} />
+            <Route
+              path="newscategory/edit/:id"
+              element={<EditNewsCategory />}
+            />
+            <Route
+              path="newscategory/create"
+              element={<CreateNewsCategory />}
+            />
 
-          {/* Blog Post */}
-          <Route path="blogpost" element={<BlogPost />} />
-          <Route path="blogpost/create" element={<CreateBlogPost />} />
-          <Route path="blogpost/:id" element={<ShowBlogPost />} />
-          <Route path="blogpost/edit/:id" element={<EditBlogPost />} />
+            {/* Blog Post */}
+            <Route path="blogpost" element={<BlogPost />} />
+            <Route path="blogpost/create" element={<CreateBlogPost />} />
+            <Route path="blogpost/:id" element={<ShowBlogPost />} />
+            <Route path="blogpost/edit/:id" element={<EditBlogPost />} />
 
-          {/* Job post Route */}
-          <Route path="job" element={<JobPost />} />
-          <Route path="job/create" element={<CreateJobPostRouter />} />
-          <Route path="job/:id" element={<ShowJobPost />} />
-          <Route path="job/edit/:id" element={<EditJobPost />} />
+            {/* Job post Route */}
+            <Route path="job" element={<JobPost />} />
+            <Route path="job/create" element={<CreateJobPostRouter />} />
+            <Route path="job/:id" element={<ShowJobPost />} />
+            <Route path="job/edit/:id" element={<EditJobPost />} />
 
-          {/* TagName Route */}
-          <Route path="TagName" element={<TagNameServerRouter />} />
-          <Route path="TagName/create" element={<CreateTagNameRouter />} />
+            {/* TagName Route */}
+            <Route path="TagName" element={<TagNameServerRouter />} />
+            <Route path="TagName/create" element={<CreateTagNameRouter />} />
 
-          <Route path="TagName/edit/:id" element={<EditTagName />} />
+            <Route path="TagName/edit/:id" element={<EditTagName />} />
 
-          {/* Team Member */}
-          <Route path="teamMember" element={<TeamMember />} />
-          <Route path="teamMember/create" element={<CreateTeamMember />} />
-          <Route path="teamMember/:id" element={<ShowTeamMember />} />
-          <Route path="teamMember/edit/:id" element={<EditTeamMember />} />
+            {/* Team Member */}
+            <Route path="teamMember" element={<TeamMember />} />
+            <Route path="teamMember/create" element={<CreateTeamMember />} />
+            <Route path="teamMember/:id" element={<ShowTeamMember />} />
+            <Route path="teamMember/edit/:id" element={<EditTeamMember />} />
 
-          {/* Podcasts */}
-          <Route path="podcasts" element={<Podcasts />} />
-          <Route path="podcasts/create" element={<CreatePodcasts />} />
-          <Route path="podcasts/:id" element={<ShowPodcasts />} />
-          <Route path="podcasts/edit/:id" element={<EditPodcasts />} />
+            {/* Podcasts */}
+            <Route path="podcasts" element={<Podcasts />} />
+            <Route path="podcasts/create" element={<CreatePodcasts />} />
+            <Route path="podcasts/:id" element={<ShowPodcasts />} />
+            <Route path="podcasts/edit/:id" element={<EditPodcasts />} />
 
-          {/* clinet Message */}
-          <Route path="message" element={<Message />} />
-          <Route path="message/:id" element={<ShowMessage />} />
+            {/* clinet Message */}
+            <Route path="message" element={<Message />} />
+            <Route path="message/:id" element={<ShowMessage />} />
 
-          {/* Appointment */}
-          <Route path="appointment" element={<AllAppointment />} />
-          <Route path="appointment/create" element={<CreateAppointment />} />
-          <Route path="appointment/:id" element={<ShowAppointment />} />
-          <Route path="appointment/edit/:id" element={<EditAppointment />} />
+            {/* Appointment */}
+            <Route path="appointment" element={<AllAppointment />} />
+            <Route path="appointment/create" element={<CreateAppointment />} />
+            <Route path="appointment/:id" element={<ShowAppointment />} />
+            <Route path="appointment/edit/:id" element={<EditAppointment />} />
 
-          {/* patner  */}
-          <Route path="member" element={<AllMemberFirm />} />
-          <Route path="member/create" element={<CreateMemberFirm />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+            {/* patner  */}
+            <Route path="member" element={<AllMemberFirm />} />
+            <Route path="member/create" element={<CreateMemberFirm />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AppProvider>
   );
 }
 

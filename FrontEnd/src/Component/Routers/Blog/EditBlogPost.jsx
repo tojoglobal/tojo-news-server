@@ -72,6 +72,16 @@ const EditBlogPost = () => {
     formik.setFieldValue("file", e.target.files[0]);
   };
 
+  // parmalik validation
+  const validate = (values) => {
+    const errors = {};
+    if (values.permalink && /[_,-]/.test(values.permalink)) {
+      errors.permalink =
+        "Your permalink is not valid. Please remove underscore, hyphen, and comma.";
+    }
+    return errors;
+  };
+
   // use fromik method
   const formik = useFormik({
     enableReinitialize: true,
@@ -85,6 +95,7 @@ const EditBlogPost = () => {
       file: BlogPost.thumble || "",
       artical: BlogPost.articalpost || "",
     },
+    validate,
     onSubmit: async (values, { resetForm }) => {
       console.log(values);
       const formData = new FormData();
@@ -177,7 +188,37 @@ const EditBlogPost = () => {
                 onChange={formik.handleChange}
                 placeholder="Write permalink..."
                 value={formik.values.permalink}
+                required
               />
+              {formik.errors.permalink && (
+                <div className="error text-danger">
+                  {formik.errors.permalink}
+                </div>
+              )}
+              {formik.values.permalink && !formik.errors.permalink && (
+                <>
+                  <small>example </small>
+                  <small>
+                    <a
+                      href={
+                        formik.values.permalink
+                          ? `http://localhost:5173/news/${formik.values.permalink
+                              .replaceAll(/ /g, "-")
+                              .toLowerCase()}`
+                          : "/fallback-url"
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-success"
+                    >
+                      http://localhost:5173/news/
+                      {formik.values.permalink
+                        .replaceAll(/ /g, "-")
+                        .toLowerCase()}
+                    </a>
+                  </small>
+                </>
+              )}
             </div>
 
             <div className="col-md-12 inputfield">

@@ -1,17 +1,19 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Editor } from "@tinymce/tinymce-react";
 import { Form, InputGroup } from "react-bootstrap";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 // import { FaCloudUploadAlt } from "react-icons/fa";
 
 const EditPodcasts = () => {
   // Router
   const { id } = useParams();
   const navigate = useNavigate();
+  const { state } = useContext(AppContext);
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
@@ -20,7 +22,7 @@ const EditPodcasts = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/Podcasts/${id}`)
+      .get(`${state.port}/api/admin/Podcasts/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setPodcasts({
@@ -35,9 +37,7 @@ const EditPodcasts = () => {
         }
       })
       .catch((err) => console.log(err));
-  }, [id, Podcasts]);
-
-  console.log(Podcasts);
+  }, [id]);
 
   // use fromik method
   const formik = useFormik({
@@ -52,7 +52,7 @@ const EditPodcasts = () => {
       console.log(values);
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/admin/Podcasts/edit/${id}`,
+          `${state.port}/api/admin/Podcasts/edit/${id}`,
           values
         );
         if (response.data.Status) {

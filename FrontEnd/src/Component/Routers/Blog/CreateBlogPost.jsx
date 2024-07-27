@@ -47,6 +47,16 @@ const CreateBlogPost = () => {
     formik.setFieldValue("file", e.target.files[0]);
   };
 
+  // parmalik validation
+  const validate = (values) => {
+    const errors = {};
+    if (values.permalink && /[_,-]/.test(values.permalink)) {
+      errors.permalink =
+        "Your permalink is not valid. Please remove underscore, hyphen, and comma.";
+    }
+    return errors;
+  };
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -58,6 +68,7 @@ const CreateBlogPost = () => {
       file: "",
       artical: "",
     },
+    validate,
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
       formData.append("title", values.title);
@@ -143,7 +154,12 @@ const CreateBlogPost = () => {
                 value={formik.values.permalink}
                 required
               />
-              {formik.values.permalink && (
+              {formik.errors.permalink && (
+                <div className="error text-danger">
+                  {formik.errors.permalink}
+                </div>
+              )}
+              {formik.values.permalink && !formik.errors.permalink && (
                 <>
                   <small>example </small>
                   <small>
@@ -157,6 +173,7 @@ const CreateBlogPost = () => {
                       }
                       target="_blank"
                       rel="noreferrer"
+                      className="text-success"
                     >
                       http://localhost:5173/news/
                       {formik.values.permalink

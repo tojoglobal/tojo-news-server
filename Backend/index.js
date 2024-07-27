@@ -28,11 +28,9 @@ app.use(bodyParser.json());
 
 // Router set up
 app.use("/api/admin", AdminRouters);
-// app.use("/user", UserRouters);
 
 
 app.use(express.static('public'));
-// app.use(express.static('public/dist'));
 
 const verifyUser = (req, res, next) => {
   const token = req.cookies.token;

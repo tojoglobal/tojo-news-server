@@ -2,21 +2,20 @@ import db from "../../Utils/db.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
+import path from "path";
+import fs from "fs";
 import {
   adminLoginData,
-
   allTeamMemberQuery,
   teamMemberToDeleteQuery,
   createTeamMemberQuery,
   editTeamMemberIDQuery,
   editTeamMemberQuery,
-
   allPodcastsQuery,
   PodcastsToDeleteQuery,
   createPodcastsQuery,
   editPodcastsIDQuery,
   editPodcastsQuery,
-
   createBlogPostQuery,
   allBlogPostQuery,
   editBlogPostQuery,
@@ -71,7 +70,6 @@ const adminLogin = (req, res) => {
     adminLoginData,
     [req.body.email, req.body.password],
     (err, result) => {
-     
       if (err) return res.json({ loginStatus: false, Error: "Query error" });
       if (result.length > 0) {
         const email = result[0].email;
@@ -162,12 +160,58 @@ const editBlogPostId = (req, res) => {
 
 const BlogPostToDelete = (req, res) => {
   const id = req.params.id;
-  db.query(BlogPostToDeleteQuery, [id], (err, result) => {
+  const deleteFileQuery = "SELECT thumble FROM blognews WHERE uuid = ?";
+  
+  // Get the filename before deleting
+  db.query(deleteFileQuery, [id], (err, result) => {
     if (err) {
-      return res.json({ Status: false, Error: "Qurey Erro" });
-    } else {
-      return res.json({ Status: true, Result: result });
+      return res.status(500).json({ Status: false, Error: "Query Error" });
     }
+    if (result.length === 0) {
+      return res.status(404).json({ Status: false, Error: "Record not found" });
+    }
+    const filename = result[0].thumble;
+
+    // Determine the folder based on the file extension or MIME type
+    let folder;
+    const fileExtension = path.extname(filename).toLowerCase();
+    if (
+      fileExtension === ".jpg" ||
+      fileExtension === ".jpeg" ||
+      fileExtension === ".png"
+    ) {
+      folder = "public/Images";
+    }
+    //  else if (fileExtension === '.mp3' || fileExtension === '.wav') {
+    //   folder = 'public/Audio';
+    // }
+    else {
+      return res
+        .status(400)
+        .json({ Status: false, Error: "Invalid file type" });
+    }
+
+    const filepath = path.join(folder, filename);
+
+    fs.unlink(filepath, (err) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ Status: false, Error: "File Deletion Error" });
+      }
+
+      db.query(BlogPostToDeleteQuery, [id], (err, result) => {
+        if (err) {
+          return res.status(500).json({ Status: false, Error: "Query Error" });
+        }
+
+        res.json({
+          Status: true,
+          message: "File deleted and data removed.",
+          Result: result,
+        });
+      });
+    });
   });
 };
 
@@ -373,7 +417,7 @@ const editTeamMember = (req, res) => {
 };
 
 // Podcasts Router
-const createPodcasts = (req, res) => {  
+const createPodcasts = (req, res) => {
   const imageFile = req.file.filename;
 
   const values = [
@@ -433,10 +477,7 @@ const editPodcasts = (req, res) => {
 
 // client NewsLetterEmail Router
 const submitedNewsLetterEmail = (req, res) => {
-  const values = [
-    uuidv4(),
-    req.body.email
-  ];
+  const values = [uuidv4(), req.body.email];
   db.query(submitedNewsLetterEmailQuery, [values], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
@@ -633,7 +674,7 @@ const getNewsCategory = (req, res) => {
 };
 const deleteOneNewsCategory = (req, res) => {
   const uuid = req.params.id;
-  db.query(deleteOneNewsCategoryQuery, [uuid], (err, result) => {    
+  db.query(deleteOneNewsCategoryQuery, [uuid], (err, result) => {
     if (err) return res.json({ Status: false, Error: "Query Error" + err });
     return res.json({ Status: true, Result: result });
   });
@@ -751,19 +792,16 @@ const adminLogout = (req, res) => {
 
 export {
   adminLogin,
-
   editTeamMember,
   allTeamMember,
   teamMemberToDelete,
   editTeamMemberID,
   createTeamMember,
-
   editPodcasts,
   allPodcasts,
   PodcastsToDelete,
   editPodcastsID,
   createPodcasts,
-
   createBlogPost,
   allBlogPost,
   editBlogPost,

@@ -6,6 +6,7 @@ import {
   editBlogPost,
   editBlogPostId,
   BlogPostToDelete,
+
   createTagName,
   allTagName,
   editTagNameId,
@@ -67,29 +68,43 @@ import {
   editJobPost,
 } from "../controllers/AdminControllers.js";
 import multer from "multer";
-import path from "path";
 import { v4 as uuidv4 } from "uuid";
+
+// Set storage engine
+// const fileStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "public/Images");
+//   },
+//   filename: (req, file, cb) => {
+//     const name = uuidv4() + "_" + Date.now() + "-" + file.originalname;
+//     cb(null, name);
+//   },
+// });
 
 // Set storage engine
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/Images");
+    let folder;
+    if (file.mimetype.startsWith("image/")) {
+      folder = "public/Images";
+    } else if (file.mimetype.startsWith("audio/")) {
+      folder = "public/Audio";
+    } else {
+      return cb(new Error("Invalid file type"), false);
+    }
+    cb(null, folder);
   },
   filename: (req, file, cb) => {
     const name = uuidv4() + "_" + Date.now() + "-" + file.originalname;
     cb(null, name);
   },
 });
+
 // Initialize upload
 const upload = multer({
-  storage: fileStorage,
-  // limits: { fileSize: 2000000 }, // 2MB limit
-  // fileFilter: function (req, file, cb) {
-  //   checkFileType(file, cb);
-  // },
+  storage: fileStorage, 
   dest: "uploads/",
 });
-// .single('file');
 
 // Check file type
 // function checkFileType(file, cb) {
@@ -104,7 +119,7 @@ const upload = multer({
 //   }
 // }
 
-// end image uplode
+// end image and audio uplode
 
 // admin route
 const AdminRouter = express.Router();
