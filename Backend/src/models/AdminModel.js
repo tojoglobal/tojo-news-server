@@ -29,6 +29,7 @@ const editBlogPostIdQuery = `SELECT * FROM blognews WHERE uuid = ?`;
 
 const BlogPostToDeleteQuery = `DELETE FROM blognews WHERE uuid = ?`;
 
+
 // Team member
 const createTeamMemberQuery = `INSERT INTO team_member ( uuid, name, position , img , BioData, FBurl,LIurl, TWurl , WhatsApurl , YTurl) VALUES ( ? )`;
 const allTeamMemberQuery = `SELECT * FROM team_member ORDER BY team_member.ID DESC`;
@@ -89,65 +90,92 @@ const deleteOneClientListQuery = `DELETE FROM clientlist WHERE uuid = ?`;
 const editClientListQuery = `UPDATE clientlist SET clientName = ?, clientmobile = ? ,  clientemail = ? , gender = ? , clientCategory = ? , clientCountryCode = ? , clientStateCode = ? , clientCity = ? , clientAddress = ? , note = ?  WHERE uuid = ?`;
 const showClientListIdQuery = `SELECT * FROM clientlist WHERE uuid = ?`;
 
+// episodes  Area
+const createEpisodesQuery = `INSERT INTO episodes (uuid ,podcastID, dateAndTime , episodesInfo , title , audioFile) VALUES ( ? )`;
+
+const allEpisodesQuery = `SELECT * FROM episodes ORDER BY episodes.ID DESC`;
+const editEpisodesQuery = `UPDATE episodes SET podcastID = ?, dateAndTime = ?, episodesInfo = ?, title = ?, audioFile = ? WHERE uuid = ?`;
+const editEpisodesIdQuery = `SELECT * FROM episodes WHERE uuid = ?`;
+
+const EpisodesToDeleteQuery = `DELETE FROM episodes WHERE uuid = ?`;
+
 export {
-  adminLoginData,
-  allTeamMemberQuery,
-  teamMemberToDeleteQuery,
-  editTeamMemberIDQuery,
-  createTeamMemberQuery,
-  editTeamMemberQuery,
-
-  allPodcastsQuery,
-  PodcastsToDeleteQuery,
-  editPodcastsIDQuery,
-  createPodcastsQuery,
-  editPodcastsQuery,
-
-  createBlogPostQuery,
-  allBlogPostQuery,
-  editBlogPostQuery,
-  BlogPostToDeleteQuery,
-  editBlogPostIdQuery,
-  allTagNameQuery,
-  TagNameToDeleteQuery,
-  editTagNameIdQuery,
-  editTagNameQuery,
-  createTagNameQuery,
-  memberImageDeleteQuery,
-  memberImageCreateQuery,
-  memberImageQuery,
-  submitedNewsLetterEmailQuery,
-  AllClientNewsLetterEmailQuery,
-  clientNewsLetterEmailToDeleteQuery,
-  // clientNewsLetterEmailToShowQuery,
-  appointmentContactNameQuery,
-  createAppointmentQuery,
-  AllAppointmentQuery,
-  showAppointmentQuery,
-  editAppointmentQuery,
-  createContactlistQuery,
-  allContactlistQuery,
-  contactlistToDeleteQuery,
-  showContactInfoQuery,
-  editContactlistQuery,
-  createAuthorQuery,
-  getAuthorQuery,
-  deleteOneAuthorQuery,
-  editAuthorQuery,
-  showAuthorIdQuery,
-  createNewsCategoryQuery,
-  getNewsCategoryQuery,
-  deleteOneNewsCategoryQuery,
-  showNewsCategoryIdQuery,
-  editNewsCategoryQuery,
-  createClientListQuery,
-  getClientListQuery,
-  showClientListIdQuery,
-  deleteOneClientListQuery,
-  editClientListQuery,
-  createJobPostQuery,
-  allJobPostQuery,
-  editJobPostIdQuery,
-  editJobPostQuery,
-  jobPostToDeleteQuery,
+   // admin 
+   adminLoginData,
+   // team member
+   allTeamMemberQuery,
+   teamMemberToDeleteQuery,
+   createTeamMemberQuery,
+   editTeamMemberIDQuery,
+   editTeamMemberQuery,
+   // podcast
+   allPodcastsQuery,
+   PodcastsToDeleteQuery,
+   createPodcastsQuery,
+   editPodcastsIDQuery,
+   editPodcastsQuery,
+   // blogPost 
+   createBlogPostQuery,
+   allBlogPostQuery,
+   editBlogPostQuery,
+   BlogPostToDeleteQuery,
+   editBlogPostIdQuery,
+   // tagName
+   createTagNameQuery,
+   allTagNameQuery,
+   TagNameToDeleteQuery,
+   editTagNameQuery,
+   editTagNameIdQuery,
+   // patner image 
+   memberImageCreateQuery,
+   memberImageQuery,
+   memberImageDeleteQuery,
+   // clint nesletter 
+   submitedNewsLetterEmailQuery,
+   AllClientNewsLetterEmailQuery,
+   clientNewsLetterEmailToDeleteQuery,
+   // clientNewsLetterEmailToShowQuery,
+   // appointment
+   appointmentContactNameQuery,
+   createAppointmentQuery,
+   AllAppointmentQuery,
+   showAppointmentQuery,
+   editAppointmentQuery,
+   // contact list 
+   createContactlistQuery,
+   allContactlistQuery,
+   contactlistToDeleteQuery,
+   showContactInfoQuery,
+   editContactlistQuery,
+   // author
+   createAuthorQuery,
+   getAuthorQuery,
+   deleteOneAuthorQuery,
+   editAuthorQuery,
+   showAuthorIdQuery,
+   // news category
+   createNewsCategoryQuery,
+   getNewsCategoryQuery,
+   deleteOneNewsCategoryQuery,
+   showNewsCategoryIdQuery,
+   editNewsCategoryQuery,
+   // clinet list 
+   createClientListQuery,
+   getClientListQuery,
+   showClientListIdQuery,
+   deleteOneClientListQuery,
+   editClientListQuery,
+   // job post 
+   createJobPostQuery,
+   allJobPostQuery,
+   editJobPostIdQuery,
+   editJobPostQuery,
+   jobPostToDeleteQuery,
+   
+ // episode
+ EpisodesToDeleteQuery , 
+ editEpisodesIdQuery,
+ editEpisodesQuery,
+ allEpisodesQuery,
+ createEpisodesQuery,
 };

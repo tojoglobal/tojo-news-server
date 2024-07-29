@@ -5,64 +5,83 @@ import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import fs from "fs";
 import {
+  // admin 
   adminLoginData,
+  // team member
   allTeamMemberQuery,
   teamMemberToDeleteQuery,
   createTeamMemberQuery,
   editTeamMemberIDQuery,
   editTeamMemberQuery,
+  // podcast
   allPodcastsQuery,
   PodcastsToDeleteQuery,
   createPodcastsQuery,
   editPodcastsIDQuery,
   editPodcastsQuery,
+  // blogPost 
   createBlogPostQuery,
   allBlogPostQuery,
   editBlogPostQuery,
   BlogPostToDeleteQuery,
   editBlogPostIdQuery,
+  // tagName
   createTagNameQuery,
   allTagNameQuery,
   TagNameToDeleteQuery,
   editTagNameQuery,
   editTagNameIdQuery,
+  // patner image 
   memberImageCreateQuery,
   memberImageQuery,
   memberImageDeleteQuery,
+  // clint nesletter 
   submitedNewsLetterEmailQuery,
   AllClientNewsLetterEmailQuery,
   clientNewsLetterEmailToDeleteQuery,
   // clientNewsLetterEmailToShowQuery,
+  // appointment
   appointmentContactNameQuery,
   createAppointmentQuery,
   AllAppointmentQuery,
   showAppointmentQuery,
   editAppointmentQuery,
+  // contact list 
   createContactlistQuery,
   allContactlistQuery,
   contactlistToDeleteQuery,
   showContactInfoQuery,
   editContactlistQuery,
+  // author
   createAuthorQuery,
   getAuthorQuery,
   deleteOneAuthorQuery,
   editAuthorQuery,
   showAuthorIdQuery,
+  // news category
   createNewsCategoryQuery,
   getNewsCategoryQuery,
   deleteOneNewsCategoryQuery,
   showNewsCategoryIdQuery,
   editNewsCategoryQuery,
+  // clinet list 
   createClientListQuery,
   getClientListQuery,
   showClientListIdQuery,
   deleteOneClientListQuery,
   editClientListQuery,
+  // job post 
   createJobPostQuery,
   allJobPostQuery,
   editJobPostIdQuery,
   editJobPostQuery,
   jobPostToDeleteQuery,
+  // episode
+  EpisodesToDeleteQuery , 
+editEpisodesIdQuery,
+editEpisodesQuery,
+allEpisodesQuery,
+createEpisodesQuery,
 } from "../models/AdminModel.js";
 
 const adminLogin = (req, res) => {
@@ -161,7 +180,6 @@ const editBlogPostId = (req, res) => {
 const BlogPostToDelete = (req, res) => {
   const id = req.params.id;
   const deleteFileQuery = "SELECT thumble FROM blognews WHERE uuid = ?";
-  
   // Get the filename before deleting
   db.query(deleteFileQuery, [id], (err, result) => {
     if (err) {
@@ -214,6 +232,7 @@ const BlogPostToDelete = (req, res) => {
     });
   });
 };
+
 
 // job post router
 const createJobPost = (req, res) => {
@@ -339,8 +358,7 @@ const allMember = (req, res) => {
 const uploadMemberImage = (req, res) => {
   const uuid = uuidv4();
   const values = [uuid, req.file.filename, req.body.ImageTitle];
-  console.log(values);
-  db.query(memberImageCreateQuery, [values], (err, result) => {
+   db.query(memberImageCreateQuery, [values], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true });
   });
@@ -759,6 +777,184 @@ const editClientList = (req, res) => {
   });
 };
 
+
+//Episodes Router
+const createEpisodes  = (req, res) => {
+  // Generate the current date and time
+  const currentDate = new Date();
+  const audioFile = req.file.filename;
+
+  const values = [
+    uuidv4(),
+    req.body.PodcastPovider,
+    currentDate,
+    req.body.episodesInfo,
+    req.body.title,
+    audioFile,
+  ];
+  
+
+  db.query(createEpisodesQuery, [values], (err, result) => {
+    if (err) {
+      return res.json({ Status: false, Error: "Query Error" });
+    } else {
+      return res.json({ Status: true, Result: result });
+    }
+  });
+};
+
+const allEpisodes  = (req, res) => {
+  db.query(allEpisodesQuery, (err, result) => {
+    if (err) {
+      return res.json({ Status: false, Error: "Query Error" });
+    } else {
+      return res.json({ Status: true, Result: result });
+    }
+  });
+};
+
+const editEpisodes = (req, res) => {
+  const currentDate = new Date();
+  const id = req.params.id;
+
+  // Check if a new file is being uploaded
+  const newAudioFile = req.file ? req.file.filename : null;
+
+  if (newAudioFile) {
+    const deleteFileQuery = "SELECT audioFile FROM episodes WHERE uuid = ?";
+
+    // Get the filename before deleting
+    db.query(deleteFileQuery, [id], (err, result) => {
+      if (err) {
+        return res.status(500).json({ Status: false, Error: "Query Error" });
+      }
+      if (result.length === 0) {
+        return res.status(404).json({ Status: false, Error: "Record not found" });
+      }
+      const filename = result[0].audioFile;
+
+      // Determine the folder based on the file extension or MIME type
+      let folder;
+      const fileExtension = path.extname(filename).toLowerCase();
+
+      if (fileExtension === '.mp3' || fileExtension === '.wav' || fileExtension === '.ogg') {
+        folder = 'public/Audio';
+      } else {
+        return res.status(400).json({ Status: false, Error: "Invalid file type" });
+      }
+
+      const filepath = path.join(folder, filename);
+
+      // Check if the file exists before attempting to delete it
+      fs.access(filepath, fs.constants.F_OK, (err) => {
+        if (err) {
+          console.warn(`File does not exist, skipping deletion: ${filepath}`);
+          // Continue with updating the database
+          updateEpisodeData(id, newAudioFile);
+        } else {
+          fs.unlink(filepath, (err) => {
+            if (err) {
+              return res.status(500).json({ Status: false, Error: "File Deletion Error" });
+            }
+
+            // After file is deleted, update the database
+            updateEpisodeData(id, newAudioFile);
+          });
+        }
+      });
+    });
+  } else {
+    // If no new file is uploaded, just update the database with existing data
+    const existingFileQuery = "SELECT audioFile FROM episodes WHERE uuid = ?";
+    db.query(existingFileQuery, [id], (err, result) => {
+      if (err) {
+        return res.status(500).json({ Status: false, Error: "Query Error" });
+      }
+      if (result.length === 0) {
+        return res.status(404).json({ Status: false, Error: "Record not found" });
+      }
+
+      const existingAudioFile = result[0].audioFile;
+      updateEpisodeData(id, existingAudioFile);
+    });
+  }
+
+  const updateEpisodeData = (episodeId, audioFile) => {
+    const values = [
+      req.body.PodcastPovider,
+      currentDate,
+      req.body.episodesInfo,
+      req.body.title,
+      audioFile,
+    ];
+
+    db.query(editEpisodesQuery, [...values, episodeId], (err, result) => {
+      if (err) return res.json({ Status: false, Error: err });
+      return res.json({ Status: true, Result: result });
+    });
+  };
+};
+
+const editEpisodesId  = (req, res) => {
+  const id = req.params.id;
+  db.query(editEpisodesIdQuery, [id], (err, result) => {
+    if (err) return res.json({ Status: false, Error: "Query Error" });
+    return res.json({ Status: true, Result: result });
+  });
+};
+
+const EpisodesToDelete  = (req, res) => {
+  const id = req.params.id;
+  const deleteFileQuery = "SELECT audioFile FROM episodes WHERE uuid = ?";
+  // Get the filename before deleting
+  db.query(deleteFileQuery, [id], (err, result) => {
+    if (err) {
+      return res.status(500).json({ Status: false, Error: "Query Error" });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ Status: false, Error: "Record not found" });
+    }
+    const filename = result[0].audioFile;
+
+    // Determine the folder based on the file extension or MIME type
+    let folder;
+    const fileExtension = path.extname(filename).toLowerCase();
+    
+     if (fileExtension === '.mp3' || fileExtension === '.wav' || fileExtension === '.ogg') {
+      folder = 'public/Audio';
+    }
+    else {
+      return res
+        .status(400)
+        .json({ Status: false, Error: "Invalid file type" });
+    }
+
+    const filepath = path.join(folder, filename);
+
+    fs.unlink(filepath, (err) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ Status: false, Error: "File Deletion Error" });
+      }
+      
+    });
+  });
+
+  db.query(EpisodesToDeleteQuery, [id], (err, result) => {
+    if (err) {
+      return res.status(500).json({ Status: false, Error: "Query Error" });
+    }
+
+    res.json({
+      Status: true,
+      message: "File deleted and data removed.",
+      Result: result,
+    });
+  });
+};
+
+
 // Many Counts Number
 const clinetCounts = (req, res) => {
   const sql = `SELECT count(uuid) AS totalClient FROM clientlist;`;
@@ -792,62 +988,82 @@ const adminLogout = (req, res) => {
 
 export {
   adminLogin,
-  editTeamMember,
-  allTeamMember,
-  teamMemberToDelete,
-  editTeamMemberID,
-  createTeamMember,
-  editPodcasts,
-  allPodcasts,
-  PodcastsToDelete,
-  editPodcastsID,
-  createPodcasts,
+  // blogpost 
   createBlogPost,
   allBlogPost,
   editBlogPost,
   editBlogPostId,
   BlogPostToDelete,
+  // episodes
+  createEpisodes , 
+  allEpisodes , 
+  editEpisodes , 
+  editEpisodesId , 
+  EpisodesToDelete ,
+
+// tagName 
   createTagName,
+  allTagName,
   editTagNameId,
   TagNameToDelete,
-  allTagName,
   editTagName,
-  adminLogout,
+  // member
+  memberToDelete,
   uploadMemberImage,
   allMember,
-  memberToDelete,
+  adminLogout,
+// team member 
+  createTeamMember,
+  allTeamMember,
+  teamMemberToDelete,
+  editTeamMemberID,
+  editTeamMember,
+// prodcasts
+  createPodcasts,
+  allPodcasts,
+  PodcastsToDelete,
+  editPodcastsID,
+  editPodcasts,
+// Nesletter
   submitedNewsLetterEmail,
   AllClientNewsLetterEmail,
   clientNewsLetterEmailToDelete,
   // clientNewsLetterEmailToShow,
+  // appoinment 
   appointmentContactName,
   createAppointment,
   AllAppointment,
   showAppointment,
   editAppointment,
+  // contact list 
   createContactlist,
   allContactlist,
   contactlistToDelete,
   showContactInfo,
   editContactlist,
+  // author 
   createAuthor,
   getAuthor,
   deleteOneAuthor,
   editAuthor,
   showAuthorId,
+  // nws category
   createNewsCategory,
   getNewsCategory,
   deleteOneNewsCategory,
   showNewsCategoryId,
   editNewsCategory,
+  // clinet list 
   createClientList,
   getClientList,
   showClientListId,
   deleteOneClientList,
   editClientList,
+  // count 
   clinetCounts,
   teamMemberCount,
   contactCount,
+  // job post 
   createJobPost,
   allJobPost,
   jobPostToDelete,

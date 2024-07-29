@@ -70,6 +70,12 @@ import EditPodcasts from "./Component/Routers/Podcasts/EditPodcasts";
 // app provider
 import { AppProvider } from "./Dashbord/SmallComponent/AppContext";
 
+// Episodes Router
+import Episodes from "./Component/Routers/Episodes/Episodes";
+import CreateEpisodes from "./Component/Routers/Episodes/CreateEpisodes";
+import ShowEpisodes from "./Component/Routers/Episodes/ShowEpisodes";
+import EditEpisodes from "./Component/Routers/Episodes/EditEpisodes";
+
 function App() {
   return (
     <AppProvider>
@@ -120,6 +126,12 @@ function App() {
             <Route path="blogpost/create" element={<CreateBlogPost />} />
             <Route path="blogpost/:id" element={<ShowBlogPost />} />
             <Route path="blogpost/edit/:id" element={<EditBlogPost />} />
+
+            {/* Episodes Post */}
+            <Route path="Episodes" element={<Episodes />} />
+            <Route path="Episodes/create" element={<CreateEpisodes />} />
+            <Route path="Episodes/:id" element={<ShowEpisodes />} />
+            <Route path="Episodes/edit/:id" element={<EditEpisodes />} />
 
             {/* Job post Route */}
             <Route path="job" element={<JobPost />} />

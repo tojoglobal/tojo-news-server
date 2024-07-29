@@ -50,9 +50,9 @@ const CreateBlogPost = () => {
   // parmalik validation
   const validate = (values) => {
     const errors = {};
-    if (values.permalink && /[_,-]/.test(values.permalink)) {
+    if (values.permalink && /[`_,-]/.test(values.permalink)) {
       errors.permalink =
-        "Your permalink is not valid. Please remove underscore, hyphen, and comma.";
+        "Please remove underscore, hyphen, comma and backtik (_,-`).";
     }
     return errors;
   };
@@ -161,7 +161,7 @@ const CreateBlogPost = () => {
               )}
               {formik.values.permalink && !formik.errors.permalink && (
                 <>
-                  <small>example </small>
+                  <small>Great</small>
                   <small>
                     <a
                       href={

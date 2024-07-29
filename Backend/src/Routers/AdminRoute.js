@@ -1,66 +1,82 @@
 import express from "express";
 import {
   adminLogin,
+  // blogpost 
   createBlogPost,
   allBlogPost,
   editBlogPost,
   editBlogPostId,
   BlogPostToDelete,
+  // episodes
+  createEpisodes , 
+  allEpisodes , 
+  editEpisodes , 
+  editEpisodesId , 
+  EpisodesToDelete ,
 
+// tagName 
   createTagName,
   allTagName,
   editTagNameId,
   TagNameToDelete,
   editTagName,
+  // member
   memberToDelete,
   uploadMemberImage,
   allMember,
   adminLogout,
-
+// team member 
   createTeamMember,
   allTeamMember,
   teamMemberToDelete,
   editTeamMemberID,
   editTeamMember,
-
+// prodcasts
   createPodcasts,
   allPodcasts,
   PodcastsToDelete,
   editPodcastsID,
   editPodcasts,
-
+// Nesletter
   submitedNewsLetterEmail,
   AllClientNewsLetterEmail,
   clientNewsLetterEmailToDelete,
   // clientNewsLetterEmailToShow,
+  // appoinment 
   appointmentContactName,
   createAppointment,
   AllAppointment,
   showAppointment,
   editAppointment,
+  // contact list 
   createContactlist,
   allContactlist,
   contactlistToDelete,
   showContactInfo,
   editContactlist,
+  // author 
   createAuthor,
   getAuthor,
   deleteOneAuthor,
   editAuthor,
   showAuthorId,
+  // nws category
   createNewsCategory,
   getNewsCategory,
   deleteOneNewsCategory,
   showNewsCategoryId,
   editNewsCategory,
+  // clinet list 
   createClientList,
   getClientList,
   showClientListId,
   deleteOneClientList,
   editClientList,
+  // count 
   clinetCounts,
   teamMemberCount,
   contactCount,
+  // job post 
   createJobPost,
   allJobPost,
   jobPostToDelete,
@@ -164,6 +180,13 @@ AdminRouter.get("/blogpost", allBlogPost);
 AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);
 AdminRouter.get("/blogpost/:id", editBlogPostId);
 AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
+
+// Blog Router
+AdminRouter.post("/Episodes/create", upload.single("file"), createEpisodes);
+AdminRouter.get("/Episodes", allEpisodes);
+AdminRouter.put("/Episodes/edit/:id", upload.single("file"), editEpisodes);
+AdminRouter.get("/Episodes/:id", editEpisodesId);
+AdminRouter.delete("/Episodes/delete/:id", EpisodesToDelete);
 
 // clientNewsLetterEmail
 AdminRouter.post("/newsletteremail/submite", submitedNewsLetterEmail);
