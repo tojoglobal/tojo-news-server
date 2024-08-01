@@ -57,7 +57,7 @@ const EditPodcasts = () => {
         );
         if (response.data.Status) {
           setErrorMessage(null);
-          toast.success(`Team member Edit successfully`, {
+          toast.success(`Edit successfully`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,

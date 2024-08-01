@@ -1,4 +1,5 @@
 import React, { createContext, useState } from "react";
+import PropTypes from "prop-types";
 
 // Create the context
 export const AppContext = createContext();
@@ -12,4 +13,9 @@ export const AppProvider = ({ children }) => {
       {children}
     </AppContext.Provider>
   );
+};
+
+// Define prop types for AppProvider
+AppProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

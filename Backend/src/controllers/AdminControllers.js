@@ -199,10 +199,7 @@ const BlogPostToDelete = (req, res) => {
       fileExtension === ".png"
     ) {
       folder = "public/Images";
-    }
-    //  else if (fileExtension === '.mp3' || fileExtension === '.wav') {
-    //   folder = 'public/Audio';
-    // }
+    }    
     else {
       return res
         .status(400)
@@ -475,18 +472,13 @@ const editPodcastsID = (req, res) => {
 };
 
 const editPodcasts = (req, res) => {
-  const id = req.params.id;
+  const id = req.params.id;   
   const values = [
-    req.body.name,
-    req.body.positionName,
-    req.body.BioData,
-    req.body.facebookName,
-    req.body.linkedinName,
-    req.body.twitterName,
-    req.body.WhatsAppNumber,
-    req.body.youtubeName,
+    req.body.HostedName,
+    req.body.HostedInfo,
+    req.body.SpotifyUrl,
+    req.body.AppleUrl,
   ];
-
   db.query(editPodcastsQuery, [...values, id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });

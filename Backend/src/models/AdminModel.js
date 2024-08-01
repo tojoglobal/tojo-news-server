@@ -46,7 +46,7 @@ const PodcastsToDeleteQuery = `DELETE FROM podcasts WHERE uuid = ?`;
 
 const editPodcastsIDQuery = `SELECT * FROM podcasts WHERE uuid = ?`;
 
-const editPodcastsQuery = `UPDATE podcasts SET name = ? , hostedInfo=? , image=?, spotify=?, apple=? WHERE uuid = ?`;
+const editPodcastsQuery = `UPDATE podcasts SET name = ? , hostedInfo=? , spotify=?, apple=? WHERE uuid = ?`;
 
 // client NewsLetterEmail Query
 const submitedNewsLetterEmailQuery = `INSERT INTO newsletteremail (uuid, email) VALUES ( ? )`;
