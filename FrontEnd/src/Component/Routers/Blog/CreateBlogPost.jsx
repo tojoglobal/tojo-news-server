@@ -6,8 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { Editor } from "@tinymce/tinymce-react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import { useContext } from "react";
 
 const CreateBlogPost = () => {
+  const { state } = useContext(AppContext);
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -18,8 +21,8 @@ const CreateBlogPost = () => {
     const fetchData = async () => {
       try {
         const [authorResponse, newsCategoryResponse] = await Promise.all([
-          axios.get("http://localhost:8080/api/admin/author"),
-          axios.get("http://localhost:8080/api/admin/newsCategory"),
+          axios.get(`${state.port}/api/admin/author`),
+          axios.get(`${state.port}/api/admin/newsCategory`),
         ]);
 
         if (authorResponse.data.Status) {
@@ -84,7 +87,7 @@ const CreateBlogPost = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/admin/blogpost/create",
+          `${state.port}/api/admin/blogpost/create`,
           formData,
           {
             headers: {

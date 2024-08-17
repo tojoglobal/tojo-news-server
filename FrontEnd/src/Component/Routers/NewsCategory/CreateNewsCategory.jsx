@@ -1,12 +1,14 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoStarSharp } from "react-icons/io5";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const CreateNewsCategory = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -18,13 +20,12 @@ const CreateNewsCategory = () => {
   const formik = useFormik({
     initialValues: {
       categoryName: "",
-      // OnBehalf: "Complainant" || "",
     },
     onSubmit: async (values, { resetForm }) => {
       console.log(values);
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/admin/newsCategory/create",
+          `${state.port}/api/admin/newsCategory/create`,
           values
         );
         if (response.data.Status) {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MdOutlineArrowDownward } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { HiPlus } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { Country, State } from "country-state-city";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 import {
   Dialog,
@@ -21,6 +22,7 @@ import {
 import { BsExclamationCircle } from "react-icons/bs";
 
 const ClientList = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -75,7 +77,9 @@ const ClientList = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`https://api.tojoglobal.com/api/admin/clientlist/delete/` + dataDeleteId)
+      .delete(
+        `https://api.tojoglobal.com/api/admin/clientlist/delete/` + dataDeleteId
+      )
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/client");
@@ -105,9 +109,9 @@ const ClientList = () => {
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">Client List</h1>
       <hr />
-      
+
       {errorMessage && <div className="error-message">{errorMessage}</div>}
-      
+
       <div>
         <div>
           <Link to="/dashboard/client/create">
@@ -243,7 +247,13 @@ const ClientList = () => {
                     <td></td>
                     <td></td>
                     <td>
-                      <p style={{ color: "#828BB2", textAlign: "end", paddingTop: "0.9rem" }}>
+                      <p
+                        style={{
+                          color: "#828BB2",
+                          textAlign: "end",
+                          paddingTop: "0.9rem",
+                        }}
+                      >
                         No data available in table
                       </p>
                     </td>

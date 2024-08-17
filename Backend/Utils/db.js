@@ -3,9 +3,9 @@ import mysql from 'mysql2'
 // MySQL database connection configuration
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'tojonews_tojonews',
-    password: '3hA?2*zx~zpP',
-    database: 'tojonews_tojonews'
+    user: 'root',
+    password: '',
+    database: 'tojonews'
   });
 
 // Connect to MySQL

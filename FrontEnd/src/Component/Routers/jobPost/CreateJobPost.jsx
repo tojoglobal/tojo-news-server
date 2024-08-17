@@ -1,11 +1,13 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const CreateJobPostRouter = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -24,7 +26,7 @@ const CreateJobPostRouter = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/admin/jobpost/create",
+          `${state.port}/api/admin/jobpost/create`,
           values
         );
         if (response.data.Status) {

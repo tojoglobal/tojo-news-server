@@ -1,11 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const EditJobPost = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ const EditJobPost = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/jobpost/${id}`)
+      .get(`${state.port}/api/admin/jobpost/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setJob({
@@ -48,7 +50,7 @@ const EditJobPost = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/admin/jobpost/edit/${id}`,
+          `${state.port}/api/admin/jobpost/edit/${id}`,
           values
         );
         if (response.data.Status) {

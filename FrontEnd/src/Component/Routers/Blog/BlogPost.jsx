@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -18,8 +18,10 @@ import {
 import { BsExclamationCircle } from "react-icons/bs";
 import { MdOutlineArrowDownward } from "react-icons/md";
 import Pagination from "../../Pagination/Pagination";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const BlogPost = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ const BlogPost = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/blogpost")
+      .get(`${state.port}/api/admin/blogpost`)
       .then((result) => {
         if (result.data.Status) {
           setBlogpost(result.data.Result);
@@ -90,7 +92,7 @@ const BlogPost = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`http://localhost:8080/api/admin/blogpost/delete/` + dataDeleteId)
+      .delete(`${state.port}/api/admin/blogpost/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/blogpost");
@@ -153,7 +155,7 @@ const BlogPost = () => {
                     <td>
                       <img
                         className="Team_member_Image"
-                        src={`http://localhost:8080/Images/${bgPost.thumble}`}
+                        src={`${state.port}/Images/${bgPost.thumble}`}
                         alt={bgPost.thumble}
                       />
                     </td>

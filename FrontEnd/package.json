@@ -1,7 +1,7 @@
 {
   "name": "index.js",
   "version": "0.1.0",
-  "homepage": "https://dashboard.tojoglobal.com/",
+  "homepage": "https://dashboard.tojonews.com/",
   "private": true,
   "type": "module",
   "scripts": {

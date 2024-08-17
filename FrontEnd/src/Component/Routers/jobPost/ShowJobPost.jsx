@@ -1,11 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import "react-toastify/dist/ReactToastify.css";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const ShowJobPost = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   // state
@@ -15,7 +17,7 @@ const ShowJobPost = () => {
   // Data Fetching
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/jobpost/${id}`)
+      .get(`${state.port}/api/admin/jobpost/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setJob({

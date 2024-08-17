@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MdOutlineArrowDownward } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -17,8 +17,10 @@ import {
   DialogContent,
 } from "@mui/material";
 import { BsExclamationCircle } from "react-icons/bs";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const NewsCategory = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const NewsCategory = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/newsCategory")
+      .get(`${state.port}/api/admin/newsCategory`)
       .then((result) => {
         if (result.data.Status) {
           setNewsCategory(result.data.Result);
@@ -75,9 +77,7 @@ const NewsCategory = () => {
 
   const handleDelete = () => {
     axios
-      .delete(
-        `http://localhost:8080/api/admin/newsCategory/delete/` + dataDeleteId
-      )
+      .delete(`${state.port}/api/admin/newsCategory/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/newscategory");

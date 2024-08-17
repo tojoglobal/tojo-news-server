@@ -1,11 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import "react-toastify/dist/ReactToastify.css";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const ShowMessage = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   // state
@@ -15,7 +17,7 @@ const ShowMessage = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`https://api.tojoglobal.com/api/admin/clientMessage/${id}`)
+      .get(`${state.port}/api/admin/clientMessage/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setClientMessage({

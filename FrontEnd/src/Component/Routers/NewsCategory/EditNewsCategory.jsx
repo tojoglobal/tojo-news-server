@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -7,8 +7,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { IoStarSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const EditNewsCategory = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ const EditNewsCategory = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/newsCategory/${id}`)
+      .get(`${state.port}/api/admin/newsCategory/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setNewsCategory({
@@ -46,7 +48,7 @@ const EditNewsCategory = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/admin/NewsCategory/edit/${id}`,
+          `${state.port}/api/admin/NewsCategory/edit/${id}`,
           values
         );
         if (response.data.Status) {

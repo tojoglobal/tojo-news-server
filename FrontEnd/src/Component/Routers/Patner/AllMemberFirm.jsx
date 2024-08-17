@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { HiPlus } from "react-icons/hi";
 import {
@@ -16,8 +16,10 @@ import { BsExclamationCircle } from "react-icons/bs";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const AllMemberFirm = () => {
+  const { state } = useContext(AppContext);
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
   // all state
@@ -33,7 +35,7 @@ const AllMemberFirm = () => {
   // memember data get method
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/member")
+      .get(`${state.port}/api/admin/member`)
       .then((result) => {
         if (result.data.Status) {
           setMember(result.data.Result);
@@ -71,7 +73,7 @@ const AllMemberFirm = () => {
   const handleDelete = () => {
     if (dataDeleteId) {
       axios
-        .delete(`http://localhost:8080/api/admin/member/delete/${dataDeleteId}`)
+        .delete(`${state.port}/api/admin/member/delete/${dataDeleteId}`)
         .then((result) => {
           if (result.data.Status) {
             toast.success(`${dataDeleteId} deleted successfully`, {
@@ -120,7 +122,7 @@ const AllMemberFirm = () => {
               <li key={im.uuid}>
                 <img
                   className="cetificate_image"
-                  src={`http://localhost:8080/Images/${im.img}`}
+                  src={`${state.port}/Images/${im.img}`}
                   alt={im.imageTitle}
                 />
                 <span style={{ marginLeft: "30px", color: "#01b5e8" }}>

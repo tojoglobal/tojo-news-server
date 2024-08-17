@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "./../../Dashbord/SmallComponent/AppContext";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const { state } = useContext(AppContext);
+
   axios.defaults.withCredentials = true;
   //state
   const [error, setError] = useState(null);
@@ -15,7 +18,7 @@ const AdminLogin = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post("http://localhost:8080/api/admin/adminlogin", values)
+      .post(`${state.port}/api/admin/adminlogin`, values)
       .then((result) => {
         if (result.data.loginStatus) {
           localStorage.setItem("valid", true);
@@ -29,7 +32,7 @@ const AdminLogin = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 loginPage">
-      <div className="w-25 loginForm">
+      <div className="loginForm">
         <h2 className="text-center">Login Admin</h2>
         <br />
         <div className="text-warning">{error && error}</div>

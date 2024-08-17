@@ -7,8 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { IoStarSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import { useContext } from "react";
 
 const EditAuthors = () => {
+  const { state } = useContext(AppContext);
+
   // Router
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,7 +24,7 @@ const EditAuthors = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/author/${id}`)
+      .get(`${state.port}/api/admin/author/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setAuthor((prevAuthor) => ({
@@ -46,7 +50,7 @@ const EditAuthors = () => {
       console.log(values);
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/admin/author/edit/${id}`,
+          `${state.port}/api/admin/author/edit/${id}`,
           values
         );
         if (response.data.Status) {

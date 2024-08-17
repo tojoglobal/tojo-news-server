@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MdOutlineArrowDownward } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -17,8 +17,10 @@ import {
 } from "@mui/material";
 import { BsExclamationCircle } from "react-icons/bs";
 import Pagination from "../../Pagination/Pagination";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const Message = () => {
+  const { state } = useContext(AppContext);
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
 
@@ -34,7 +36,7 @@ const Message = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/newsletteremail")
+      .get(`${state.port}/api/admin/newsletteremail`)
       .then((result) => {
         if (result.data.Status) {
           setMessage(result.data.Result);
@@ -80,9 +82,7 @@ const Message = () => {
   const handleDelete = () => {
     console.log(dataDeleteId);
     axios
-      .delete(
-        `http://localhost:8080/api/admin/newsletteremail/delete/` + dataDeleteId
-      )
+      .delete(`${state.port}/api/admin/newsletteremail/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/message");

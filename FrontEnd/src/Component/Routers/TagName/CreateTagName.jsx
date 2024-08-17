@@ -4,8 +4,11 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import { useContext } from "react";
 
 const CreateTagNameRouter = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -22,7 +25,7 @@ const CreateTagNameRouter = () => {
       console.log(values);
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/admin/TagName/create",
+          `${state.port}/api/admin/TagName/create`,
           values
         );
         if (response.data.Status) {

@@ -16,7 +16,7 @@ const Dashboard = () => {
   const anvigate = useNavigate();
   axios.defaults.withCredentials = true;
   const handleLogout = () => {
-    axios.get("https://api.tojoglobal.com/api/admin/logout").then((result) => {
+    axios.get("https://api.tojonews.com/api/admin/logout").then((result) => {
       if (result.data.Status) {
         localStorage.removeItem("valid");
         anvigate("/");
@@ -27,7 +27,7 @@ const Dashboard = () => {
 
   const [darkTheme, setDarkTheme] = useState(true);
   const toggleTheme = () => {
-    setDarkTheme(prevTheme => !prevTheme);
+    setDarkTheme((prevTheme) => !prevTheme);
   };
 
   const [collapsed, setCollapsed] = useState(false);
@@ -51,18 +51,18 @@ const Dashboard = () => {
           <Logo />
 
           <MenuList darkTheme={darkTheme} />
-          <ToggleThemeButton darkTheme={darkTheme} toggleTheme={toggleTheme} />         
-        </Sider>        
+          <ToggleThemeButton darkTheme={darkTheme} toggleTheme={toggleTheme} />
+        </Sider>
         <Layout>
-          <Header style={{ padding: 0, background: colorBgContainer }}>          
-            <Logout handleLogout={handleLogout} />            
+          <Header style={{ padding: 0, background: colorBgContainer }}>
+            <Logout handleLogout={handleLogout} />
             <Button
               type="text"
               onClick={toggleCollapsed}
               className="toggle"
               icon={collapsed ? <AiOutlineMenuUnfold /> : <AiOutlineMenuFold />}
             />
-            <Clock/>
+            <Clock />
           </Header>
 
           <Content className="main_router">

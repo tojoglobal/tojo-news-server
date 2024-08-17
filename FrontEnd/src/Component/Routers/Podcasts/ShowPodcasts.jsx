@@ -1,12 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import "react-toastify/dist/ReactToastify.css";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 import DOMPurify from "dompurify";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const ShowPodcasts = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   // state
@@ -16,7 +18,7 @@ const ShowPodcasts = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/podcasts/${id}`)
+      .get(`${state.port}/api/admin/podcasts/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setPodcasts({
@@ -75,7 +77,7 @@ const ShowPodcasts = () => {
                   {" "}
                   <img
                     className="blog_Image"
-                    src={`http://localhost:8080/Images/${podcasts.ImageName}`}
+                    src={`${state.port}/Images/${podcasts.ImageName}`}
                     alt={podcasts.ImageName}
                   />{" "}
                 </td>

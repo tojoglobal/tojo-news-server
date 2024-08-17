@@ -1,10 +1,12 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const CreateMemberFirm = () => {
+  const { state } = useContext(AppContext);
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
 
@@ -31,7 +33,7 @@ const CreateMemberFirm = () => {
       formData.append("file", values.file);
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/admin/member/create",
+          `${state.port}/api/admin/member/create`,
           formData,
           {
             headers: {

@@ -5,8 +5,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 import DOMPurify from "dompurify";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import { useContext } from "react";
 
 const ShowBlogPost = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   // state
@@ -16,7 +19,7 @@ const ShowBlogPost = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/blogpost/${id}`)
+      .get(`${state.port}/api/admin/blogpost/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setBlogpost({
@@ -44,9 +47,9 @@ const ShowBlogPost = () => {
       try {
         const [authorResponse, newsCategoryResponse, blogPostResponse] =
           await Promise.all([
-            axios.get("http://localhost:8080/api/admin/author"),
-            axios.get("http://localhost:8080/api/admin/newsCategory"),
-            axios.get(`http://localhost:8080/api/admin/blogpost/${id}`),
+            axios.get(`${state.port}/api/admin/author`),
+            axios.get(`${state.port}/api/admin/newsCategory`),
+            axios.get(`${state.port}/api/admin/blogpost/${id}`),
           ]);
 
         if (
@@ -149,7 +152,7 @@ const ShowBlogPost = () => {
                   {" "}
                   <img
                     className="blog_Image"
-                    src={`http://localhost:8080/Images/${blogpost.Image}`}
+                    src={`${state.port}/Images/${blogpost.Image}`}
                     alt={blogpost.Image}
                   />{" "}
                 </td>

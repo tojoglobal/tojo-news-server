@@ -6,7 +6,11 @@ import { toast, ToastContainer } from "react-toastify";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import { Editor } from "@tinymce/tinymce-react";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import { useContext } from "react";
+
 const EditBlogPost = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   const navigate = useNavigate();
@@ -23,13 +27,11 @@ const EditBlogPost = () => {
   // Fetch blog post data by ID
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/blogpost/${id}`)
+      .get(`${state.port}/api/admin/blogpost/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setBlogPost(result.data.Result[0]);
-          setFile(
-            `http://localhost:8080/Images/${result.data.Result[0].thumble}`
-          );
+          setFile(`${state.port}/Images/${result.data.Result[0].thumble}`);
         } else {
           alert(result.data.Error);
         }
@@ -42,8 +44,8 @@ const EditBlogPost = () => {
     const fetchData = async () => {
       try {
         const [authorResponse, newsCategoryResponse] = await Promise.all([
-          axios.get("http://localhost:8080/api/admin/author"),
-          axios.get("http://localhost:8080/api/admin/newsCategory"),
+          axios.get(`${state.port}/api/admin/author`),
+          axios.get(`${state.port}/api/admin/newsCategory`),
         ]);
 
         if (authorResponse.data.Status) {
@@ -111,7 +113,7 @@ const EditBlogPost = () => {
       formData.append("artical", values.artical);
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/admin/blogpost/edit/${id}`,
+          `${state.port}/api/admin/blogpost/edit/${id}`,
           formData,
           {
             headers: {
@@ -320,11 +322,7 @@ const EditBlogPost = () => {
               <h5>Preview Thumbnail</h5>
 
               <img
-                src={
-                  file
-                    ? file
-                    : `http://localhost:8080/Images/${BlogPost.thumble}`
-                }
+                src={file ? file : `${state.port}/Images/${BlogPost.thumble}`}
                 alt="Tojo_global_Thumbnail_Image"
                 className="blog_Image"
                 loading="lazy"

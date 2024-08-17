@@ -1,11 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const EditTagName = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ const EditTagName = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/TagName/${id}`)
+      .get(`${state.port}/api/admin/TagName/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setTagName({
@@ -43,7 +45,7 @@ const EditTagName = () => {
       console.log(values);
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/admin/TagName/edit/${id}`,
+          `${state.port}/api/admin/TagName/edit/${id}`,
           values
         );
         if (response.data.Status) {

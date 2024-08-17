@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -18,8 +18,10 @@ import {
 import { BsExclamationCircle } from "react-icons/bs";
 
 import { MdOutlineArrowDownward } from "react-icons/md";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const TagNameServerRouter = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const TagNameServerRouter = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/TagName")
+      .get(`${state.port}/api/admin/TagName`)
       .then((result) => {
         if (result.data.Status) {
           setTagName(result.data.Result);
@@ -76,7 +78,7 @@ const TagNameServerRouter = () => {
   const handleDelete = () => {
     console.log(dataDeleteId);
     axios
-      .delete(`http://localhost:8080/api/admin/TagName/delete/` + dataDeleteId)
+      .delete(`${state.port}/api/admin/TagName/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/TagName");

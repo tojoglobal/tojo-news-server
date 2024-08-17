@@ -4,8 +4,11 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import ClinetMessageCard from "./Card/ClinetMessageCard";
 import AppointMentCard from "./Card/AppointMentCard";
+import { useContext } from "react";
+import { AppContext } from "../SmallComponent/AppContext";
 
 const MainDashbord = () => {
+  const { state } = useContext(AppContext);
   axios.defaults.withCredentials = true;
   // start
   const [errorMessage, setErrorMessage] = useState(null);
@@ -21,7 +24,7 @@ const MainDashbord = () => {
   console.log(errorMessage);
 
   const clinetCount = () => {
-    axios.get("http://localhost:8080/api/admin/client-count").then((result) => {
+    axios.get(`${state.port}/api/admin/client-count`).then((result) => {
       if (result.data.Status) {
         setTotalNews(result.data.Result[0].totalClient);
       } else {

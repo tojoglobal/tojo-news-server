@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,8 +7,10 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const CreatePodcasts = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -42,7 +44,7 @@ const CreatePodcasts = () => {
       formData.append("AppleUrl", values.AppleUrl);
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/admin/Podcasts/create",
+          `${state.port}/api/admin/Podcasts/create`,
           formData,
           {
             headers: {

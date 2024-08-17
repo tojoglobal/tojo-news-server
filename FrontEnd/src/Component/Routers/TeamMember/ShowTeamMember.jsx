@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import "react-toastify/dist/ReactToastify.css";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -12,8 +12,10 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const ShowTeamMember = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   // state
@@ -23,7 +25,7 @@ const ShowTeamMember = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/teamMember/${id}`)
+      .get(`${state.port}/api/admin/teamMember/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setTeamMember({
@@ -87,7 +89,7 @@ const ShowTeamMember = () => {
                   {" "}
                   <img
                     className="img-fluid"
-                    src={`http://localhost:8080/Images/${teamMember.img}`}
+                    src={`${state.port}/Images/${teamMember.img}`}
                     alt={teamMember.img}
                   />{" "}
                 </td>

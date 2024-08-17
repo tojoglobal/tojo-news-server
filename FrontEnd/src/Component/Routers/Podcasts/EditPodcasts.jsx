@@ -7,7 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { Editor } from "@tinymce/tinymce-react";
 import { Form, InputGroup } from "react-bootstrap";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
-// import { FaCloudUploadAlt } from "react-icons/fa";
 
 const EditPodcasts = () => {
   // Router

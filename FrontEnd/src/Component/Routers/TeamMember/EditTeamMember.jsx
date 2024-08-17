@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -7,8 +7,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { Editor } from "@tinymce/tinymce-react";
 import { Form, InputGroup } from "react-bootstrap";
 // import { FaCloudUploadAlt } from "react-icons/fa";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const EditTeamMember = () => {
+  const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ const EditTeamMember = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/admin/teamMember/${id}`)
+      .get(`${state.port}/api/admin/teamMember/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setTeamMember({
@@ -60,7 +62,7 @@ const EditTeamMember = () => {
       console.log(values);
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/admin/teamMember/edit/${id}`,
+          `${state.port}/api/admin/teamMember/edit/${id}`,
           values
         );
         if (response.data.Status) {

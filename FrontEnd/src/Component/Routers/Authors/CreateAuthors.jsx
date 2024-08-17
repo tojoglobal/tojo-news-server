@@ -5,8 +5,12 @@ import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoStarSharp } from "react-icons/io5";
+import { useContext } from "react";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const CreateContactCategory = () => {
+  const { state } = useContext(AppContext);
+
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -23,7 +27,7 @@ const CreateContactCategory = () => {
       console.log(values);
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/admin/author/create",
+          `${state.port}/api/admin/author/create`,
           values
         );
         if (response.data.Status) {

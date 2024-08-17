@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -18,8 +18,10 @@ import {
 import { BsExclamationCircle } from "react-icons/bs";
 
 import { MdOutlineArrowDownward } from "react-icons/md";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const JobPost = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const JobPost = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/jobpost")
+      .get(`${state.port}/api/admin/jobpost`)
       .then((result) => {
         if (result.data.Status) {
           setJob(result.data.Result);
@@ -73,7 +75,7 @@ const JobPost = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`http://localhost:8080/api/admin/jobpost/delete/` + dataDeleteId)
+      .delete(`${state.port}/api/admin/jobpost/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/job");

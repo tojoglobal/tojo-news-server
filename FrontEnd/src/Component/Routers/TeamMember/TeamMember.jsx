@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi";
 import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
@@ -17,8 +17,10 @@ import {
 } from "@mui/material";
 import { BsExclamationCircle } from "react-icons/bs";
 import { MdOutlineArrowDownward } from "react-icons/md";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const TeamMember = () => {
+  const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const TeamMember = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/admin/teamMember")
+      .get(`${state.port}/api/admin/teamMember`)
       .then((result) => {
         if (result.data.Status) {
           setTeamMember(result.data.Result);
@@ -74,9 +76,7 @@ const TeamMember = () => {
 
   const handleDelete = () => {
     axios
-      .delete(
-        `http://localhost:8080/api/admin/teamMember/delete/` + dataDeleteId
-      )
+      .delete(`${state.port}/api/admin/teamMember/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
           navigate("/dashboard/teamMember");
@@ -143,7 +143,7 @@ const TeamMember = () => {
                     <td>
                       <img
                         className="Team_member_Image"
-                        src={`http://localhost:8080/Images/${tm.img}`}
+                        src={`${state.port}/Images/${tm.img}`}
                         alt={tm.img}
                       />
                     </td>
