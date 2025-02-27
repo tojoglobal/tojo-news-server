@@ -1,20 +1,21 @@
 import express from "express";
 import {
   adminLogin,
-  // blogpost 
+  // blogpost
   createBlogPost,
   allBlogPost,
   editBlogPost,
   editBlogPostId,
+  getBlogPostById,
   BlogPostToDelete,
   // episodes
-  createEpisodes , 
-  allEpisodes , 
-  editEpisodes , 
-  editEpisodesId , 
-  EpisodesToDelete ,
+  createEpisodes,
+  allEpisodes,
+  editEpisodes,
+  editEpisodesId,
+  EpisodesToDelete,
 
-// tagName 
+  // tagName
   createTagName,
   allTagName,
   editTagNameId,
@@ -25,36 +26,36 @@ import {
   uploadMemberImage,
   allMember,
   adminLogout,
-// team member 
+  // team member
   createTeamMember,
   allTeamMember,
   teamMemberToDelete,
   editTeamMemberID,
   editTeamMember,
-// prodcasts
+  // prodcasts
   createPodcasts,
   allPodcasts,
   PodcastsToDelete,
   editPodcastsID,
   editPodcasts,
-// Nesletter
+  // Nesletter
   submitedNewsLetterEmail,
   AllClientNewsLetterEmail,
   clientNewsLetterEmailToDelete,
   // clientNewsLetterEmailToShow,
-  // appoinment 
+  // appoinment
   appointmentContactName,
   createAppointment,
   AllAppointment,
   showAppointment,
   editAppointment,
-  // contact list 
+  // contact list
   createContactlist,
   allContactlist,
   contactlistToDelete,
   showContactInfo,
   editContactlist,
-  // author 
+  // author
   createAuthor,
   getAuthor,
   deleteOneAuthor,
@@ -66,17 +67,17 @@ import {
   deleteOneNewsCategory,
   showNewsCategoryId,
   editNewsCategory,
-  // clinet list 
+  // clinet list
   createClientList,
   getClientList,
   showClientListId,
   deleteOneClientList,
   editClientList,
-  // count 
+  // count
   clinetCounts,
   teamMemberCount,
   contactCount,
-  // job post 
+  // job post
   createJobPost,
   allJobPost,
   jobPostToDelete,
@@ -118,7 +119,7 @@ const fileStorage = multer.diskStorage({
 
 // Initialize upload
 const upload = multer({
-  storage: fileStorage, 
+  storage: fileStorage,
   dest: "uploads/",
 });
 
@@ -179,6 +180,7 @@ AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);
 AdminRouter.get("/blogpost", allBlogPost);
 AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);
 AdminRouter.get("/blogpost/:id", editBlogPostId);
+AdminRouter.get("/blogpost/:id", getBlogPostById);
 AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
 
 // Blog Router
@@ -191,7 +193,10 @@ AdminRouter.delete("/Episodes/delete/:id", EpisodesToDelete);
 // clientNewsLetterEmail
 AdminRouter.post("/newsletteremail/submite", submitedNewsLetterEmail);
 AdminRouter.get("/newsletteremail", AllClientNewsLetterEmail);
-AdminRouter.delete("/newsletteremail/delete/:id", clientNewsLetterEmailToDelete);
+AdminRouter.delete(
+  "/newsletteremail/delete/:id",
+  clientNewsLetterEmailToDelete
+);
 // AdminRouter.get("/clientNewsLetterEmail/:id", clientNewsLetterEmailToShow);
 
 //Appointment Route
