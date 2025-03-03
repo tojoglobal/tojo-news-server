@@ -177,12 +177,26 @@ const editBlogPostId = (req, res) => {
     return res.json({ Status: true, Result: result });
   });
 };
+
 const getBlogPostById = (req, res) => {
-  const id = req.params.id;
-  console.log(id);
+  const id = parseInt(req.params.id, 10);
+
+  if (isNaN(id)) {
+    return res.status(400).json({ Status: false, Error: "Invalid ID format" });
+  }
+
   db.query(getBlogPostByIdQuery, [id], (err, result) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" });
-    return res.json({ Status: true, Result: result });
+    if (err) {
+      return res.status(500).json({ Status: false, Error: "Query Error" });
+    }
+
+    if (result.length === 0) {
+      return res
+        .status(404)
+        .json({ Status: false, Error: "Blog post not found" });
+    }
+
+    return res.json({ Status: true, Result: result[0] });
   });
 };
 

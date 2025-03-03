@@ -26,9 +26,9 @@ const createBlogPostQuery = `INSERT INTO blognews (uuid, title,permalink, subtit
 const allBlogPostQuery = `SELECT * FROM blognews ORDER BY blognews.ID DESC`;
 const editBlogPostQuery = `UPDATE blognews SET title = ?,permalink=?, subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
 const editBlogPostIdQuery = `SELECT * FROM blognews WHERE uuid = ?`;
+const getBlogPostByIdQuery = `SELECT * FROM blognews WHERE ID = ?`;
 
 const BlogPostToDeleteQuery = `DELETE FROM blognews WHERE uuid = ?`;
-
 
 // Team member
 const createTeamMemberQuery = `INSERT INTO team_member ( uuid, name, position , img , BioData, FBurl,LIurl, TWurl , WhatsApurl , YTurl) VALUES ( ? )`;
@@ -57,7 +57,8 @@ const clientNewsLetterEmailToDeleteQuery = `DELETE FROM newsletteremail WHERE uu
 // Appointment Query
 const AllAppointmentQuery =
   "SELECT * FROM appointment  ORDER BY appointment.ID DESC";
-const appointmentContactNameQuery = "SELECT  uuid , Name  FROM clientNewsLetterEmail";
+const appointmentContactNameQuery =
+  "SELECT  uuid , Name  FROM clientNewsLetterEmail";
 const createAppointmentQuery = `INSERT INTO appointment (uuid, problemTitle, contactName, ApoDate, reason, note, ApoTime) VALUES (?)`;
 const showAppointmentQuery = "SELECT * FROM appointment WHERE uuid = ?";
 const editAppointmentQuery = `UPDATE appointment SET problemTitle = ?, contactName = ? , ApoDate=? , reason=?, note=?,  ApoTime=? WHERE uuid = ?`;
@@ -100,82 +101,83 @@ const editEpisodesIdQuery = `SELECT * FROM episodes WHERE uuid = ?`;
 const EpisodesToDeleteQuery = `DELETE FROM episodes WHERE uuid = ?`;
 
 export {
-   // admin 
-   adminLoginData,
-   // team member
-   allTeamMemberQuery,
-   teamMemberToDeleteQuery,
-   createTeamMemberQuery,
-   editTeamMemberIDQuery,
-   editTeamMemberQuery,
-   // podcast
-   allPodcastsQuery,
-   PodcastsToDeleteQuery,
-   createPodcastsQuery,
-   editPodcastsIDQuery,
-   editPodcastsQuery,
-   // blogPost 
-   createBlogPostQuery,
-   allBlogPostQuery,
-   editBlogPostQuery,
-   BlogPostToDeleteQuery,
-   editBlogPostIdQuery,
-   // tagName
-   createTagNameQuery,
-   allTagNameQuery,
-   TagNameToDeleteQuery,
-   editTagNameQuery,
-   editTagNameIdQuery,
-   // patner image 
-   memberImageCreateQuery,
-   memberImageQuery,
-   memberImageDeleteQuery,
-   // clint nesletter 
-   submitedNewsLetterEmailQuery,
-   AllClientNewsLetterEmailQuery,
-   clientNewsLetterEmailToDeleteQuery,
-   // clientNewsLetterEmailToShowQuery,
-   // appointment
-   appointmentContactNameQuery,
-   createAppointmentQuery,
-   AllAppointmentQuery,
-   showAppointmentQuery,
-   editAppointmentQuery,
-   // contact list 
-   createContactlistQuery,
-   allContactlistQuery,
-   contactlistToDeleteQuery,
-   showContactInfoQuery,
-   editContactlistQuery,
-   // author
-   createAuthorQuery,
-   getAuthorQuery,
-   deleteOneAuthorQuery,
-   editAuthorQuery,
-   showAuthorIdQuery,
-   // news category
-   createNewsCategoryQuery,
-   getNewsCategoryQuery,
-   deleteOneNewsCategoryQuery,
-   showNewsCategoryIdQuery,
-   editNewsCategoryQuery,
-   // clinet list 
-   createClientListQuery,
-   getClientListQuery,
-   showClientListIdQuery,
-   deleteOneClientListQuery,
-   editClientListQuery,
-   // job post 
-   createJobPostQuery,
-   allJobPostQuery,
-   editJobPostIdQuery,
-   editJobPostQuery,
-   jobPostToDeleteQuery,
-   
- // episode
- EpisodesToDeleteQuery , 
- editEpisodesIdQuery,
- editEpisodesQuery,
- allEpisodesQuery,
- createEpisodesQuery,
+  // admin
+  adminLoginData,
+  // team member
+  allTeamMemberQuery,
+  teamMemberToDeleteQuery,
+  createTeamMemberQuery,
+  editTeamMemberIDQuery,
+  editTeamMemberQuery,
+  // podcast
+  allPodcastsQuery,
+  PodcastsToDeleteQuery,
+  createPodcastsQuery,
+  editPodcastsIDQuery,
+  editPodcastsQuery,
+  // blogPost
+  createBlogPostQuery,
+  allBlogPostQuery,
+  editBlogPostQuery,
+  BlogPostToDeleteQuery,
+  getBlogPostByIdQuery,
+  editBlogPostIdQuery,
+  // tagName
+  createTagNameQuery,
+  allTagNameQuery,
+  TagNameToDeleteQuery,
+  editTagNameQuery,
+  editTagNameIdQuery,
+  // patner image
+  memberImageCreateQuery,
+  memberImageQuery,
+  memberImageDeleteQuery,
+  // clint nesletter
+  submitedNewsLetterEmailQuery,
+  AllClientNewsLetterEmailQuery,
+  clientNewsLetterEmailToDeleteQuery,
+  // clientNewsLetterEmailToShowQuery,
+  // appointment
+  appointmentContactNameQuery,
+  createAppointmentQuery,
+  AllAppointmentQuery,
+  showAppointmentQuery,
+  editAppointmentQuery,
+  // contact list
+  createContactlistQuery,
+  allContactlistQuery,
+  contactlistToDeleteQuery,
+  showContactInfoQuery,
+  editContactlistQuery,
+  // author
+  createAuthorQuery,
+  getAuthorQuery,
+  deleteOneAuthorQuery,
+  editAuthorQuery,
+  showAuthorIdQuery,
+  // news category
+  createNewsCategoryQuery,
+  getNewsCategoryQuery,
+  deleteOneNewsCategoryQuery,
+  showNewsCategoryIdQuery,
+  editNewsCategoryQuery,
+  // clinet list
+  createClientListQuery,
+  getClientListQuery,
+  showClientListIdQuery,
+  deleteOneClientListQuery,
+  editClientListQuery,
+  // job post
+  createJobPostQuery,
+  allJobPostQuery,
+  editJobPostIdQuery,
+  editJobPostQuery,
+  jobPostToDeleteQuery,
+
+  // episode
+  EpisodesToDeleteQuery,
+  editEpisodesIdQuery,
+  editEpisodesQuery,
+  allEpisodesQuery,
+  createEpisodesQuery,
 };

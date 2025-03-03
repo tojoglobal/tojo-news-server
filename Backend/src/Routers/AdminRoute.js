@@ -88,17 +88,6 @@ import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
 
 // Set storage engine
-// const fileStorage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "public/Images");
-//   },
-//   filename: (req, file, cb) => {
-//     const name = uuidv4() + "_" + Date.now() + "-" + file.originalname;
-//     cb(null, name);
-//   },
-// });
-
-// Set storage engine
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     let folder;
@@ -122,19 +111,6 @@ const upload = multer({
   storage: fileStorage,
   dest: "uploads/",
 });
-
-// Check file type
-// function checkFileType(file, cb) {
-//   const filetypes = /jpeg|jpg|png|gif/;
-//   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-//   const mimetype = filetypes.test(file.mimetype);
-
-//   if (mimetype && extname) {
-//     return cb(null, true);
-//   } else {
-//     cb('Error: Images Only!');
-//   }
-// }
 
 // end image and audio uplode
 
@@ -180,7 +156,7 @@ AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);
 AdminRouter.get("/blogpost", allBlogPost);
 AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);
 AdminRouter.get("/blogpost/:id", editBlogPostId);
-AdminRouter.get("/blogpost/:id", getBlogPostById);
+AdminRouter.get("/blogpostbyid/:id", getBlogPostById);
 AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
 
 // Blog Router
