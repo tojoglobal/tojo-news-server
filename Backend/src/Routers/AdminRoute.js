@@ -116,6 +116,8 @@ const upload = multer({
 
 // admin route
 const AdminRouter = express.Router();
+
+// admin login
 AdminRouter.post("/adminlogin", adminLogin);
 
 // job post

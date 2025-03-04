@@ -1,8 +1,11 @@
+import jwt from "jsonwebtoken";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { AdminRouters } from "./src/Routers/AdminRoute.js";
 import bodyParser from "body-parser";
+import { PublicApiRouters } from "./src/Routers/PublicApiRoute.js";
+import { UserRouters } from "./src/Routers/UserRoute.js";
 
 const app = express();
 
@@ -30,13 +33,15 @@ app.use(bodyParser.json());
 
 // Router set up
 app.use("/api/admin", AdminRouters);
+app.use("/api/user", UserRouters);
+app.use("/api", PublicApiRouters);
 
 app.use(express.static("public"));
 
 const verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (token) {
-    Jwt.verify(token, "jwt_secret_key", (err, decoded) => {
+    jwt.verify(token, "jwt_secret_key", (err, decoded) => {
       if (err) return res.json({ Status: false, Error: "Wrong Token" });
       req.id = decoded.id;
       req.role = decoded.role;
