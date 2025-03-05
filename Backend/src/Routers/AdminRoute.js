@@ -120,6 +120,14 @@ const AdminRouter = express.Router();
 // admin login
 AdminRouter.post("/adminlogin", adminLogin);
 
+// Blog Router
+AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);
+AdminRouter.get("/blogpost", allBlogPost);
+AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);
+AdminRouter.get("/blogpost/:id", editBlogPostId);
+AdminRouter.get("/blogpostbyid/:id", getBlogPostById);
+AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
+
 // job post
 AdminRouter.post("/jobPost/create", createJobPost);
 AdminRouter.get("/jobPost", allJobPost);
@@ -152,14 +160,6 @@ AdminRouter.get("/TagName", allTagName);
 AdminRouter.get("/TagName/:id", editTagNameId);
 AdminRouter.put("/TagName/edit/:id", editTagName);
 AdminRouter.delete("/TagName/delete/:uuid", TagNameToDelete);
-
-// Blog Router
-AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);
-AdminRouter.get("/blogpost", allBlogPost);
-AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);
-AdminRouter.get("/blogpost/:id", editBlogPostId);
-AdminRouter.get("/blogpostbyid/:id", getBlogPostById);
-AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
 
 // Blog Router
 AdminRouter.post("/Episodes/create", upload.single("file"), createEpisodes);

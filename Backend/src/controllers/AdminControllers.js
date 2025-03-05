@@ -137,118 +137,106 @@ const createBlogPost = (req, res) => {
   });
 };
 
-const allBlogPost = (req, res) => {
-  db.query(allBlogPostQuery, (err, result) => {
-    if (err) {
-      return res.json({ Status: false, Error: "Query Error" });
-    } else {
-      return res.json({ Status: true, Result: result });
-    }
-  });
-};
-
-const editBlogPost = (req, res) => {
-  const currentDate = new Date();
-  const id = req.params.id;
-  const newImage = req.file ? req.file.filename : req.body.file;
-  const values = [
-    req.body.title,
-    req.body.permalink,
-    req.body.subTitle,
-    req.body.AuthorOne,
-    req.body.AuthorTwo || null,
-    req.body.newsCategory,
-    newImage,
-    req.body.artical,
-    currentDate,
-  ];
-
-  db.query(editBlogPostQuery, [...values, id], (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
-    return res.json({ Status: true, Result: result });
-  });
-};
-
-const editBlogPostId = (req, res) => {
-  const id = req.params.id;
-  db.query(editBlogPostIdQuery, [id], (err, result) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" });
-    return res.json({ Status: true, Result: result });
-  });
-};
-
-const getBlogPostById = (req, res) => {
-  const id = parseInt(req.params.id, 10);
-
-  if (isNaN(id)) {
-    return res.status(400).json({ Status: false, Error: "Invalid ID format" });
+const allBlogPost = async (req, res) => {
+  try {
+    const [data] = await db.query(allBlogPostQuery); // ✅ Use await with promise-based pool
+    return res.json({ Status: true, Result: data });
+  } catch (err) {
+    return res.json({ Status: false, Error: "Query Error" });
   }
+};
 
-  db.query(getBlogPostByIdQuery, [id], (err, result) => {
-    if (err) {
-      return res.status(500).json({ Status: false, Error: "Query Error" });
+const editBlogPost = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const id = req.params.id;
+    const newImage = req.file ? req.file.filename : req.body.file;
+
+    const values = [
+      req.body.title,
+      req.body.permalink,
+      req.body.subTitle,
+      req.body.AuthorOne,
+      req.body.AuthorTwo || null,
+      req.body.newsCategory,
+      newImage,
+      req.body.artical,
+      currentDate,
+      id, // Add `id` at the end for WHERE condition
+    ];
+
+    const [data] = await db.query(editBlogPostQuery, values); // Use `await` for async execution
+
+    return res.json({ Status: true, Result: data });
+  } catch (err) {
+    return res.json({ Status: false, Error: err.message });
+  }
+};
+
+const editBlogPostId = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const [data] = await db.query(editBlogPostIdQuery, [id]);
+    return res.json({ Status: true, Result: data });
+  } catch (err) {
+    return res.json({ Status: false, Error: err.message });
+  }
+};
+
+const getBlogPostById = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res
+        .status(400)
+        .json({ Status: false, Error: "Invalid ID format" });
     }
-
-    if (result.length === 0) {
+    const [data] = await db.query(getBlogPostByIdQuery, [id]);
+    if (data.length === 0) {
       return res
         .status(404)
         .json({ Status: false, Error: "Blog post not found" });
     }
-
-    return res.json({ Status: true, Result: result[0] });
-  });
+    return res.json({ Status: true, Result: data });
+  } catch (err) {
+    return res.status(500).json({ Status: false, Error: err.message });
+  }
 };
 
-const BlogPostToDelete = (req, res) => {
-  const id = req.params.id;
-  const deleteFileQuery = "SELECT thumble FROM blognews WHERE uuid = ?";
-  // Get the filename before deleting
-  db.query(deleteFileQuery, [id], (err, result) => {
-    if (err) {
-      return res.status(500).json({ Status: false, Error: "Query Error" });
-    }
+const BlogPostToDelete = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // Get the filename before deleting
+    const deleteFileQuery = "SELECT thumble FROM blognews WHERE uuid = ?";
+    const [result] = await db.query(deleteFileQuery, [id]);
     if (result.length === 0) {
       return res.status(404).json({ Status: false, Error: "Record not found" });
     }
-    const filename = result[0].thumble;
-
-    // Determine the folder based on the file extension or MIME type
-    let folder;
+    const filename = rows[0].result;
+    // Determine the folder based on the file extension
     const fileExtension = path.extname(filename).toLowerCase();
-    if (
-      fileExtension === ".jpg" ||
-      fileExtension === ".jpeg" ||
-      fileExtension === ".png"
-    ) {
-      folder = "public/Images";
-    } else {
+    let folder = "public/Images";
+    if (![".jpg", ".jpeg", ".png"].includes(fileExtension)) {
       return res
         .status(400)
         .json({ Status: false, Error: "Invalid file type" });
     }
-
     const filepath = path.join(folder, filename);
-
-    fs.unlink(filepath, (err) => {
-      if (err) {
-        return res
-          .status(500)
-          .json({ Status: false, Error: "File Deletion Error" });
-      }
-
-      db.query(BlogPostToDeleteQuery, [id], (err, result) => {
-        if (err) {
-          return res.status(500).json({ Status: false, Error: "Query Error" });
-        }
-
-        res.json({
-          Status: true,
-          message: "File deleted and data removed.",
-          Result: result,
-        });
-      });
+    // Delete the file asynchronously
+    await fs.promises.unlink(filepath).catch((err) => {
+      console.error("Error deleting file:", err);
+      throw new Error("File Deletion Error");
     });
-  });
+    // Delete the blog post entry from the database
+    const [fileDeleteResult] = await db.query(BlogPostToDeleteQuery, [id]);
+    res.json({
+      Status: true,
+      message: "File deleted and data removed.",
+      Result: fileDeleteResult,
+    });
+  } catch (err) {
+    return res.status(500).json({ Status: false, Error: err.message });
+  }
 };
 
 // job post router
