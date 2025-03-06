@@ -7,10 +7,8 @@ import { createNewsCategoryQuery } from "../models/PublicApiModel.js";
 const registerUser = async (req, res) => {
   const { uid, email, displayName, photoURL } = req.body;
   console.log(req.body);
-
   try {
     const connection = await db.getConnection();
-
     // Check if the user already exists
     const [existingUser] = await connection.execute(
       "SELECT * FROM users WHERE email = ?",

@@ -84,29 +84,46 @@ import {
   createEpisodesQuery,
 } from "../models/AdminModel.js";
 
-const adminLogin = (req, res) => {
-  db.query(
-    adminLoginData,
-    [req.body.email, req.body.password],
-    (err, result) => {
-      if (err) return res.json({ loginStatus: false, Error: "Query error" });
-      if (result.length > 0) {
-        const email = result[0].email;
-        const token = jwt.sign(
-          { role: "admin", email: email, id: result[0].id },
-          "jwt_secret_key",
-          { expiresIn: "1d" }
-        );
-        res.cookie("token", token);
-        return res.json({ loginStatus: true });
-      } else {
-        return res.json({
-          loginStatus: false,
-          Error: "Wrong email or password",
-        });
-      }
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.json({
+        loginStatus: false,
+        Error: "Email and password are required",
+      });
     }
-  );
+
+    // Select admin by email
+    const [result] = await db.query(adminLoginData, [email, password]);
+
+    // Check if the admin exists
+    if (result.length === 0) {
+      return res.json({ loginStatus: false, Error: "Wrong email or password" });
+    }
+
+    // Verify password (assuming passwords are hashed in DB)
+    const isPasswordCorrect = password === result[0].password; // Replace with bcrypt comparison if hashed
+
+    if (!isPasswordCorrect) {
+      return res.json({ loginStatus: false, Error: "Wrong email or password" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { role: "admin", email: result[0].email, id: result[0].id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    // Send token as cookie
+    res.cookie("token", token, { httpOnly: true });
+
+    return res.json({ loginStatus: true, message: "Login Successful" });
+  } catch (err) {
+    return res.status(500).json({ Status: false, Error: err.message });
+  }
 };
 
 // Blog Post Router
@@ -151,7 +168,6 @@ const editBlogPost = async (req, res) => {
     const currentDate = new Date();
     const id = req.params.id;
     const newImage = req.file ? req.file.filename : req.body.file;
-
     const values = [
       req.body.title,
       req.body.permalink,
@@ -162,10 +178,10 @@ const editBlogPost = async (req, res) => {
       newImage,
       req.body.artical,
       currentDate,
-      id, // Add `id` at the end for WHERE condition
+      id,
     ];
 
-    const [data] = await db.query(editBlogPostQuery, values); // Use `await` for async execution
+    const [data] = await db.query(editBlogPostQuery, values);
 
     return res.json({ Status: true, Result: data });
   } catch (err) {

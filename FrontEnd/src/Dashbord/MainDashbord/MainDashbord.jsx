@@ -21,7 +21,6 @@ const MainDashbord = () => {
     lawyerCount();
     contactCount();
   }, []);
-  console.log(errorMessage);
 
   const clinetCount = () => {
     axios.get(`${state.port}/api/admin/client-count`).then((result) => {
@@ -34,27 +33,23 @@ const MainDashbord = () => {
   };
 
   const lawyerCount = () => {
-    axios
-      .get("https://api.tojoglobal.com/api/admin/teamMember-count")
-      .then((result) => {
-        if (result.data.Status) {
-          setTotalTeamMember(result.data.Result[0].totalTeamMember);
-        } else {
-          setErrorMessage(result.data.Error);
-        }
-      });
+    axios.get(`${state.port}/api/admin/teamMember-count`).then((result) => {
+      if (result.data.Status) {
+        setTotalTeamMember(result.data.Result[0].totalTeamMember);
+      } else {
+        setErrorMessage(result.data.Error);
+      }
+    });
   };
 
   const contactCount = () => {
-    axios
-      .get("https://api.tojoglobal.com/api/admin/contact-count")
-      .then((result) => {
-        if (result.data.Status) {
-          setTotalContact(result.data.Result[0].totalContact);
-        } else {
-          setErrorMessage(result.data.Error);
-        }
-      });
+    axios.get(`${state.port}/api/admin/contact-count`).then((result) => {
+      if (result.data.Status) {
+        setTotalContact(result.data.Result[0].totalContact);
+      } else {
+        setErrorMessage(result.data.Error);
+      }
+    });
   };
 
   return (
