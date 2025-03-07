@@ -6,7 +6,7 @@ import { createNewsCategoryQuery } from "../models/PublicApiModel.js";
 // user register
 const registerUser = async (req, res) => {
   const { uid, email, displayName, photoURL } = req.body;
-  console.log(req.body);
+
   try {
     const connection = await db.getConnection();
     // Check if the user already exists
@@ -46,4 +46,9 @@ const registerUser = async (req, res) => {
   }
 };
 
-export { registerUser };
+const updateViewCount = async (req, res) => {
+  const { articleId, userId, sessionId } = req.body;
+  console.log(articleId, userId, sessionId);
+};
+
+export { registerUser, updateViewCount };
