@@ -1,8 +1,8 @@
 import express from "express";
-import multer from "multer";
 import {
   registerUser,
   updateViewCount,
+  getViewCount,
 } from "../controllers/PublicApiContrillers.js";
 
 // PublicApiRouter route
@@ -11,5 +11,6 @@ const PublicApiRouter = express.Router();
 PublicApiRouter.post("/register", registerUser);
 // blog view count
 PublicApiRouter.post("/updateViews", updateViewCount);
+PublicApiRouter.get("/:articalid/view", getViewCount);
 
 export { PublicApiRouter as PublicApiRouters };

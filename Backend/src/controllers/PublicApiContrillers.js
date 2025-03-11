@@ -1,7 +1,7 @@
 import db from "../../Utils/db.js";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import { createNewsCategoryQuery } from "../models/PublicApiModel.js";
+import { UpdateViewCountQuery } from "../models/PublicApiModel.js";
 
 // user register
 const registerUser = async (req, res) => {
@@ -41,14 +41,26 @@ const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error registering user:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const updateViewCount = async (req, res) => {
-  const { articleId, userId, sessionId } = req.body;
-  console.log(articleId, userId, sessionId);
+  try {
+    const { articalid } = req.body;
+    await db.query(UpdateViewCountQuery, [articleId]);
+    res.status(200).json({ success: true, message: "View count updated" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: "Database error" });
+  }
 };
 
-export { registerUser, updateViewCount };
+const getViewCount = async (req, res) => {
+  try {
+    const { view } = req.body;
+    console.log(articleId);
+    // await db.query(getViewCountQuery, [articleId]);
+    res.status(200).json({ success: true, message: "View count updated" });
+  } catch (error) {}
+};
+export { registerUser, updateViewCount, getViewCount };

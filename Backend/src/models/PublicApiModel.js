@@ -1,3 +1,8 @@
 const createNewsCategoryQuery = `INSERT INTO categories (uuid , name ) VALUES(?) `;
 
-export { createNewsCategoryQuery };
+const UpdateViewCountQuery = `
+  INSERT INTO blog_views (blog_id, view_count)
+  VALUES (?, 1)
+  ON DUPLICATE KEY UPDATE view_count = view_count + 1;
+`;
+export { createNewsCategoryQuery, UpdateViewCountQuery };
