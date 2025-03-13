@@ -1,7 +1,10 @@
 import db from "../../Utils/db.js";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import { UpdateViewCountQuery } from "../models/PublicApiModel.js";
+import {
+  UpdateViewCountQuery,
+  getViewCountQuery,
+} from "../models/PublicApiModel.js";
 
 // user register
 const registerUser = async (req, res) => {
@@ -47,7 +50,7 @@ const registerUser = async (req, res) => {
 
 const updateViewCount = async (req, res) => {
   try {
-    const { articalid } = req.body;
+    const { articleId } = req.body;
     await db.query(UpdateViewCountQuery, [articleId]);
     res.status(200).json({ success: true, message: "View count updated" });
   } catch (error) {
@@ -57,10 +60,22 @@ const updateViewCount = async (req, res) => {
 
 const getViewCount = async (req, res) => {
   try {
-    const { view } = req.body;
-    console.log(articleId);
-    // await db.query(getViewCountQuery, [articleId]);
-    res.status(200).json({ success: true, message: "View count updated" });
-  } catch (error) {}
+    const { articalid } = req.params;
+
+    // Query the database to fetch the view count
+    const [rows] = await db.query(getViewCountQuery, [articalid]);
+
+    if (rows.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Article not found" });
+    }
+
+    res.status(200).json({ success: true, viewCount: rows[0].view_count });
+  } catch (error) {
+    console.error("Error fetching view count:", error);
+    res.status(500).json({ success: false, error: "Database error" });
+  }
 };
+
 export { registerUser, updateViewCount, getViewCount };

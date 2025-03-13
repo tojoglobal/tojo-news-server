@@ -5,4 +5,8 @@ const UpdateViewCountQuery = `
   VALUES (?, 1)
   ON DUPLICATE KEY UPDATE view_count = view_count + 1;
 `;
-export { createNewsCategoryQuery, UpdateViewCountQuery };
+
+const getViewCountQuery = `SELECT view_count
+ FROM blog_views WHERE blog_id = ?`;
+
+export { createNewsCategoryQuery, UpdateViewCountQuery, getViewCountQuery };
