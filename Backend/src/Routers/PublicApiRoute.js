@@ -4,6 +4,8 @@ import {
   updateViewCount,
   getViewCount,
   updateReadingTime,
+  loveCount,
+  getLoveCount,
 } from "../controllers/PublicApiContrillers.js";
 
 // PublicApiRouter route
@@ -15,5 +17,8 @@ PublicApiRouter.post("/updateViews", updateViewCount);
 PublicApiRouter.get("/:articalid/view", getViewCount);
 // blog Reading Time
 PublicApiRouter.post("/updatereadingtime", updateReadingTime);
+//blog love count
+PublicApiRouter.post("/updateLoves", loveCount);
+PublicApiRouter.get("/getLove", getLoveCount);
 
 export { PublicApiRouter as PublicApiRouters };

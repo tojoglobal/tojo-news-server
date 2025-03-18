@@ -79,20 +79,79 @@ const getViewCount = async (req, res) => {
 const updateReadingTime = async (req, res) => {
   try {
     const { articleId, duration } = req.body;
-
     if (!articleId || !duration) {
       return res.status(400).json({ success: false, error: "Missing data" });
     }
-
     await db.query(updateReadingTimeQuery, [articleId, duration]);
     res
       .status(200)
       .json({ success: true, message: "Reading Time count updated" });
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({ success: false, error: "Database error" });
   }
 };
 
-export { registerUser, updateViewCount, getViewCount, updateReadingTime };
+// loveCount controller
+const loveCount = async (req, res) => {
+  try {
+    const { articleId, userId } = req.body;
+
+    const [existingLike] = await db.query(
+      "SELECT id FROM likes WHERE article_id = ? AND user_id = ?",
+      [articleId, userId]
+    );
+    if (existingLike.length > 0) {
+      await db.query("DELETE FROM likes WHERE article_id = ? AND user_id = ?", [
+        articleId,
+        userId,
+      ]);
+      res.json({ success: true, liked: false });
+    } else {
+      // Like (Insert into database)
+      await db.query("INSERT INTO likes (article_id, user_id) VALUES (?, ?)", [
+        articleId,
+        userId,
+      ]);
+      res.json({ success: true, liked: true });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, error: "Error updating like status" });
+  }
+};
+
+const getLoveCount = async (req, res) => {
+  const { articleId, userId } = req.query;
+
+  try {
+    // Get total likes count
+    const [likeCountResult] = await db.query(
+      "SELECT COUNT(*) AS totalLikes FROM likes WHERE article_id = ?",
+      [articleId]
+    );
+
+    // Check if the user has liked
+    const [userLikeResult] = await db.query(
+      "SELECT 1 FROM likes WHERE article_id = ? AND user_id = ? LIMIT 1",
+      [articleId, userId]
+    );
+
+    res.json({
+      likes: likeCountResult[0].totalLikes,
+      userHasLiked: userLikeResult.length > 0,
+    });
+  } catch (error) {
+    console.error("Error fetching likes:", error);
+    res.status(500).json({ error: "Error fetching like data" });
+  }
+};
+
+export {
+  registerUser,
+  updateViewCount,
+  getViewCount,
+  updateReadingTime,
+  loveCount,
+  getLoveCount,
+};
