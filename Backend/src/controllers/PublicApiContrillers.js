@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   UpdateViewCountQuery,
   getViewCountQuery,
+  updateReadingTimeQuery,
 } from "../models/PublicApiModel.js";
 
 // user register
@@ -61,7 +62,6 @@ const updateViewCount = async (req, res) => {
 const getViewCount = async (req, res) => {
   try {
     const { articalid } = req.params;
-
     // Query the database to fetch the view count
     const [rows] = await db.query(getViewCountQuery, [articalid]);
 
@@ -70,12 +70,29 @@ const getViewCount = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Article not found" });
     }
-
     res.status(200).json({ success: true, viewCount: rows[0].view_count });
   } catch (error) {
-    console.error("Error fetching view count:", error);
     res.status(500).json({ success: false, error: "Database error" });
   }
 };
 
-export { registerUser, updateViewCount, getViewCount };
+const updateReadingTime = async (req, res) => {
+  try {
+    const { articleId, duration } = req.body;
+
+    if (!articleId || !duration) {
+      return res.status(400).json({ success: false, error: "Missing data" });
+    }
+
+    await db.query(updateReadingTimeQuery, [articleId, duration]);
+    res
+      .status(200)
+      .json({ success: true, message: "Reading Time count updated" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ success: false, error: "Database error" });
+  }
+};
+
+export { registerUser, updateViewCount, getViewCount, updateReadingTime };
