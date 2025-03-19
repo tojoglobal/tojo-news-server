@@ -6,6 +6,8 @@ import {
   updateReadingTime,
   loveCount,
   getLoveCount,
+  getLatestNews,
+  getMostReadBlogs,
 } from "../controllers/PublicApiContrillers.js";
 
 // PublicApiRouter route
@@ -20,5 +22,9 @@ PublicApiRouter.post("/updatereadingtime", updateReadingTime);
 //blog love count
 PublicApiRouter.post("/updateLoves", loveCount);
 PublicApiRouter.get("/getLove", getLoveCount);
+//latest-news
+PublicApiRouter.get("/getLatestNews", getLatestNews);
+//Most-Read-news
+PublicApiRouter.get("/getMostRead", getMostReadBlogs);
 
 export { PublicApiRouter as PublicApiRouters };

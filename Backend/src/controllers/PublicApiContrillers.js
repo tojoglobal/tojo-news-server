@@ -95,7 +95,6 @@ const updateReadingTime = async (req, res) => {
 const loveCount = async (req, res) => {
   try {
     const { articleId, userId } = req.body;
-
     const [existingLike] = await db.query(
       "SELECT id FROM likes WHERE article_id = ? AND user_id = ?",
       [articleId, userId]
@@ -122,9 +121,8 @@ const loveCount = async (req, res) => {
 };
 
 const getLoveCount = async (req, res) => {
-  const { articleId, userId } = req.query;
-
   try {
+    const { articleId, userId } = req.query;
     // Get total likes count
     const [likeCountResult] = await db.query(
       "SELECT COUNT(*) AS totalLikes FROM likes WHERE article_id = ?",
@@ -142,8 +140,44 @@ const getLoveCount = async (req, res) => {
       userHasLiked: userLikeResult.length > 0,
     });
   } catch (error) {
-    console.error("Error fetching likes:", error);
     res.status(500).json({ error: "Error fetching like data" });
+  }
+};
+
+const getLatestNews = async (req, res) => {
+  try {
+    const getLatestNewsQuery = `SELECT * FROM blognews ORDER BY dateAndTime DESC LIMIT 5`;
+
+    const [LatestBlogResult] = await db.query(getLatestNewsQuery);
+    res.status(200).json({
+      success: true,
+      data: LatestBlogResult.length,
+      result: LatestBlogResult,
+    });
+  } catch (error) {
+    console.error("Error fetching latest news:", error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const getMostReadBlogs = async (req, res) => {
+  try {
+    const getMostReadQuery = `
+      SELECT b.*, COALESCE(SUM(br.reading_time), 0) AS total_reading_time
+      FROM blognews b
+      LEFT JOIN blog_reading_time br ON b.ID = br.blog_id
+      GROUP BY b.ID
+      ORDER BY total_reading_time DESC
+      LIMIT 4;
+    `;
+    const [mostReadBlogs] = await db.query(getMostReadQuery);
+    res.status(200).json({
+      success: true,
+      count: mostReadBlogs.length,
+      result: mostReadBlogs,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
@@ -154,4 +188,6 @@ export {
   updateReadingTime,
   loveCount,
   getLoveCount,
+  getLatestNews,
+  getMostReadBlogs,
 };

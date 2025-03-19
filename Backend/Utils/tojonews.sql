@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 15, 2024 at 07:11 AM
+-- Generation Time: Mar 18, 2025 at 12:29 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -109,6 +109,67 @@ CREATE TABLE `blognews_tags` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `blog_comments`
+--
+
+CREATE TABLE `blog_comments` (
+  `id` int(11) NOT NULL,
+  `blog_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `comment` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `blog_reading_time`
+--
+
+CREATE TABLE `blog_reading_time` (
+  `id` int(11) NOT NULL,
+  `blog_id` int(11) NOT NULL,
+  `reading_time` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `blog_reading_time`
+--
+
+INSERT INTO `blog_reading_time` (`id`, `blog_id`, `reading_time`) VALUES
+(253, 26, 5782),
+(266, 24, 196),
+(271, 22, 17),
+(284, 29, 879);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `blog_views`
+--
+
+CREATE TABLE `blog_views` (
+  `id` int(11) NOT NULL,
+  `blog_id` int(11) NOT NULL,
+  `view_count` int(11) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `blog_views`
+--
+
+INSERT INTO `blog_views` (`id`, `blog_id`, `view_count`) VALUES
+(15, 27, 6),
+(16, 29, 35),
+(18, 26, 21),
+(31, 28, 23),
+(41, 24, 13),
+(60, 23, 10),
+(98, 22, 2);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `categories`
 --
 
@@ -186,6 +247,27 @@ INSERT INTO `jobpost` (`ID`, `uuid`, `jobTitle`, `jobPosition`, `jobTime`, `appl
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `likes`
+--
+
+CREATE TABLE `likes` (
+  `id` int(11) NOT NULL,
+  `article_id` int(11) NOT NULL,
+  `user_id` varchar(250) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `likes`
+--
+
+INSERT INTO `likes` (`id`, `article_id`, `user_id`, `created_at`) VALUES
+(8, 29, '2s1GFGc5oaYgKgFsxSriK78qkwU2', '2025-03-18 11:08:56'),
+(10, 29, 'kGhtmHBfvzYhTEGMiK6sTqzglcB3', '2025-03-18 11:24:10');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `member_firm`
 --
 
@@ -226,6 +308,21 @@ INSERT INTO `newsletteremail` (`ID`, `uuid`, `email`) VALUES
 (6, '61e2f00f-8f6a-480b-bc79-8e0a6803c9c4', 'superadmin@example.com'),
 (7, '4b2457c1-2876-42ba-9b9e-ccf06a307997', 'ahmed66882298@gmail.com'),
 (8, 'f9003636-eb61-4e72-bafa-2918c73bd021', 'ahmed66882298@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `newsletter_subscriptions`
+--
+
+CREATE TABLE `newsletter_subscriptions` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `isSubscribed` tinyint(1) DEFAULT 1,
+  `interests` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`interests`)),
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -273,6 +370,32 @@ INSERT INTO `tags` (`ID`, `name`, `uuid`) VALUES
 (7, 'defi', '5ddfac10-63a3-410e-9c1b-943dbfcac9d3'),
 (8, 'marketing', '8f7c9983-e533-4d6c-a346-38fbef26cb95');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `uid` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `displayName` varchar(255) DEFAULT NULL,
+  `photoURL` text DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `premiumTaken` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `uid`, `email`, `displayName`, `photoURL`, `createdAt`, `premiumTaken`) VALUES
+(1, 'k9UA7zv39Kc2hmcio7kPfxqazsq1', 'sk@gmail.com', 'swapnil ahmed shishir', 'https://avatars.githubusercontent.com/u/83201513?v=4', '2025-03-06 06:06:10', NULL),
+(2, 'kGhtmHBfvzYhTEGMiK6sTqzglcB3', 'swapnilahmedshishir2018@gmail.com', 'SWAPNIL AHMMED SHISHIR', 'https://lh3.googleusercontent.com/a/ACg8ocJn799E8ZSqWfJ1-uGQ5ROcMnsUQFay6SXq0Re5v7wdawJLUv6g=s96-c', '2025-03-06 06:48:49', NULL),
+(3, 'sIehZBsHbYRINwKOQr3TlcatsTp2', 'ahmed66882298@gmail.com', 'swapnil shishir', 'https://lh3.googleusercontent.com/a/ACg8ocKuRHZhGTGgbkBnVvHAN4olQWjLkdQ4MMyZKM6TEXiJMQD6e1eV=s96-c', '2025-03-06 07:16:21', NULL),
+(4, '2s1GFGc5oaYgKgFsxSriK78qkwU2', 'freeservise7@gmail.com', 'Fun Mix', 'https://lh3.googleusercontent.com/a/ACg8ocLklh6B3-PlzXQC138Dg50c5XD2OlpUlqIGBfNV1PLVxcD6Pis=s96-c', '2025-03-18 10:53:04', NULL);
+
 --
 -- Indexes for dumped tables
 --
@@ -306,6 +429,27 @@ ALTER TABLE `blognews_tags`
   ADD KEY `tag_id` (`tag_id`);
 
 --
+-- Indexes for table `blog_comments`
+--
+ALTER TABLE `blog_comments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `blog_id` (`blog_id`);
+
+--
+-- Indexes for table `blog_reading_time`
+--
+ALTER TABLE `blog_reading_time`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `blog_id` (`blog_id`);
+
+--
+-- Indexes for table `blog_views`
+--
+ALTER TABLE `blog_views`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `blog_id` (`blog_id`);
+
+--
 -- Indexes for table `categories`
 --
 ALTER TABLE `categories`
@@ -325,6 +469,13 @@ ALTER TABLE `jobpost`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `likes`
+--
+ALTER TABLE `likes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_like` (`article_id`,`user_id`);
+
+--
 -- Indexes for table `member_firm`
 --
 ALTER TABLE `member_firm`
@@ -337,6 +488,14 @@ ALTER TABLE `newsletteremail`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `newsletter_subscriptions`
+--
+ALTER TABLE `newsletter_subscriptions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `podcasts`
 --
 ALTER TABLE `podcasts`
@@ -347,6 +506,14 @@ ALTER TABLE `podcasts`
 --
 ALTER TABLE `tags`
   ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uid` (`uid`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -371,6 +538,24 @@ ALTER TABLE `blognews`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
+-- AUTO_INCREMENT for table `blog_comments`
+--
+ALTER TABLE `blog_comments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `blog_reading_time`
+--
+ALTER TABLE `blog_reading_time`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=305;
+
+--
+-- AUTO_INCREMENT for table `blog_views`
+--
+ALTER TABLE `blog_views`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
+
+--
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
@@ -389,10 +574,22 @@ ALTER TABLE `jobpost`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `likes`
+--
+ALTER TABLE `likes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `newsletteremail`
 --
 ALTER TABLE `newsletteremail`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `newsletter_subscriptions`
+--
+ALTER TABLE `newsletter_subscriptions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `podcasts`
@@ -405,6 +602,12 @@ ALTER TABLE `podcasts`
 --
 ALTER TABLE `tags`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -426,10 +629,28 @@ ALTER TABLE `blognews_tags`
   ADD CONSTRAINT `blognews_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`ID`);
 
 --
+-- Constraints for table `blog_comments`
+--
+ALTER TABLE `blog_comments`
+  ADD CONSTRAINT `blog_comments_ibfk_1` FOREIGN KEY (`blog_id`) REFERENCES `blognews` (`ID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `blog_views`
+--
+ALTER TABLE `blog_views`
+  ADD CONSTRAINT `blog_views_ibfk_1` FOREIGN KEY (`blog_id`) REFERENCES `blognews` (`ID`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `episodes`
 --
 ALTER TABLE `episodes`
   ADD CONSTRAINT `episodes_ibfk_1` FOREIGN KEY (`podcastID`) REFERENCES `podcasts` (`ID`);
+
+--
+-- Constraints for table `newsletter_subscriptions`
+--
+ALTER TABLE `newsletter_subscriptions`
+  ADD CONSTRAINT `newsletter_subscriptions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
