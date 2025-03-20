@@ -181,6 +181,27 @@ const getMostReadBlogs = async (req, res) => {
   }
 };
 
+const getMostPopulerViews = async (req, res) => {
+  try {
+    const getMostPopularQuery = `
+      SELECT b.*, COALESCE(SUM(v.view_count), 0) AS total_views
+      FROM blognews b
+      LEFT JOIN blog_views v ON b.ID = v.blog_id
+      GROUP BY b.ID
+      ORDER BY total_views DESC
+      LIMIT 6;
+    `;
+    const [mostPopularBlogs] = await db.query(getMostPopularQuery);
+    res.status(200).json({
+      success: true,
+      count: mostPopularBlogs.length,
+      result: mostPopularBlogs,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 export {
   registerUser,
   updateViewCount,
@@ -190,4 +211,5 @@ export {
   getLoveCount,
   getLatestNews,
   getMostReadBlogs,
+  getMostPopulerViews,
 };

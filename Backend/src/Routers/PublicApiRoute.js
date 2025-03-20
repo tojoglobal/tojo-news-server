@@ -8,6 +8,7 @@ import {
   getLoveCount,
   getLatestNews,
   getMostReadBlogs,
+  getMostPopulerViews,
 } from "../controllers/PublicApiContrillers.js";
 
 // PublicApiRouter route
@@ -26,5 +27,7 @@ PublicApiRouter.get("/getLove", getLoveCount);
 PublicApiRouter.get("/getLatestNews", getLatestNews);
 //Most-Read-news
 PublicApiRouter.get("/getMostRead", getMostReadBlogs);
+//Most-Read-news
+PublicApiRouter.get("/getMostPopulerViews", getMostPopulerViews);
 
 export { PublicApiRouter as PublicApiRouters };
