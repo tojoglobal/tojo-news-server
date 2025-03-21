@@ -146,7 +146,7 @@ const getLoveCount = async (req, res) => {
 
 const getLatestNews = async (req, res) => {
   try {
-    const getLatestNewsQuery = `SELECT * FROM blognews ORDER BY dateAndTime DESC LIMIT 5`;
+    const getLatestNewsQuery = `SELECT * FROM blognews ORDER BY dateAndTime DESC LIMIT 4`;
 
     const [LatestBlogResult] = await db.query(getLatestNewsQuery);
     res.status(200).json({
@@ -201,6 +201,16 @@ const getMostPopulerViews = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+// get the Authors
+const getAuthors = async (req, res) => {
+  try {
+    const getAuthorsQuery = "SELECT * FROM authors";
+    const [authors] = await db.query(getAuthorsQuery);
+    res.status(200).json({ success: true, authors });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 
 export {
   registerUser,
@@ -212,4 +222,5 @@ export {
   getLatestNews,
   getMostReadBlogs,
   getMostPopulerViews,
+  getAuthors,
 };

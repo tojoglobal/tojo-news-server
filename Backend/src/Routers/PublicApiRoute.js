@@ -9,6 +9,7 @@ import {
   getLatestNews,
   getMostReadBlogs,
   getMostPopulerViews,
+  getAuthors,
 } from "../controllers/PublicApiContrillers.js";
 
 // PublicApiRouter route
@@ -29,5 +30,7 @@ PublicApiRouter.get("/getLatestNews", getLatestNews);
 PublicApiRouter.get("/getMostRead", getMostReadBlogs);
 //Most-Read-news
 PublicApiRouter.get("/getMostPopulerViews", getMostPopulerViews);
+//get the author data
+PublicApiRouter.get("/authors", getAuthors);
 
 export { PublicApiRouter as PublicApiRouters };

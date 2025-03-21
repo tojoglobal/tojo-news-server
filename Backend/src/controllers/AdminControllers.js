@@ -700,11 +700,13 @@ const createNewsCategory = (req, res) => {
     return res.json({ Status: true, Result: result });
   });
 };
-const getNewsCategory = (req, res) => {
-  db.query(getNewsCategoryQuery, (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
-    return res.json({ Status: true, Result: result });
-  });
+const getNewsCategory = async (req, res) => {
+  try {
+    const [result] = await db.query(getNewsCategoryQuery);
+    return res.json({ Status: true, date: result.length, Result: result });
+  } catch (error) {
+    return res.json({ Status: false, Error: error.message });
+  }
 };
 const deleteOneNewsCategory = (req, res) => {
   const uuid = req.params.id;
