@@ -212,6 +212,68 @@ const getAuthors = async (req, res) => {
   }
 };
 
+const checkSubscription = async (req, res) => {
+  try {
+    const { email } = req.query;
+    console.log(email);
+    const [existingUserData] = await db.query(
+      "SELECT * FROM subscribers WHERE email = ?",
+      [email]
+    );
+    console.log(existingUserData);
+    if (existingUserData.length > 0) {
+      return res.status(200).json({
+        subscribed: true,
+        interests: existingUserData[0].interests,
+        message: "Email already subscribed",
+      });
+    }
+    res
+      .status(200)
+      .json({ subscribed: false, message: "Email is not subscribed yet" });
+  } catch (error) {
+    res.status(500).json({ subscribed: false, error: error.message });
+  }
+};
+
+// newsletter subscribe
+const newsLetterSubscribe = async (req, res) => {
+  try {
+    const { email, interests } = req.body;
+    if (!email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
+    }
+    // Check if user already exists
+    const [existingUser] = await db.query(
+      "SELECT * FROM subscribers WHERE email = ?",
+      [email]
+    );
+
+    if (existingUser.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: "Email is already subscribed. Please use a different email.",
+      });
+    }
+    // Convert interests array to string properly
+    const interestsStr =
+      interests && Array.isArray(interests) ? interests.join(", ") : "";
+
+    // Corrected SQL query with properly formatted interestsStr
+    const sql =
+      "INSERT INTO subscribers (email, interests, created_at) VALUES (?, ?, ?)";
+    await db.query(sql, [email, interestsStr, new Date()]);
+
+    res
+      .status(200)
+      .json({ success: true, message: "Email subscribed successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 export {
   registerUser,
   updateViewCount,
@@ -223,4 +285,6 @@ export {
   getMostReadBlogs,
   getMostPopulerViews,
   getAuthors,
+  newsLetterSubscribe,
+  checkSubscription,
 };

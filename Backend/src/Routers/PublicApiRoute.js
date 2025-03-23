@@ -10,6 +10,8 @@ import {
   getMostReadBlogs,
   getMostPopulerViews,
   getAuthors,
+  newsLetterSubscribe,
+  checkSubscription,
 } from "../controllers/PublicApiContrillers.js";
 
 // PublicApiRouter route
@@ -32,5 +34,8 @@ PublicApiRouter.get("/getMostRead", getMostReadBlogs);
 PublicApiRouter.get("/getMostPopulerViews", getMostPopulerViews);
 //get the author data
 PublicApiRouter.get("/authors", getAuthors);
+// newsletter
+PublicApiRouter.get("/check-subscription", checkSubscription);
+PublicApiRouter.post("/subscribe", newsLetterSubscribe);
 
 export { PublicApiRouter as PublicApiRouters };
