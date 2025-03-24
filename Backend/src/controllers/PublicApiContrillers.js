@@ -6,6 +6,7 @@ import {
   getViewCountQuery,
   updateReadingTimeQuery,
 } from "../models/PublicApiModel.js";
+import axios from "axios";
 
 // user register
 const registerUser = async (req, res) => {
@@ -257,6 +258,7 @@ const newsLetterSubscribe = async (req, res) => {
         message: "Email is already subscribed. Please use a different email.",
       });
     }
+
     // Convert interests array to string properly
     const interestsStr =
       interests && Array.isArray(interests) ? interests.join(", ") : "";
@@ -266,11 +268,57 @@ const newsLetterSubscribe = async (req, res) => {
       "INSERT INTO subscribers (email, interests, created_at) VALUES (?, ?, ?)";
     await db.query(sql, [email, interestsStr, new Date()]);
 
-    res
-      .status(200)
-      .json({ success: true, message: "Email subscribed successfully" });
+    // Validate MailChimp credentials
+    if (
+      !process.env.MAILCHIMP_API_KEY ||
+      !process.env.MAILCHIMP_AUDIENCE_ID ||
+      !process.env.MAILCHIMP_SERVER_PREFIX
+    ) {
+      return res.status(500).json({
+        success: false,
+        message: "MailChimp configuration is missing.",
+      });
+    }
+    // Prepare data for MailChimp API
+    const data = {
+      email_address: email,
+      status: "subscribed",
+      merge_fields: { INTERESTS: interestsStr },
+      // merge_fields: {
+      //   INTERESTS: interests.join(", "),
+      // },
+    };
+    // Send request to MailChimp
+    try {
+      const response = await axios.post(
+        `https://${process.env.MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${process.env.MAILCHIMP_AUDIENCE_ID}/members`,
+        data,
+        {
+          headers: {
+            Authorization: `apikey ${process.env.MAILCHIMP_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Subscription successful",
+        response: response.data,
+      });
+    } catch (mailchimpError) {
+      return res.status(400).json({
+        success: false,
+        message: "MailChimp subscription failed",
+        error: mailchimpError.response?.data,
+      });
+    }
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
