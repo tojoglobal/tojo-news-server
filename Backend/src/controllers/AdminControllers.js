@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import fs from "fs";
+import bcrypt from "bcrypt";
 import {
   // admin
   adminLoginData,
@@ -84,47 +85,60 @@ import {
   createEpisodesQuery,
 } from "../models/AdminModel.js";
 
-const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+// const adminLogin = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     const hashPassword = async (password) => {
+//       const saltRounds = 10;
+//       const hashedPassword = await bcrypt.hash(password, saltRounds);
+//       return hashedPassword;
+//     };
 
-    if (!email || !password) {
-      return res.json({
-        loginStatus: false,
-        Error: "Email and password are required",
-      });
-    }
+//     const checkPassword = async (password, hash) => {
+//       return await bcrypt.compare(password, hash);
+//     };
 
-    // Select admin by email
-    const [result] = await db.query(adminLoginData, [email, password]);
+//     const hashedPassword = await hashPassword(password);
+//     console.log("hashed password", hashedPassword);
+//     console.log(email, password);
 
-    // Check if the admin exists
-    if (result.length === 0) {
-      return res.json({ loginStatus: false, Error: "Wrong email or password" });
-    }
+//     if (!email || !password) {
+//       return res.json({
+//         loginStatus: false,
+//         Error: "Email and password are required",
+//       });
+//     }
 
-    // Verify password (assuming passwords are hashed in DB)
-    const isPasswordCorrect = password === result[0].password; // Replace with bcrypt comparison if hashed
+//     // Select admin by email
+//     const [result] = await db.query(adminLoginData, [email, password]);
 
-    if (!isPasswordCorrect) {
-      return res.json({ loginStatus: false, Error: "Wrong email or password" });
-    }
+//     // Check if the admin exists
+//     if (result.length === 0) {
+//       return res.json({ loginStatus: false, Error: "Wrong email or password" });
+//     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { role: "admin", email: result[0].email, id: result[0].id },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1d" }
-    );
+//     // Verify password (assuming passwords are hashed in DB)
+//     const isPasswordCorrect = password === result[0].password; // Replace with bcrypt comparison if hashed
 
-    // Send token as cookie
-    res.cookie("token", token, { httpOnly: true });
+//     if (!isPasswordCorrect) {
+//       return res.json({ loginStatus: false, Error: "Wrong email or password" });
+//     }
 
-    return res.json({ loginStatus: true, message: "Login Successful" });
-  } catch (err) {
-    return res.status(500).json({ Status: false, Error: err.message });
-  }
-};
+//     // Generate JWT token
+//     const token = jwt.sign(
+//       { role: "admin", email: result[0].email, id: result[0].id },
+//       process.env.ACCESS_TOKEN_SECRET,
+//       { expiresIn: "1d" }
+//     );
+
+//     // Send token as cookie
+//     res.cookie("token", token, { httpOnly: true });
+
+//     return res.json({ loginStatus: true, message: "Login Successful" });
+//   } catch (err) {
+//     return res.status(500).json({ Status: false, Error: err.message });
+//   }
+// };
 
 // Blog Post Router
 const createBlogPost = (req, res) => {
@@ -1016,7 +1030,7 @@ const adminLogout = (req, res) => {
 };
 
 export {
-  adminLogin,
+  // adminLogin,
   // blogpost
   createBlogPost,
   allBlogPost,

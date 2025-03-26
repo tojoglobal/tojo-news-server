@@ -7,6 +7,7 @@ import { AdminRouters } from "./src/Routers/AdminRoute.js";
 import bodyParser from "body-parser";
 import { PublicApiRouters } from "./src/Routers/PublicApiRoute.js";
 import { UserRouters } from "./src/Routers/UserRoute.js";
+import adminlogin from "./src/Routers/AdminLogin.route.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(bodyParser.json());
 
 // Router set up
 app.use("/api/admin", AdminRouters);
+app.use(adminlogin);
 app.use("/api/user", UserRouters);
 app.use("/api", PublicApiRouters);
 

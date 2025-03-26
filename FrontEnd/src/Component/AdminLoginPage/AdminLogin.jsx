@@ -2,10 +2,12 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "./../../Dashbord/SmallComponent/AppContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const { state } = useContext(AppContext);
+  const [showPassword, setShowPassword] = useState(false);
 
   axios.defaults.withCredentials = true;
   //state
@@ -18,8 +20,9 @@ const AdminLogin = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post(`${state.port}/api/admin/adminlogin`, values)
+      .post(`${state.port}/api/adminlogin`, values)
       .then((result) => {
+        console.log(result.data);
         if (result.data.loginStatus) {
           localStorage.setItem("valid", true);
           navigate("/dashboard");
@@ -51,12 +54,13 @@ const AdminLogin = () => {
               className="form-control rounded-0"
             />
           </div>
-          <div className="mb-3">
+          <div className="mb-3 passwordFiled">
             <label htmlFor="password">
               <strong>Password:</strong>
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
+              // type="password"
               name="password"
               placeholder="Enter Password"
               onChange={(e) =>
@@ -64,6 +68,12 @@ const AdminLogin = () => {
               }
               className="form-control rounded-0"
             />
+            <div
+              className="passwordToggleEye"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </div>
           </div>
           <button className="custombtn">Log in</button>
           <div className="mb-1">

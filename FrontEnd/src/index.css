@@ -24,7 +24,8 @@
 }
 
 /* tiny blog write  */
-.tox-statusbar__branding , .tox-statusbar__help-text{
+.tox-statusbar__branding,
+.tox-statusbar__help-text {
   display: none;
 }
 .route_link {
@@ -57,7 +58,7 @@
   margin-left: 3px;
   font-weight: 600;
 }
-.thumble_inputField_style{
+.thumble_inputField_style {
   margin-top: 40px;
 }
 .text_input_field {
@@ -139,6 +140,16 @@ ul li a {
   padding: 3.5rem 1.2rem;
   border: 1px solid wheat;
   border-radius: 1rem;
+}
+.passwordFiled {
+  position: relative;
+}
+.passwordToggleEye {
+  position: absolute;
+  top: 1.9rem;
+  right: 1rem;
+  cursor: pointer;
+  color: #353181;
 }
 
 .custombtn {
@@ -784,7 +795,7 @@ label[for="files"]:active {
   .grid_container {
     grid-template-columns: auto;
   }
-  .loginForm{
+  .loginForm {
     width: 35%;
   }
 }
@@ -792,7 +803,7 @@ label[for="files"]:active {
   /* ...
 	// rules here apply to devices from 769px to 992px (inclusive)
 	... */
-  .loginForm{
+  .loginForm {
     width: 50%;
   }
 }
@@ -811,7 +822,7 @@ label[for="files"]:active {
     margin-left: 10px;
     margin-right: 10px;
   }
-  .loginForm{
+  .loginForm {
     width: 100%;
   }
 }

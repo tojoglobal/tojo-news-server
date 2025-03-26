@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  adminLogin,
+  // adminLogin,
   // blogpost
   createBlogPost,
   allBlogPost,
@@ -118,7 +118,7 @@ const upload = multer({
 const AdminRouter = express.Router();
 
 // admin login
-AdminRouter.post("/adminlogin", adminLogin);
+// AdminRouter.post("/adminlogin", adminLogin);
 
 // Blog Router
 AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);
