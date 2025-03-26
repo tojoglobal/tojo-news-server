@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 18, 2025 at 12:29 PM
+-- Generation Time: Mar 26, 2025 at 02:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -137,10 +137,10 @@ CREATE TABLE `blog_reading_time` (
 --
 
 INSERT INTO `blog_reading_time` (`id`, `blog_id`, `reading_time`) VALUES
-(253, 26, 5782),
+(253, 26, 5813),
 (266, 24, 196),
 (271, 22, 17),
-(284, 29, 879);
+(284, 29, 1027);
 
 -- --------------------------------------------------------
 
@@ -160,9 +160,9 @@ CREATE TABLE `blog_views` (
 
 INSERT INTO `blog_views` (`id`, `blog_id`, `view_count`) VALUES
 (15, 27, 6),
-(16, 29, 35),
-(18, 26, 21),
-(31, 28, 23),
+(16, 29, 39),
+(18, 26, 22),
+(31, 28, 24),
 (41, 24, 13),
 (60, 23, 10),
 (98, 22, 2);
@@ -263,7 +263,8 @@ CREATE TABLE `likes` (
 
 INSERT INTO `likes` (`id`, `article_id`, `user_id`, `created_at`) VALUES
 (8, 29, '2s1GFGc5oaYgKgFsxSriK78qkwU2', '2025-03-18 11:08:56'),
-(10, 29, 'kGhtmHBfvzYhTEGMiK6sTqzglcB3', '2025-03-18 11:24:10');
+(19, 26, 'kGhtmHBfvzYhTEGMiK6sTqzglcB3', '2025-03-19 11:09:16'),
+(22, 29, 'kGhtmHBfvzYhTEGMiK6sTqzglcB3', '2025-03-22 15:11:44');
 
 -- --------------------------------------------------------
 
@@ -348,6 +349,57 @@ INSERT INTO `podcasts` (`ID`, `uuid`, `image`, `name`, `hostedInfo`, `spotify`, 
 (1, 'cb05d8e7-a107-484e-b510-7c4269531737', 'f73fae2f-a5e5-4182-9b9a-a0b85c5001e6_1722017435304-istockphoto-1346125184-612x612.jpg', 'Bitcoin Builders', 'Development, entrepreneurship and creation around Bitcoin, the Lightning Network and other freedom tech is exploding. This show digs into the Bitcoin ecosystem through the lens of the Cambrian explosion of creativity around it. This podcast is part of Blo', 'fdfsfsaf', 'fdsfsafsa'),
 (3, '709905b7-4cc0-4381-b959-f0f260243b22', '83885409-a8cb-41bf-8bc9-973a2ba4da2b_1722238365780-Favicon.png', '0xResearch', 'Hosted by Boccaccio & Blockworks Analysts, 0xResearch is for savvy degens who want to think like a crypto analyst', 'fdfsa', 'fsfsaf'),
 (4, '2b5febfb-6265-4041-baed-56c500492681', '595f5402-388c-4753-b8ba-103c263342ec_1722238393160-swapnilDu.jpg', 'swapnilahmed shishir', 'Hosted by Boccaccio & Blockworks Analysts, 0xResearch is for savvy degens who want to think like a crypto analyst', 'https://open.spotify.com/show/3uMWirMj2hc7IQYEUeBTyT', 'https://open.spotify.com/show/3uMWirMj2hc7IQYEUeBTyT');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sponsored_posts`
+--
+
+CREATE TABLE `sponsored_posts` (
+  `id` int(11) NOT NULL,
+  `title` varchar(300) NOT NULL,
+  `description` text NOT NULL,
+  `image_url` varchar(700) DEFAULT NULL,
+  `sponsor_id` int(11) DEFAULT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `published_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sponsors`
+--
+
+CREATE TABLE `sponsors` (
+  `id` int(11) NOT NULL,
+  `name` varchar(300) NOT NULL,
+  `logo_url` varchar(700) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subscribers`
+--
+
+CREATE TABLE `subscribers` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `interests` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `subscribers`
+--
+
+INSERT INTO `subscribers` (`id`, `email`, `interests`, `created_at`) VALUES
+(31, 'lb@gmail.com', 'Bitcoin, DeFi, Events, NFTs', '2025-03-25 13:29:17'),
+(32, 'f@gmail.com', 'NFTs, Podcasts, Events', '2025-03-25 13:38:30');
 
 -- --------------------------------------------------------
 
@@ -502,6 +554,26 @@ ALTER TABLE `podcasts`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `sponsored_posts`
+--
+ALTER TABLE `sponsored_posts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sponsor_id` (`sponsor_id`);
+
+--
+-- Indexes for table `sponsors`
+--
+ALTER TABLE `sponsors`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `subscribers`
+--
+ALTER TABLE `subscribers`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- Indexes for table `tags`
 --
 ALTER TABLE `tags`
@@ -547,13 +619,13 @@ ALTER TABLE `blog_comments`
 -- AUTO_INCREMENT for table `blog_reading_time`
 --
 ALTER TABLE `blog_reading_time`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=305;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=312;
 
 --
 -- AUTO_INCREMENT for table `blog_views`
 --
 ALTER TABLE `blog_views`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=134;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -577,7 +649,7 @@ ALTER TABLE `jobpost`
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `newsletteremail`
@@ -596,6 +668,24 @@ ALTER TABLE `newsletter_subscriptions`
 --
 ALTER TABLE `podcasts`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `sponsored_posts`
+--
+ALTER TABLE `sponsored_posts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sponsors`
+--
+ALTER TABLE `sponsors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `subscribers`
+--
+ALTER TABLE `subscribers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `tags`
@@ -651,6 +741,12 @@ ALTER TABLE `episodes`
 --
 ALTER TABLE `newsletter_subscriptions`
   ADD CONSTRAINT `newsletter_subscriptions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `sponsored_posts`
+--
+ALTER TABLE `sponsored_posts`
+  ADD CONSTRAINT `sponsored_posts_ibfk_1` FOREIGN KEY (`sponsor_id`) REFERENCES `sponsors` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

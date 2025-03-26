@@ -216,12 +216,10 @@ const getAuthors = async (req, res) => {
 const checkSubscription = async (req, res) => {
   try {
     const { email } = req.query;
-    console.log(email);
     const [existingUserData] = await db.query(
       "SELECT * FROM subscribers WHERE email = ?",
       [email]
     );
-    console.log(existingUserData);
     if (existingUserData.length > 0) {
       return res.status(200).json({
         subscribed: true,
@@ -247,17 +245,17 @@ const newsLetterSubscribe = async (req, res) => {
         .json({ success: false, message: "Email is required" });
     }
     // Check if user already exists
-    const [existingUser] = await db.query(
-      "SELECT * FROM subscribers WHERE email = ?",
-      [email]
-    );
+    // const [existingUser] = await db.query(
+    //   "SELECT * FROM subscribers WHERE email = ?",
+    //   [email]
+    // );
 
-    if (existingUser.length > 0) {
-      return res.status(409).json({
-        success: false,
-        message: "Email is already subscribed. Please use a different email.",
-      });
-    }
+    // if (existingUser.length > 0) {
+    //   return res.status(409).json({
+    //     success: false,
+    //     message: "Email is already subscribed. Please use a different email.",
+    //   });
+    // }
 
     // Convert interests array to string properly
     const interestsStr =
@@ -288,6 +286,7 @@ const newsLetterSubscribe = async (req, res) => {
       //   INTERESTS: interests.join(", "),
       // },
     };
+
     // Send request to MailChimp
     try {
       const response = await axios.post(
