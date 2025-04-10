@@ -74,22 +74,11 @@ const EditBlogPost = () => {
     formik.setFieldValue("file", e.target.files[0]);
   };
 
-  // parmalik validation
-  const validate = (values) => {
-    const errors = {};
-    if (values.permalink && /[`_,-]/.test(values.permalink)) {
-      errors.permalink =
-        "Please remove underscore, hyphen, comma and backtick (_,-`).";
-    }
-    return errors;
-  };
-
   // use fromik method
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       title: BlogPost.title || "",
-      permalink: BlogPost.permalink || "",
       subTitle: BlogPost.subtitle || "",
       AuthorOne: BlogPost.author1_id || "",
       AuthorTwo: BlogPost.author2_id || "",
@@ -97,7 +86,6 @@ const EditBlogPost = () => {
       file: BlogPost.thumble || "",
       artical: BlogPost.articalpost || "",
     },
-    validate,
     onSubmit: async (values, { resetForm }) => {
       console.log(values);
       const formData = new FormData();
@@ -180,51 +168,9 @@ const EditBlogPost = () => {
                 value={formik.values.title}
               />
             </div>
-            <div className="col-md-12 inputfield">
-              <label htmlFor="permalink">Permalink</label>
-              <input
-                id="permalink"
-                className="text_input_field"
-                type="text"
-                name="permalink"
-                onChange={formik.handleChange}
-                placeholder="Write permalink..."
-                value={formik.values.permalink}
-                required
-              />
-              {formik.errors.permalink && (
-                <div className="error text-danger">
-                  {formik.errors.permalink}
-                </div>
-              )}
-              {formik.values.permalink && !formik.errors.permalink && (
-                <>
-                  <small>Great Valid Link : </small>
-                  <small>
-                    <a
-                      href={
-                        formik.values.permalink
-                          ? `http://localhost:5173/news/${formik.values.permalink
-                              .replaceAll(/ /g, "-")
-                              .toLowerCase()}`
-                          : "/fallback-url"
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-success"
-                    >
-                      http://localhost:5173/news/
-                      {formik.values.permalink
-                        .replaceAll(/ /g, "-")
-                        .toLowerCase()}
-                    </a>
-                  </small>
-                </>
-              )}
-            </div>
 
             <div className="col-md-12 inputfield">
-              <label htmlFor="subTitle">Sub Title</label>
+              <label htmlFor="subTitle">Sub Body</label>
               <input
                 id="subTitle"
                 className="text_input_field"
@@ -378,7 +324,7 @@ const EditBlogPost = () => {
                 className="button-62 cetificate_image_AddBtn "
                 role="button"
               >
-                ADD BLOG POST
+                Edit BLOG POST
               </button>
             </div>
           </div>

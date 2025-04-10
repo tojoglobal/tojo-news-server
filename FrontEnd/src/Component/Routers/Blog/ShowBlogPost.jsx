@@ -199,7 +199,7 @@ const ShowBlogPost = () => {
                         className="txt_btn_style"
                         onClick={() => togglePopup(blogpost.uuid)}
                       >
-                        {activeId === blogpost.uuid ? "Hide note" : "Show note"}
+                        {activeId === blogpost.uuid ? "Hide blog" : "Show blog"}
                       </button>
                     </span>
                     {activeId === blogpost.uuid && (

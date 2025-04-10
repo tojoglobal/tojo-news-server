@@ -51,19 +51,18 @@ const CreateBlogPost = () => {
   };
 
   // parmalik validation
-  const validate = (values) => {
-    const errors = {};
-    if (values.permalink && /[`_,-]/.test(values.permalink)) {
-      errors.permalink =
-        "Please remove underscore, hyphen, comma and backtik (_,-`).";
-    }
-    return errors;
-  };
+  // const validate = (values) => {
+  //   const errors = {};
+  //   if (values.permalink && /[`_,-]/.test(values.permalink)) {
+  //     errors.permalink =
+  //       "Please remove underscore, hyphen, comma and backtik (_,-`).";
+  //   }
+  //   return errors;
+  // };
 
   const formik = useFormik({
     initialValues: {
       title: "",
-      permalink: "",
       subTitle: "",
       AuthorOne: "",
       AuthorTwo: "",
@@ -71,11 +70,9 @@ const CreateBlogPost = () => {
       file: "",
       artical: "",
     },
-    validate,
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
       formData.append("title", values.title);
-      formData.append("permalink", values.permalink);
       formData.append("subTitle", values.subTitle);
       formData.append("AuthorOne", values.AuthorOne);
       if (values.AuthorTwo) {
@@ -145,7 +142,7 @@ const CreateBlogPost = () => {
                 required
               />
             </div>
-            <div className="col-md-12 inputfield">
+            {/* <div className="col-md-12 inputfield">
               <label htmlFor="permalink">Permalink</label>
               <input
                 id="permalink"
@@ -186,10 +183,10 @@ const CreateBlogPost = () => {
                   </small>
                 </>
               )}
-            </div>
+            </div> */}
 
             <div className="col-md-12 inputfield">
-              <label htmlFor="subTitle">Sub Title</label>
+              <label htmlFor="subTitle">Sub Body</label>
               <input
                 id="subTitle"
                 className="text_input_field"
@@ -280,13 +277,18 @@ const CreateBlogPost = () => {
                 />
               </div>
             </div>
+            {/* https://i.postimg.cc/KzNdw0LX/Group.png */}
             <div className="col-md-6 inputfield">
               <h5>Preview Thumbnail</h5>
               <img
-                src={file ? file : "https://i.postimg.cc/KzNdw0LX/Group.png"}
+                src={
+                  file
+                    ? file
+                    : `https://placehold.co/600x400?text=Preview+Thumbnail&font=montserrat`
+                }
                 alt="Tojo_global_Thumbnail_Image"
                 className="blog_Image"
-                loading="lazy"
+                // loading="lazy"
               />
             </div>
 

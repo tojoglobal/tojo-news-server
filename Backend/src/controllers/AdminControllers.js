@@ -85,87 +85,29 @@ import {
   createEpisodesQuery,
 } from "../models/AdminModel.js";
 
-// const adminLogin = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     const hashPassword = async (password) => {
-//       const saltRounds = 10;
-//       const hashedPassword = await bcrypt.hash(password, saltRounds);
-//       return hashedPassword;
-//     };
+// Blog Post
+const createBlogPost = async (req, res) => {
+  try {
+    // Generate the current date and time
+    const currentDate = new Date();
+    const imageFile = req.file.filename;
+    const values = [
+      uuidv4(),
+      req.body.title,
+      req.body.subTitle,
+      req.body.AuthorOne,
+      req.body.AuthorTwo || null,
+      req.body.newsCategory,
+      imageFile,
+      req.body.artical,
+      currentDate,
+    ];
 
-//     const checkPassword = async (password, hash) => {
-//       return await bcrypt.compare(password, hash);
-//     };
-
-//     const hashedPassword = await hashPassword(password);
-//     console.log("hashed password", hashedPassword);
-//     console.log(email, password);
-
-//     if (!email || !password) {
-//       return res.json({
-//         loginStatus: false,
-//         Error: "Email and password are required",
-//       });
-//     }
-
-//     // Select admin by email
-//     const [result] = await db.query(adminLoginData, [email, password]);
-
-//     // Check if the admin exists
-//     if (result.length === 0) {
-//       return res.json({ loginStatus: false, Error: "Wrong email or password" });
-//     }
-
-//     // Verify password (assuming passwords are hashed in DB)
-//     const isPasswordCorrect = password === result[0].password; // Replace with bcrypt comparison if hashed
-
-//     if (!isPasswordCorrect) {
-//       return res.json({ loginStatus: false, Error: "Wrong email or password" });
-//     }
-
-//     // Generate JWT token
-//     const token = jwt.sign(
-//       { role: "admin", email: result[0].email, id: result[0].id },
-//       process.env.ACCESS_TOKEN_SECRET,
-//       { expiresIn: "1d" }
-//     );
-
-//     // Send token as cookie
-//     res.cookie("token", token, { httpOnly: true });
-
-//     return res.json({ loginStatus: true, message: "Login Successful" });
-//   } catch (err) {
-//     return res.status(500).json({ Status: false, Error: err.message });
-//   }
-// };
-
-// Blog Post Router
-const createBlogPost = (req, res) => {
-  // Generate the current date and time
-  const currentDate = new Date();
-  const imageFile = req.file.filename;
-
-  const values = [
-    uuidv4(),
-    req.body.title,
-    req.body.permalink,
-    req.body.subTitle,
-    req.body.AuthorOne,
-    req.body.AuthorTwo || null,
-    req.body.newsCategory,
-    imageFile,
-    req.body.artical,
-    currentDate,
-  ];
-
-  db.query(createBlogPostQuery, [values], (err, result) => {
-    if (err) {
-      return res.json({ Status: false, Error: "Query Error" });
-    } else {
-      return res.json({ Status: true, Result: result });
-    }
-  });
+    const [result] = await db.query(createBlogPostQuery, [values]);
+    return res.json({ Status: true, Result: result });
+  } catch (error) {
+    return res.json({ Status: false, Error: "Query Error" });
+  }
 };
 
 const allBlogPost = async (req, res) => {
@@ -184,7 +126,6 @@ const editBlogPost = async (req, res) => {
     const newImage = req.file ? req.file.filename : req.body.file;
     const values = [
       req.body.title,
-      req.body.permalink,
       req.body.subTitle,
       req.body.AuthorOne,
       req.body.AuthorTwo || null,
@@ -662,44 +603,54 @@ const editContactlist = (req, res) => {
 };
 
 // Author
-const createAuthor = (req, res) => {
-  const values = [uuidv4(), req.body.authorName];
-  db.query(createAuthorQuery, [values], (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
+const createAuthor = async (req, res) => {
+  try {
+    const values = [uuidv4(), req.body.authorName];
+    const [result] = await db.query(createAuthorQuery, [values]);
     return res.json({ Status: true, Result: result });
-  });
+  } catch (error) {
+    return res.json({ Status: false, Error: err });
+  }
 };
 
-const getAuthor = (req, res) => {
-  db.query(getAuthorQuery, (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
+const getAuthor = async (req, res) => {
+  try {
+    const [result] = await db.query(getAuthorQuery);
     return res.json({ Status: true, Result: result });
-  });
+  } catch (error) {
+    return res.json({ Status: false, Error: err });
+  }
 };
 
-const deleteOneAuthor = (req, res) => {
-  const uuid = req.params.id;
-  db.query(deleteOneAuthorQuery, [uuid], (err, result) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" + err });
+const deleteOneAuthor = async (req, res) => {
+  try {
+    const uuid = req.params.id;
+    const [result] = await db.query(deleteOneAuthorQuery, [uuid]);
     return res.json({ Status: true, Result: result });
-  });
+  } catch (error) {
+    return res.json({ Status: false, Error: "Query Error" });
+  }
 };
 
-const editAuthor = (req, res) => {
-  const id = [req.params.id];
-  const values = [req.body.authorName];
-  db.query(editAuthorQuery, [...values, id], (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
+const editAuthor = async (req, res) => {
+  try {
+    const id = [req.params.id];
+    const values = [req.body.authorName];
+    const [result] = await db.query(editAuthorQuery, [...values, id]);
     return res.json({ Status: true, Result: result });
-  });
+  } catch (error) {
+    return res.json({ Status: false, Error: err });
+  }
 };
 
-const showAuthorId = (req, res) => {
-  const id = [req.params.id];
-  db.query(showAuthorIdQuery, [id], (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
+const showAuthorId = async (req, res) => {
+  try {
+    const id = [req.params.id];
+    const [result] = await db.query(showAuthorIdQuery, [id]);
     return res.json({ Status: true, Result: result });
-  });
+  } catch (error) {
+    return res.json({ Status: false, Error: err });
+  }
 };
 
 // News Catagory Admin Control

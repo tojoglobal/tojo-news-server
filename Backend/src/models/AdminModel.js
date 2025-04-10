@@ -21,10 +21,10 @@ const editTagNameQuery = `UPDATE tags SET name = ? WHERE uuid = ?`;
 const TagNameToDeleteQuery = `DELETE FROM tags WHERE uuid = ?`;
 
 // Blog  Area
-const createBlogPostQuery = `INSERT INTO blognews (uuid, title,permalink, subtitle , author1_id , author2_id , category_id , thumble , articalpost , dateAndTime ) VALUES ( ? )`;
+const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle , author1_id , author2_id , category_id , thumble , articalpost , dateAndTime ) VALUES ( ? )`;
 
 const allBlogPostQuery = `SELECT * FROM blognews ORDER BY blognews.ID DESC`;
-const editBlogPostQuery = `UPDATE blognews SET title = ?,permalink=?, subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
+const editBlogPostQuery = `UPDATE blognews SET title = ?,subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
 const editBlogPostIdQuery = `SELECT * FROM blognews WHERE uuid = ?`;
 const getBlogPostByIdQuery = `SELECT * FROM blognews WHERE ID = ?`;
 
