@@ -1,4 +1,4 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import express from "express";
 import cors from "cors";
@@ -9,7 +9,10 @@ import { PublicApiRouters } from "./src/Routers/PublicApiRoute.js";
 import { UserRouters } from "./src/Routers/UserRoute.js";
 import adminlogin from "./src/Routers/AdminLogin.route.js";
 
+dotenv.config();
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
 
 const localhostPort1 = 5173;
 const localhostPort2 = 5174;
@@ -26,9 +29,6 @@ app.use(
     credentials: true,
   })
 );
-
-app.use(express.json());
-app.use(cookieParser());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
