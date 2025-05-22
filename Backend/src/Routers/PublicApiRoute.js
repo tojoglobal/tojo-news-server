@@ -12,7 +12,7 @@ import {
   getAuthors,
   newsLetterSubscribe,
   checkSubscription,
-} from "../controllers/PublicApiContrillers.js";
+} from "../controllers/PublicApiControllers.js";
 
 // PublicApiRouter route
 const PublicApiRouter = express.Router();

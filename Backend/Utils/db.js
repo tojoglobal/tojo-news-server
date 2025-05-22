@@ -1,4 +1,4 @@
-// import mysql from "mysql2/promise";
+import mysql from "mysql2/promise";
 
 // // Create a connection pool
 // const db = mysql.createPool({
@@ -12,8 +12,6 @@
 // });
 
 // export default db;
-
-import mysql from "mysql2/promise";
 
 // Create a connection pool
 const db = mysql.createPool({
@@ -30,7 +28,7 @@ const db = mysql.createPool({
 async function testConnection() {
   try {
     const connection = await db.getConnection();
-    console.log("Database connected successfully");
+    console.log("✅ Database connected successfully");
     connection.release();
     return true;
   } catch (error) {

@@ -1,0 +1,182 @@
+CREATE TABLE admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    type VARCHAR(50) DEFAULT 'admin',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uid VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    displayName VARCHAR(255),
+    photoURL VARCHAR(255),
+    isAdmin BOOLEAN DEFAULT FALSE,
+    premiumTaken DATE NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE blognews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    title VARCHAR(255) NOT NULL,
+    subTitle VARCHAR(255),
+    AuthorOne VARCHAR(255) NOT NULL,
+    AuthorTwo VARCHAR(255),
+    newsCategory VARCHAR(255),
+    thumble VARCHAR(255) NOT NULL,
+    artical TEXT NOT NULL,
+    dateAndTime DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE blog_views (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    blog_id INT NOT NULL,
+    view_count INT DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (blog_id) REFERENCES blognews(id) ON DELETE CASCADE
+);
+
+CREATE TABLE blog_reading_time (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    blog_id INT NOT NULL,
+    reading_time INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (blog_id) REFERENCES blognews(id) ON DELETE CASCADE
+);
+
+CREATE TABLE likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (article_id) REFERENCES blognews(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(uid) ON DELETE CASCADE
+);
+
+CREATE TABLE team_member (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    positionName VARCHAR(255) NOT NULL,
+    image VARCHAR(255) NOT NULL,
+    BioData TEXT,
+    facebookName VARCHAR(255),
+    linkedinName VARCHAR(255),
+    twitterName VARCHAR(255),
+    WhatsAppNumber VARCHAR(20),
+    youtubeName VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE podcasts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    HostedName VARCHAR(255) NOT NULL,
+    HostedInfo TEXT,
+    image VARCHAR(255) NOT NULL,
+    SpotifyUrl VARCHAR(255),
+    AppleUrl VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE episodes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    PodcastPovider VARCHAR(255) NOT NULL,
+    dateAndTime DATETIME NOT NULL,
+    episodesInfo TEXT,
+    title VARCHAR(255) NOT NULL,
+    audioFile VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE job_posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    jobTitle VARCHAR(255) NOT NULL,
+    jobPosition VARCHAR(255) NOT NULL,
+    jobTime VARCHAR(100),
+    applyLink VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tag_names (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    TagName VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE member_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    image VARCHAR(255) NOT NULL,
+    ImageTitle VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE subscribers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    interests TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE appointments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    ProblemTitle VARCHAR(255) NOT NULL,
+    ContactName VARCHAR(255) NOT NULL,
+    datePicker DATE NOT NULL,
+    reason TEXT,
+    note TEXT,
+    timePicker TIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE contactlist (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    contactName VARCHAR(255) NOT NULL,
+    category VARCHAR(255),
+    mobileNo VARCHAR(20),
+    email VARCHAR(255),
+    note TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE authors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    authorName VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE news_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    categoryName VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE clientlist (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
+    clientName VARCHAR(255) NOT NULL,
+    clientmobile VARCHAR(20),
+    clientemail VARCHAR(255),
+    gender VARCHAR(10),
+    clientCategory VARCHAR(255),
+    clientCountryCode VARCHAR(10),
+    clientStateCode VARCHAR(10),
+    clientCity VARCHAR(255),
+    clientAddress TEXT,
+    note TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO admin (email, password, type) 
+VALUES ('admin@gmail.com', '$2b$10$hashedpasswordhere', 'admin');
