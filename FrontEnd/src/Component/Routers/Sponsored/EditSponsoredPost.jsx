@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
@@ -5,33 +6,29 @@ import { useNavigate, useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
-import { Editor } from "@tinymce/tinymce-react";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { useContext } from "react";
 
 const EditSponsoredPost = () => {
   const { state } = useContext(AppContext);
-  // Router
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // state
   const [errorMessage, setErrorMessage] = useState(null);
-  const [BlogPost, setBlogPost] = useState({});
+  const [SponsoredPost, setSponsoredPost] = useState({});
   const [file, setFile] = useState(null);
-  const [Author, setAuthor] = useState([]);
-  const [NewsCategory, setNewsCategory] = useState([]);
 
-  //Data Fetching
-
-  // Fetch blog post data by ID
   useEffect(() => {
     axios
-      .get(`${state.port}/api/admin/blogpost/${id}`)
+      .get(`${state.port}/api/admin/Sponsored/${id}`)
       .then((result) => {
         if (result.data.Status) {
-          setBlogPost(result.data.Result[0]);
-          setFile(`${state.port}/Images/${result.data.Result[0].thumble}`);
+          setSponsoredPost(result.data.Result[0]);
+          setFile(
+            result.data.Result[0].image_url
+              ? `${state.port}/Images/${result.data.Result[0].image_url}`
+              : null
+          );
         } else {
           alert(result.data.Error);
         }
@@ -39,81 +36,33 @@ const EditSponsoredPost = () => {
       .catch((err) => console.log(err));
   }, [id]);
 
-  // fetch data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [authorResponse, newsCategoryResponse] = await Promise.all([
-          axios.get(`${state.port}/api/admin/author`),
-          axios.get(`${state.port}/api/admin/newsCategory`),
-        ]);
-
-        if (authorResponse.data.Status) {
-          setAuthor(authorResponse.data.Result);
-        } else {
-          setErrorMessage(authorResponse.data.Error);
-        }
-
-        if (newsCategoryResponse.data.Status) {
-          setNewsCategory(newsCategoryResponse.data.Result);
-        } else {
-          setErrorMessage(newsCategoryResponse.data.Error);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setErrorMessage(`${error}`);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // image file handle
   const handleChange = (e) => {
     setFile(URL.createObjectURL(e.target.files[0]));
     formik.setFieldValue("file", e.target.files[0]);
   };
 
-  // parmalik validation
-  const validate = (values) => {
-    const errors = {};
-    if (values.permalink && /[`_,-]/.test(values.permalink)) {
-      errors.permalink =
-        "Please remove underscore, hyphen, comma and backtick (_,-`).";
-    }
-    return errors;
-  };
-
-  // use fromik method
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: BlogPost.title || "",
-      permalink: BlogPost.permalink || "",
-      subTitle: BlogPost.subtitle || "",
-      AuthorOne: BlogPost.author1_id || "",
-      AuthorTwo: BlogPost.author2_id || "",
-      newsCategory: BlogPost.category_id || "",
-      file: BlogPost.thumble || "",
-      artical: BlogPost.articalpost || "",
+      title: SponsoredPost.title || "",
+      description: SponsoredPost.description || "",
+      sponsor_id: SponsoredPost.sponsor_id || "",
+      start_date: SponsoredPost.start_date || "",
+      end_date: SponsoredPost.end_date || "",
+      file: SponsoredPost.image_url || "",
     },
-    validate,
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       const formData = new FormData();
       formData.append("title", values.title);
-      formData.append("permalink", values.permalink);
-      formData.append("subTitle", values.subTitle);
-      formData.append("AuthorOne", values.AuthorOne);
-      if (values.AuthorTwo) {
-        formData.append("AuthorTwo", values.AuthorTwo);
-      }
-      formData.append("newsCategory", values.newsCategory);
+      formData.append("description", values.description);
+      formData.append("sponsor_id", values.sponsor_id);
+      formData.append("start_date", values.start_date);
+      formData.append("end_date", values.end_date);
       formData.append("file", values.file);
-      formData.append("artical", values.artical);
+
       try {
         const response = await axios.put(
-          `${state.port}/api/admin/blogpost/edit/${id}`,
+          `${state.port}/api/admin/Sponsored/edit/${id}`,
           formData,
           {
             headers: {
@@ -123,7 +72,7 @@ const EditSponsoredPost = () => {
         );
         if (response.data.Status) {
           setErrorMessage(null);
-          toast.success(`Edit successfully`, {
+          toast.success(`Sponsored Post updated successfully`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -133,20 +82,12 @@ const EditSponsoredPost = () => {
             progress: undefined,
             theme: "light",
           });
-
-          const delay = 2000; // 2 seconds delay
-          const timer = setTimeout(() => {
-            navigate(`/dashboard/blogpost`);
-          }, delay);
-          // Clear the timer if the component unmounts before the delay is complete
-          return () => clearTimeout(timer);
-        } else {
-          console.error("Server returned an error:", response.data.Error);
-          setErrorMessage("Internal Server Error");
+          setTimeout(() => {
+            navigate(`/dashboard/Sponsored`);
+          }, 1500);
         }
       } catch (error) {
-        console.error("Axios request failed:", error);
-        setErrorMessage("Axios request failed");
+        setErrorMessage(`${error}`);
       }
 
       resetForm();
@@ -156,11 +97,9 @@ const EditSponsoredPost = () => {
   return (
     <div className="container dashboard_All">
       <ToastContainer />
-      <h5>/dashboard/blogpost/edit/</h5>
-      <h1 className="dashboard_name">Edit blogpost </h1>
+      <h1 className="dashboard_name">Edit Sponsored Post</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {/* form start */}
       <div className="from_div">
         <form
           onSubmit={formik.handleSubmit}
@@ -178,136 +117,68 @@ const EditSponsoredPost = () => {
                 onChange={formik.handleChange}
                 placeholder="Write Title..."
                 value={formik.values.title}
-              />
-            </div>
-            <div className="col-md-12 inputfield">
-              <label htmlFor="permalink">Permalink</label>
-              <input
-                id="permalink"
-                className="text_input_field"
-                type="text"
-                name="permalink"
-                onChange={formik.handleChange}
-                placeholder="Write permalink..."
-                value={formik.values.permalink}
                 required
               />
-              {formik.errors.permalink && (
-                <div className="error text-danger">
-                  {formik.errors.permalink}
-                </div>
-              )}
-              {formik.values.permalink && !formik.errors.permalink && (
-                <>
-                  <small>Great Valid Link : </small>
-                  <small>
-                    <a
-                      href={
-                        formik.values.permalink
-                          ? `http://localhost:5173/news/${formik.values.permalink
-                              .replaceAll(/ /g, "-")
-                              .toLowerCase()}`
-                          : "/fallback-url"
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-success"
-                    >
-                      http://localhost:5173/news/
-                      {formik.values.permalink
-                        .replaceAll(/ /g, "-")
-                        .toLowerCase()}
-                    </a>
-                  </small>
-                </>
-              )}
             </div>
 
             <div className="col-md-12 inputfield">
-              <label htmlFor="subTitle">Sub Title</label>
-              <input
-                id="subTitle"
+              <label htmlFor="description">Description</label>
+              <textarea
+                id="description"
                 className="text_input_field"
-                type="text"
-                name="subTitle"
+                name="description"
                 onChange={formik.handleChange}
-                placeholder="Write Sub Title..."
-                value={formik.values.subTitle}
+                placeholder="Write Description..."
+                value={formik.values.description}
+                required
+                rows="4"
               />
             </div>
 
             <div className="col-md-6 inputfield">
-              <label htmlFor="AuthorOne">Author 1</label>
-
-              <select
-                name="AuthorOne"
-                id="AuthorOne"
+              <label htmlFor="sponsor_id">Sponsor ID (optional)</label>
+              <input
+                id="sponsor_id"
                 className="text_input_field"
-                aria-label="Default select example"
-                value={formik.values.AuthorOne}
-                onChange={(e) =>
-                  formik.setFieldValue("AuthorOne", e.target.value)
-                }
-              >
-                {Author.length > 0 &&
-                  Author.map((CaNa) => (
-                    <option value={CaNa.ID} key={CaNa.uuid}>
-                      {CaNa.name}
-                    </option>
-                  ))}
-              </select>
+                type="text"
+                name="sponsor_id"
+                onChange={formik.handleChange}
+                placeholder="Sponsor ID..."
+                value={formik.values.sponsor_id}
+              />
             </div>
 
             <div className="col-md-6 inputfield">
-              <label htmlFor="AuthorTwo">Author 2 (optional)</label>
-
-              <select
-                name="AuthorTwo"
-                id="AuthorTwo"
+              <label htmlFor="start_date">Start Date</label>
+              <input
+                id="start_date"
                 className="text_input_field"
-                aria-label="Default select example"
-                value={formik.values.AuthorTwo}
-                onChange={(e) =>
-                  formik.setFieldValue("AuthorTwo", e.target.value)
-                }
-              >
-                <option value="">Choose Author 2</option>
-                {Author.length > 0 &&
-                  Author.map((CaNa) => (
-                    <option value={CaNa.ID} key={CaNa.uuid}>
-                      {CaNa.name}
-                    </option>
-                  ))}
-              </select>
+                type="date"
+                name="start_date"
+                onChange={formik.handleChange}
+                value={formik.values.start_date}
+                required
+              />
             </div>
 
-            <div className="col-md-12 inputfield">
-              <label htmlFor="newsCategory">News Category</label>
-
-              <select
-                name="newsCategory"
-                id="newsCategory"
+            <div className="col-md-6 inputfield">
+              <label htmlFor="end_date">End Date</label>
+              <input
+                id="end_date"
                 className="text_input_field"
-                aria-label="Default select example"
-                value={formik.values.newsCategory}
-                onChange={(e) =>
-                  formik.setFieldValue("newsCategory", e.target.value)
-                }
-              >
-                {NewsCategory.length > 0 &&
-                  NewsCategory.map((CaNa) => (
-                    <option value={CaNa.ID} key={CaNa.uuid}>
-                      {CaNa.name}
-                    </option>
-                  ))}
-              </select>
+                type="date"
+                name="end_date"
+                onChange={formik.handleChange}
+                value={formik.values.end_date}
+                required
+              />
             </div>
 
-            <div className="col-md-6 inputfield ">
-              <h5>Upload News Thumbnail</h5>
+            <div className="col-md-6 inputfield">
+              <h5>Upload Image</h5>
               <div className="thumble_inputField_style">
                 <label htmlFor="file">
-                  Upload Thumbnail <FaCloudUploadAlt />
+                  Upload Image <FaCloudUploadAlt />
                 </label>
                 <input
                   id="file"
@@ -318,67 +189,30 @@ const EditSponsoredPost = () => {
                 />
               </div>
             </div>
-            <div className="col-md-6 inputfield">
-              <h5>Preview Thumbnail</h5>
 
+            <div className="col-md-6 inputfield">
+              <h5>Preview Image</h5>
               <img
-                src={file ? file : `${state.port}/Images/${BlogPost.thumble}`}
-                alt="Tojo_global_Thumbnail_Image"
+                src={
+                  file
+                    ? file
+                    : SponsoredPost.image_url
+                    ? `${state.port}/Images/${SponsoredPost.image_url}`
+                    : "https://i.postimg.cc/KzNdw0LX/Group.png"
+                }
+                alt="Sponsored Post Preview"
                 className="blog_Image"
                 loading="lazy"
               />
             </div>
 
-            <div className="col-md-12 inputfield">
-              <h5>Write Artical</h5>
-              <Editor
-                id="artical"
-                textareaName="artical"
-                onEditorChange={(content) => {
-                  formik.setFieldValue("artical", content);
-                }}
-                initialValue={formik.values.artical}
-                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
-                init={{
-                  height: 450,
-                  menubar: false,
-                  plugins: [
-                    "advlist",
-                    "autolink",
-                    "lists",
-                    "link",
-                    "image",
-                    "charmap",
-                    "preview",
-                    "anchor",
-                    "searchreplace",
-                    "visualblocks",
-                    "code",
-                    "fullscreen",
-                    "insertdatetime",
-                    "media",
-                    "table",
-                    "code",
-                    "help",
-                    "wordcount",
-                  ],
-                  toolbar:
-                    "undo redo |fullscreen blocks|" +
-                    "bold italic forecolor fontsize |code link image preview| alignleft aligncenter " +
-                    "alignright alignjustify | bullist numlist outdent indent | table | " +
-                    "removeformat | help",
-                  content_style:
-                    "body { font-family:Helvetica,Arial,sans-serif; font-size: 1rem;  color: #3f3e3e; }",
-                }}
-              />
-            </div>
             <div className="col-md-12 inputFiledMiddel">
               <button
                 type="submit"
                 className="button-62 cetificate_image_AddBtn "
                 role="button"
               >
-                ADD BLOG POST
+                UPDATE SPONSORED POST
               </button>
             </div>
           </div>

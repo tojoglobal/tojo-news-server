@@ -26,10 +26,11 @@ const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle , autho
 // Sponsored area
 export const createSponsoredPostQuery = `
   INSERT INTO sponsored_posts 
-  (uuid, title, description, image_url, sponsor_id, start_date, end_date) 
-  VALUES ?
+  (title, description, image_url, sponsor_id, start_date, end_date, published_at) 
+  VALUES (?)
 `;
 
+// Update other queries to use id instead of uuid
 export const allSponsoredPostQuery = `
   SELECT * FROM sponsored_posts ORDER BY published_at DESC
 `;
@@ -41,7 +42,8 @@ export const editSponsoredPostQuery = `
   image_url = ?, 
   sponsor_id = ?, 
   start_date = ?, 
-  end_date = ? 
+  end_date = ?,
+  published_at = ?
   WHERE id = ?
 `;
 

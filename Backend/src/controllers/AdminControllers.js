@@ -990,20 +990,66 @@ const adminLogout = (req, res) => {
 const createSponsoredPost = async (req, res) => {
   try {
     const imageFile = req.file ? req.file.filename : null;
+    const currentDate = new Date();
+
+    // Validate dates
+    const startDate = new Date(req.body.start_date);
+    const endDate = new Date(req.body.end_date);
+
+    if (startDate < new Date().setHours(0, 0, 0, 0)) {
+      return res.json({
+        Status: false,
+        Error: "Start date cannot be in the past",
+      });
+    }
+
+    if (endDate <= startDate) {
+      return res.json({
+        Status: false,
+        Error: "End date must be after start date",
+      });
+    }
+
     const values = [
-      uuidv4(),
       req.body.title,
       req.body.description,
       imageFile,
-      req.body.sponsor_id || null,
+      req.body.sponsor_id || null, // Make sure sponsor_id is null if empty
       req.body.start_date,
       req.body.end_date,
+      currentDate,
     ];
 
     const [result] = await db.query(createSponsoredPostQuery, [values]);
     return res.json({ Status: true, Result: result });
   } catch (error) {
-    return res.json({ Status: false, Error: "Query Error" });
+    console.error("Error in createSponsoredPost:", error);
+    return res.json({ Status: false, Error: error.message });
+  }
+};
+
+const editSponsoredPost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const newImage = req.file ? req.file.filename : req.body.file;
+    const currentDate = new Date(); 
+
+    const values = [
+      req.body.title,
+      req.body.description,
+      newImage,
+      req.body.sponsor_id || null,
+      req.body.start_date,
+      req.body.end_date,
+      currentDate,
+      id,
+    ];
+
+    const [data] = await db.query(editSponsoredPostQuery, values);
+    return res.json({ Status: true, Result: data });
+  } catch (err) {
+    console.error("Error in editSponsoredPost:", err);
+    return res.json({ Status: false, Error: err.message });
   }
 };
 
@@ -1013,27 +1059,6 @@ const allSponsoredPost = async (req, res) => {
     return res.json({ Status: true, Result: data });
   } catch (err) {
     return res.json({ Status: false, Error: "Query Error" });
-  }
-};
-
-const editSponsoredPost = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const newImage = req.file ? req.file.filename : req.body.image_url;
-    const values = [
-      req.body.title,
-      req.body.description,
-      newImage,
-      req.body.sponsor_id || null,
-      req.body.start_date,
-      req.body.end_date,
-      id,
-    ];
-
-    const [data] = await db.query(editSponsoredPostQuery, values);
-    return res.json({ Status: true, Result: data });
-  } catch (err) {
-    return res.json({ Status: false, Error: err.message });
   }
 };
 
