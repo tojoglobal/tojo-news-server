@@ -26,7 +26,7 @@ const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle , autho
 // Sponsored area
 export const createSponsoredPostQuery = `
   INSERT INTO sponsored_posts 
-  (title, description, image_url, sponsor_id, start_date, end_date, published_at) 
+  (title, description, image_url, start_date, end_date, published_at) 
   VALUES (?)
 `;
 

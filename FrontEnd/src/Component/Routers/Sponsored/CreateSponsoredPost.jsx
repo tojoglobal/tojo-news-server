@@ -23,16 +23,37 @@ const CreateSponsoredPost = () => {
     initialValues: {
       title: "",
       description: "",
-      sponsor_id: "",
       start_date: "",
       end_date: "",
       file: "",
     },
     onSubmit: async (values, { resetForm }) => {
+      // Date validation - improved version
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set to start of day
+
+      // Parse input dates
+      const startDate = new Date(values.start_date);
+      const endDate = new Date(values.end_date);
+
+      // Reset time portions for comparison
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+
+      // Validate dates
+      if (startDate < today) {
+        setErrorMessage("Start date cannot be in the past");
+        return;
+      }
+
+      if (endDate <= startDate) {
+        setErrorMessage("End date must be after start date");
+        return;
+      }
+
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("description", values.description);
-      formData.append("sponsor_id", values.sponsor_id);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
       formData.append("file", values.file);
@@ -47,7 +68,6 @@ const CreateSponsoredPost = () => {
             },
           }
         );
-        console.log("Response:", response); // Debug log
         if (response.data.Status) {
           setErrorMessage(null);
           toast.success(`Sponsored Post created successfully`, {
@@ -64,23 +84,22 @@ const CreateSponsoredPost = () => {
             navigate(`/dashboard/Sponsored`);
           }, 1500);
         } else {
-          // Handle case where backend returns Status: false
           setErrorMessage(
             response.data.Error || "Failed to create sponsored post"
           );
         }
       } catch (error) {
-        console.error("API Error:", error.response || error); // Detailed error logging
+        console.error("API Error:", error);
         setErrorMessage(
-          error.response?.data?.Error ||
-            error.message ||
-            "An error occurred while creating the sponsored post"
+          error.response?.data?.Error || error.message || "An error occurred"
         );
       }
-
       resetForm();
     },
   });
+
+  // Set minimum date for start_date (today)
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="container dashboard_All">
@@ -108,7 +127,6 @@ const CreateSponsoredPost = () => {
                 required
               />
             </div>
-
             <div className="col-md-12 inputfield">
               <label htmlFor="description">Description</label>
               <textarea
@@ -122,8 +140,7 @@ const CreateSponsoredPost = () => {
                 rows="4"
               />
             </div>
-
-            <div className="col-md-6 inputfield">
+            {/* <div className="col-md-6 inputfield">
               <label htmlFor="sponsor_id">Sponsor ID (optional)</label>
               <input
                 id="sponsor_id"
@@ -134,8 +151,7 @@ const CreateSponsoredPost = () => {
                 placeholder="Sponsor ID..."
                 value={formik.values.sponsor_id}
               />
-            </div>
-
+            </div> */}
             <div className="col-md-6 inputfield">
               <label htmlFor="start_date">Start Date</label>
               <input
@@ -145,10 +161,10 @@ const CreateSponsoredPost = () => {
                 name="start_date"
                 onChange={formik.handleChange}
                 value={formik.values.start_date}
+                min={today} // Set minimum date to today
                 required
               />
             </div>
-
             <div className="col-md-6 inputfield">
               <label htmlFor="end_date">End Date</label>
               <input
@@ -158,10 +174,10 @@ const CreateSponsoredPost = () => {
                 name="end_date"
                 onChange={formik.handleChange}
                 value={formik.values.end_date}
+                min={formik.values.start_date || today} // Minimum is start_date or today
                 required
               />
             </div>
-
             <div className="col-md-6 inputfield">
               <h5>Upload Image</h5>
               <div className="thumble_inputField_style">
@@ -178,7 +194,6 @@ const CreateSponsoredPost = () => {
                 />
               </div>
             </div>
-
             <div className="col-md-6 inputfield">
               <h5>Preview Image</h5>
               <img
@@ -188,7 +203,6 @@ const CreateSponsoredPost = () => {
                 loading="lazy"
               />
             </div>
-
             <div className="col-md-12 inputFiledMiddel">
               <button
                 type="submit"
