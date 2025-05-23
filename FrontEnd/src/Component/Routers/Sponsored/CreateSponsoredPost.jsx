@@ -209,7 +209,7 @@ const CreateSponsoredPost = () => {
                 className="button-62 cetificate_image_AddBtn "
                 role="button"
               >
-                CREATE SPONSORED POST
+                CREATE SPONSORED
               </button>
             </div>
           </div>

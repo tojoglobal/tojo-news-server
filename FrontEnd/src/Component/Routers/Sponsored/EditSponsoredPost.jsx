@@ -20,21 +20,32 @@ const EditSponsoredPost = () => {
 
   useEffect(() => {
     axios
-      .get(`${state.port}/api/admin/Sponsored/${id}`)
+      .get(`${state.port}/api/admin/Sponsoredbyid/${id}`)
       .then((result) => {
         if (result.data.Status) {
-          setSponsoredPost(result.data.Result[0]);
+          const post = result.data.Result[0];
+          const formattedStartDate = post.start_date
+            ? new Date(post.start_date).toISOString().split("T")[0]
+            : "";
+          const formattedEndDate = post.end_date
+            ? new Date(post.end_date).toISOString().split("T")[0]
+            : "";
+
+          setSponsoredPost({
+            ...post,
+            start_date: formattedStartDate,
+            end_date: formattedEndDate,
+          });
+
           setFile(
-            result.data.Result[0].image_url
-              ? `${state.port}/Images/${result.data.Result[0].image_url}`
-              : null
+            post.image_url ? `${state.port}/Images/${post.image_url}` : null
           );
         } else {
           alert(result.data.Error);
         }
       })
       .catch((err) => console.log(err));
-  }, [id]);
+  }, [id]);  
 
   const handleChange = (e) => {
     setFile(URL.createObjectURL(e.target.files[0]));
@@ -46,7 +57,6 @@ const EditSponsoredPost = () => {
     initialValues: {
       title: SponsoredPost.title || "",
       description: SponsoredPost.description || "",
-      sponsor_id: SponsoredPost.sponsor_id || "",
       start_date: SponsoredPost.start_date || "",
       end_date: SponsoredPost.end_date || "",
       file: SponsoredPost.image_url || "",
@@ -55,10 +65,13 @@ const EditSponsoredPost = () => {
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("description", values.description);
-      formData.append("sponsor_id", values.sponsor_id);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
-      formData.append("file", values.file);
+
+      // Only append file if it's a File object
+      if (values.file instanceof File) {
+        formData.append("file", values.file);
+      }
 
       try {
         const response = await axios.put(
@@ -70,24 +83,21 @@ const EditSponsoredPost = () => {
             },
           }
         );
+        console.log(response);
         if (response.data.Status) {
           setErrorMessage(null);
           toast.success(`Sponsored Post updated successfully`, {
             position: "top-right",
             autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
           });
           setTimeout(() => {
             navigate(`/dashboard/Sponsored`);
           }, 1500);
         }
       } catch (error) {
-        setErrorMessage(`${error}`);
+        setErrorMessage(
+          error.response?.data?.Error || error.message || "Update failed"
+        );
       }
 
       resetForm();
@@ -132,19 +142,6 @@ const EditSponsoredPost = () => {
                 value={formik.values.description}
                 required
                 rows="4"
-              />
-            </div>
-
-            <div className="col-md-6 inputfield">
-              <label htmlFor="sponsor_id">Sponsor ID (optional)</label>
-              <input
-                id="sponsor_id"
-                className="text_input_field"
-                type="text"
-                name="sponsor_id"
-                onChange={formik.handleChange}
-                placeholder="Sponsor ID..."
-                value={formik.values.sponsor_id}
               />
             </div>
 
@@ -212,7 +209,7 @@ const EditSponsoredPost = () => {
                 className="button-62 cetificate_image_AddBtn "
                 role="button"
               >
-                UPDATE SPONSORED POST
+                UPDATE SPONSORED
               </button>
             </div>
           </div>

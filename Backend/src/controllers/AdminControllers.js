@@ -1019,7 +1019,6 @@ const editSponsoredPost = async (req, res) => {
       req.body.title,
       req.body.description,
       newImage,
-      req.body.sponsor_id || null,
       req.body.start_date,
       req.body.end_date,
       currentDate,
@@ -1027,6 +1026,7 @@ const editSponsoredPost = async (req, res) => {
     ];
 
     const [data] = await db.query(editSponsoredPostQuery, values);
+    console.log(data);
     return res.json({ Status: true, Result: data });
   } catch (err) {
     console.error("Error in editSponsoredPost:", err);
@@ -1040,16 +1040,6 @@ const allSponsoredPost = async (req, res) => {
     return res.json({ Status: true, Result: data });
   } catch (err) {
     return res.json({ Status: false, Error: "Query Error" });
-  }
-};
-
-const editSponsoredPostId = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const [data] = await db.query(editSponsoredPostIdQuery, [id]);
-    return res.json({ Status: true, Result: data });
-  } catch (err) {
-    return res.json({ Status: false, Error: err.message });
   }
 };
 
@@ -1107,7 +1097,6 @@ export {
   createSponsoredPost,
   allSponsoredPost,
   editSponsoredPost,
-  editSponsoredPostId,
   getSponsoredPostById,
   SponsoredPostToDelete,
   // adminLogin,

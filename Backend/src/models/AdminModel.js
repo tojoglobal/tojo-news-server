@@ -35,17 +35,10 @@ export const allSponsoredPostQuery = `
   SELECT * FROM sponsored_posts ORDER BY published_at DESC
 `;
 
-export const editSponsoredPostQuery = `
-  UPDATE sponsored_posts SET 
-  title = ?, 
-  description = ?, 
-  image_url = ?, 
-  sponsor_id = ?, 
-  start_date = ?, 
-  end_date = ?,
-  published_at = ?
-  WHERE id = ?
-`;
+export const editSponsoredPostQuery = `UPDATE sponsored_posts
+SET title = ?, description = ?, image_url = ?, start_date = ?, end_date = ?, 
+published_at=?
+WHERE id = ?`;
 
 export const SponsoredPostToDeleteQuery = `
   DELETE FROM sponsored_posts WHERE id = ?

@@ -100,12 +100,6 @@ const ShowSponsoredPost = () => {
               </tr>
               <tr>
                 <td>
-                  <span>Sponsor ID</span>
-                </td>
-                <td>{sponsoredPost.sponsor_id || "N/A"}</td>
-              </tr>
-              <tr>
-                <td>
                   <span>Start Date</span>
                 </td>
                 <td>{formatDate(sponsoredPost.start_date)}</td>

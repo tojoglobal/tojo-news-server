@@ -85,7 +85,6 @@ import {
   editJobPost,
   createSponsoredPost,
   allSponsoredPost,
-  editSponsoredPostId,
   getSponsoredPostById,
   SponsoredPostToDelete,
   editSponsoredPost,
@@ -146,7 +145,6 @@ AdminRouter.put(
   upload.single("file"),
   editSponsoredPost
 );
-AdminRouter.get("/Sponsored/:id", editSponsoredPostId);
 AdminRouter.get("/Sponsoredbyid/:id", getSponsoredPostById);
 AdminRouter.delete("/Sponsored/delete/:id", SponsoredPostToDelete);
 
