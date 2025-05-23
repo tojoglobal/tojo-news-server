@@ -5,13 +5,11 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "tojonews",
+  database: "tojo-news",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
-
-export default db;
 
 // Test connection function
 async function testConnection() {
@@ -28,3 +26,5 @@ async function testConnection() {
 
 // Test the connection immediately
 testConnection();
+
+export default db;
