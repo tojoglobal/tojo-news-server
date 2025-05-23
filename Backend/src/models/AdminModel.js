@@ -23,6 +23,40 @@ const TagNameToDeleteQuery = `DELETE FROM tags WHERE uuid = ?`;
 // Blog  Area
 const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle , author1_id , author2_id , category_id , thumble , articalpost , dateAndTime ) VALUES ( ? )`;
 
+// Sponsored area
+export const createSponsoredPostQuery = `
+  INSERT INTO sponsored_posts 
+  (uuid, title, description, image_url, sponsor_id, start_date, end_date) 
+  VALUES ?
+`;
+
+export const allSponsoredPostQuery = `
+  SELECT * FROM sponsored_posts ORDER BY published_at DESC
+`;
+
+export const editSponsoredPostQuery = `
+  UPDATE sponsored_posts SET 
+  title = ?, 
+  description = ?, 
+  image_url = ?, 
+  sponsor_id = ?, 
+  start_date = ?, 
+  end_date = ? 
+  WHERE id = ?
+`;
+
+export const SponsoredPostToDeleteQuery = `
+  DELETE FROM sponsored_posts WHERE id = ?
+`;
+
+export const editSponsoredPostIdQuery = `
+  SELECT * FROM sponsored_posts WHERE id = ?
+`;
+
+export const getSponsoredPostByIdQuery = `
+  SELECT * FROM sponsored_posts WHERE id = ?
+`;
+
 const allBlogPostQuery = `SELECT * FROM blognews ORDER BY blognews.ID DESC`;
 const editBlogPostQuery = `UPDATE blognews SET title = ?,subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
 const editBlogPostIdQuery = `SELECT * FROM blognews WHERE uuid = ?`;

@@ -1,22 +1,45 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
+import { useNavigate, useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
+import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import { Editor } from "@tinymce/tinymce-react";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import { useNavigate } from "react-router";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { useContext } from "react";
 
-const CreateBlogPost = () => {
+const EditSponsoredPost = () => {
   const { state } = useContext(AppContext);
+  // Router
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [file, setFile] = useState(null);
+
+  // state
   const [errorMessage, setErrorMessage] = useState(null);
+  const [BlogPost, setBlogPost] = useState({});
+  const [file, setFile] = useState(null);
   const [Author, setAuthor] = useState([]);
   const [NewsCategory, setNewsCategory] = useState([]);
 
+  //Data Fetching
+
+  // Fetch blog post data by ID
+  useEffect(() => {
+    axios
+      .get(`${state.port}/api/admin/blogpost/${id}`)
+      .then((result) => {
+        if (result.data.Status) {
+          setBlogPost(result.data.Result[0]);
+          setFile(`${state.port}/Images/${result.data.Result[0].thumble}`);
+        } else {
+          alert(result.data.Error);
+        }
+      })
+      .catch((err) => console.log(err));
+  }, [id]);
+
+  // fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -45,6 +68,7 @@ const CreateBlogPost = () => {
     fetchData();
   }, []);
 
+  // image file handle
   const handleChange = (e) => {
     setFile(URL.createObjectURL(e.target.files[0]));
     formik.setFieldValue("file", e.target.files[0]);
@@ -55,24 +79,27 @@ const CreateBlogPost = () => {
     const errors = {};
     if (values.permalink && /[`_,-]/.test(values.permalink)) {
       errors.permalink =
-        "Please remove underscore, hyphen, comma and backtik (_,-`).";
+        "Please remove underscore, hyphen, comma and backtick (_,-`).";
     }
     return errors;
   };
 
+  // use fromik method
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
-      permalink: "",
-      subTitle: "",
-      AuthorOne: "",
-      AuthorTwo: "",
-      newsCategory: "",
-      file: "",
-      artical: "",
+      title: BlogPost.title || "",
+      permalink: BlogPost.permalink || "",
+      subTitle: BlogPost.subtitle || "",
+      AuthorOne: BlogPost.author1_id || "",
+      AuthorTwo: BlogPost.author2_id || "",
+      newsCategory: BlogPost.category_id || "",
+      file: BlogPost.thumble || "",
+      artical: BlogPost.articalpost || "",
     },
     validate,
     onSubmit: async (values, { resetForm }) => {
+      console.log(values);
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("permalink", values.permalink);
@@ -84,10 +111,9 @@ const CreateBlogPost = () => {
       formData.append("newsCategory", values.newsCategory);
       formData.append("file", values.file);
       formData.append("artical", values.artical);
-
       try {
-        const response = await axios.post(
-          `${state.port}/api/admin/blogpost/create`,
+        const response = await axios.put(
+          `${state.port}/api/admin/blogpost/edit/${id}`,
           formData,
           {
             headers: {
@@ -97,7 +123,7 @@ const CreateBlogPost = () => {
         );
         if (response.data.Status) {
           setErrorMessage(null);
-          toast.success(`Artical Create successfully`, {
+          toast.success(`Edit successfully`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -107,12 +133,20 @@ const CreateBlogPost = () => {
             progress: undefined,
             theme: "light",
           });
-          setTimeout(() => {
+
+          const delay = 2000; // 2 seconds delay
+          const timer = setTimeout(() => {
             navigate(`/dashboard/blogpost`);
-          }, 1500);
+          }, delay);
+          // Clear the timer if the component unmounts before the delay is complete
+          return () => clearTimeout(timer);
+        } else {
+          console.error("Server returned an error:", response.data.Error);
+          setErrorMessage("Internal Server Error");
         }
       } catch (error) {
-        setErrorMessage(`${error}`);
+        console.error("Axios request failed:", error);
+        setErrorMessage("Axios request failed");
       }
 
       resetForm();
@@ -122,9 +156,11 @@ const CreateBlogPost = () => {
   return (
     <div className="container dashboard_All">
       <ToastContainer />
-      <h1 className="dashboard_name">Create News</h1>
+      <h5>/dashboard/blogpost/edit/</h5>
+      <h1 className="dashboard_name">Edit blogpost </h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {/* form start */}
       <div className="from_div">
         <form
           onSubmit={formik.handleSubmit}
@@ -142,7 +178,6 @@ const CreateBlogPost = () => {
                 onChange={formik.handleChange}
                 placeholder="Write Title..."
                 value={formik.values.title}
-                required
               />
             </div>
             <div className="col-md-12 inputfield">
@@ -164,7 +199,7 @@ const CreateBlogPost = () => {
               )}
               {formik.values.permalink && !formik.errors.permalink && (
                 <>
-                  <small>Great</small>
+                  <small>Great Valid Link : </small>
                   <small>
                     <a
                       href={
@@ -198,73 +233,77 @@ const CreateBlogPost = () => {
                 onChange={formik.handleChange}
                 placeholder="Write Sub Title..."
                 value={formik.values.subTitle}
-                required
               />
             </div>
 
             <div className="col-md-6 inputfield">
               <label htmlFor="AuthorOne">Author 1</label>
+
               <select
                 name="AuthorOne"
                 id="AuthorOne"
                 className="text_input_field"
+                aria-label="Default select example"
                 value={formik.values.AuthorOne}
                 onChange={(e) =>
                   formik.setFieldValue("AuthorOne", e.target.value)
                 }
-                required
               >
-                <option value="">Choose Author 1</option>
-                {Author.map((author) => (
-                  <option value={author.ID} key={author.uuid}>
-                    {author.name}
-                  </option>
-                ))}
+                {Author.length > 0 &&
+                  Author.map((CaNa) => (
+                    <option value={CaNa.ID} key={CaNa.uuid}>
+                      {CaNa.name}
+                    </option>
+                  ))}
               </select>
             </div>
 
             <div className="col-md-6 inputfield">
               <label htmlFor="AuthorTwo">Author 2 (optional)</label>
+
               <select
                 name="AuthorTwo"
                 id="AuthorTwo"
                 className="text_input_field"
+                aria-label="Default select example"
                 value={formik.values.AuthorTwo}
                 onChange={(e) =>
                   formik.setFieldValue("AuthorTwo", e.target.value)
                 }
               >
                 <option value="">Choose Author 2</option>
-                {Author.map((author) => (
-                  <option value={author.ID} key={author.uuid}>
-                    {author.name}
-                  </option>
-                ))}
+                {Author.length > 0 &&
+                  Author.map((CaNa) => (
+                    <option value={CaNa.ID} key={CaNa.uuid}>
+                      {CaNa.name}
+                    </option>
+                  ))}
               </select>
             </div>
 
             <div className="col-md-12 inputfield">
               <label htmlFor="newsCategory">News Category</label>
+
               <select
                 name="newsCategory"
                 id="newsCategory"
                 className="text_input_field"
+                aria-label="Default select example"
                 value={formik.values.newsCategory}
                 onChange={(e) =>
                   formik.setFieldValue("newsCategory", e.target.value)
                 }
-                required
               >
-                <option value="">Choose News Category</option>
-                {NewsCategory.map((category) => (
-                  <option value={category.ID} key={category.uuid}>
-                    {category.name}
-                  </option>
-                ))}
+                {NewsCategory.length > 0 &&
+                  NewsCategory.map((CaNa) => (
+                    <option value={CaNa.ID} key={CaNa.uuid}>
+                      {CaNa.name}
+                    </option>
+                  ))}
               </select>
             </div>
 
-            <div className="col-md-6 inputfield">
+            <div className="col-md-6 inputfield ">
               <h5>Upload News Thumbnail</h5>
               <div className="thumble_inputField_style">
                 <label htmlFor="file">
@@ -276,14 +315,14 @@ const CreateBlogPost = () => {
                   name="file"
                   onChange={handleChange}
                   accept=".jpg, .png"
-                  required
                 />
               </div>
             </div>
             <div className="col-md-6 inputfield">
               <h5>Preview Thumbnail</h5>
+
               <img
-                src={file ? file : "https://i.postimg.cc/KzNdw0LX/Group.png"}
+                src={file ? file : `${state.port}/Images/${BlogPost.thumble}`}
                 alt="Tojo_global_Thumbnail_Image"
                 className="blog_Image"
                 loading="lazy"
@@ -291,15 +330,15 @@ const CreateBlogPost = () => {
             </div>
 
             <div className="col-md-12 inputfield">
-              <h5>Write News Article</h5>
+              <h5>Write Artical</h5>
               <Editor
-                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 id="artical"
                 textareaName="artical"
-                initialValue="Get Start ..."
                 onEditorChange={(content) => {
                   formik.setFieldValue("artical", content);
                 }}
+                initialValue={formik.values.artical}
+                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 init={{
                   height: 450,
                   menubar: false,
@@ -349,4 +388,4 @@ const CreateBlogPost = () => {
   );
 };
 
-export default CreateBlogPost;
+export default EditSponsoredPost;

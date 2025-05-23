@@ -83,6 +83,12 @@ import {
   editEpisodesQuery,
   allEpisodesQuery,
   createEpisodesQuery,
+  getSponsoredPostByIdQuery,
+  editSponsoredPostIdQuery,
+  SponsoredPostToDeleteQuery,
+  editSponsoredPostQuery,
+  allSponsoredPostQuery,
+  createSponsoredPostQuery,
 } from "../models/AdminModel.js";
 
 // Blog Post
@@ -980,7 +986,124 @@ const adminLogout = (req, res) => {
   return res.json({ Status: true });
 };
 
+// Sponsored area
+const createSponsoredPost = async (req, res) => {
+  try {
+    const imageFile = req.file ? req.file.filename : null;
+    const values = [
+      uuidv4(),
+      req.body.title,
+      req.body.description,
+      imageFile,
+      req.body.sponsor_id || null,
+      req.body.start_date,
+      req.body.end_date,
+    ];
+
+    const [result] = await db.query(createSponsoredPostQuery, [values]);
+    return res.json({ Status: true, Result: result });
+  } catch (error) {
+    return res.json({ Status: false, Error: "Query Error" });
+  }
+};
+
+const allSponsoredPost = async (req, res) => {
+  try {
+    const [data] = await db.query(allSponsoredPostQuery);
+    return res.json({ Status: true, Result: data });
+  } catch (err) {
+    return res.json({ Status: false, Error: "Query Error" });
+  }
+};
+
+const editSponsoredPost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const newImage = req.file ? req.file.filename : req.body.image_url;
+    const values = [
+      req.body.title,
+      req.body.description,
+      newImage,
+      req.body.sponsor_id || null,
+      req.body.start_date,
+      req.body.end_date,
+      id,
+    ];
+
+    const [data] = await db.query(editSponsoredPostQuery, values);
+    return res.json({ Status: true, Result: data });
+  } catch (err) {
+    return res.json({ Status: false, Error: err.message });
+  }
+};
+
+const editSponsoredPostId = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const [data] = await db.query(editSponsoredPostIdQuery, [id]);
+    return res.json({ Status: true, Result: data });
+  } catch (err) {
+    return res.json({ Status: false, Error: err.message });
+  }
+};
+
+const getSponsoredPostById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const [data] = await db.query(getSponsoredPostByIdQuery, [id]);
+    if (data.length === 0) {
+      return res
+        .status(404)
+        .json({ Status: false, Error: "Sponsored post not found" });
+    }
+    return res.json({ Status: true, Result: data });
+  } catch (err) {
+    return res.status(500).json({ Status: false, Error: err.message });
+  }
+};
+
+const SponsoredPostToDelete = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // Get the filename before deleting
+    const [result] = await db.query(
+      "SELECT image_url FROM sponsored_posts WHERE id = ?",
+      [id]
+    );
+
+    if (result.length === 0) {
+      return res.status(404).json({ Status: false, Error: "Record not found" });
+    }
+
+    const filename = result[0].image_url;
+
+    if (filename) {
+      const filepath = path.join("public/Images", filename);
+      // Delete the file asynchronously
+      await fs.promises.unlink(filepath).catch((err) => {
+        console.error("Error deleting file:", err);
+      });
+    }
+
+    // Delete the sponsored post entry from the database
+    const [deleteResult] = await db.query(SponsoredPostToDeleteQuery, [id]);
+    res.json({
+      Status: true,
+      message: "Sponsored post deleted successfully",
+      Result: deleteResult,
+    });
+  } catch (err) {
+    return res.status(500).json({ Status: false, Error: err.message });
+  }
+};
+
 export {
+  createSponsoredPost,
+  allSponsoredPost,
+  editSponsoredPost,
+  editSponsoredPostId,
+  getSponsoredPostById,
+  SponsoredPostToDelete,
   // adminLogin,
   // blogpost
   createBlogPost,

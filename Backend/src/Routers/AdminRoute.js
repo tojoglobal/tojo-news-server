@@ -83,6 +83,12 @@ import {
   jobPostToDelete,
   editJobPostID,
   editJobPost,
+  createSponsoredPost,
+  allSponsoredPost,
+  editSponsoredPostId,
+  getSponsoredPostById,
+  SponsoredPostToDelete,
+  editSponsoredPost,
 } from "../controllers/AdminControllers.js";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
@@ -127,6 +133,22 @@ AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);
 AdminRouter.get("/blogpost/:id", editBlogPostId);
 AdminRouter.get("/blogpostbyid/:id", getBlogPostById);
 AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
+
+// Sponsored Post
+AdminRouter.post(
+  "/Sponsored/create",
+  upload.single("file"),
+  createSponsoredPost
+);
+AdminRouter.get("/Sponsored", allSponsoredPost);
+AdminRouter.put(
+  "/Sponsored/edit/:id",
+  upload.single("file"),
+  editSponsoredPost
+);
+AdminRouter.get("/Sponsored/:id", editSponsoredPostId);
+AdminRouter.get("/Sponsoredbyid/:id", getSponsoredPostById);
+AdminRouter.delete("/Sponsored/delete/:id", SponsoredPostToDelete);
 
 // job post
 AdminRouter.post("/jobPost/create", createJobPost);

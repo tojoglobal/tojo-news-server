@@ -75,6 +75,10 @@ import Episodes from "./Component/Routers/Episodes/Episodes";
 import CreateEpisodes from "./Component/Routers/Episodes/CreateEpisodes";
 import ShowEpisodes from "./Component/Routers/Episodes/ShowEpisodes";
 import EditEpisodes from "./Component/Routers/Episodes/EditEpisodes";
+import SponsoredPost from "./Component/Routers/Sponsored/SponsoredPost";
+import CreateSponsoredPost from "./Component/Routers/Sponsored/CreateSponsoredPost";
+import ShowSponsoredPost from "./Component/Routers/Sponsored/ShowSponsoredPost";
+import EditSponsoredPost from "./Component/Routers/Sponsored/EditSponsoredPost";
 
 function App() {
   return (
@@ -126,6 +130,12 @@ function App() {
             <Route path="blogpost/create" element={<CreateBlogPost />} />
             <Route path="blogpost/:id" element={<ShowBlogPost />} />
             <Route path="blogpost/edit/:id" element={<EditBlogPost />} />
+
+            {/* Sponsored Post */}
+            <Route path="Sponsored" element={<SponsoredPost />} />
+            <Route path="Sponsored/create" element={<CreateSponsoredPost />} />
+            <Route path="Sponsored/:id" element={<ShowSponsoredPost />} />
+            <Route path="Sponsored/edit/:id" element={<EditSponsoredPost />} />
 
             {/* Episodes Post */}
             <Route path="Episodes" element={<Episodes />} />

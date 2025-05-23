@@ -8,7 +8,7 @@ import DOMPurify from "dompurify";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { useContext } from "react";
 
-const ShowBlogPost = () => {
+const ShowSponsoredPost = () => {
   const { state } = useContext(AppContext);
   // Router
   const { id } = useParams();
@@ -19,7 +19,7 @@ const ShowBlogPost = () => {
   //Data Fetching
   useEffect(() => {
     axios
-      .get(`${state.port}/api/admin/blogpost/${id}`)
+      .get(`${state.port}/api/admin/Sponsored/${id}`)
       .then((result) => {
         if (result.data.Status) {
           setBlogpost({
@@ -126,14 +126,14 @@ const ShowBlogPost = () => {
       <div className="from_div">
         <div className="btn-text-left mt-3">
           <h5>
-            <Link to="/dashboard/blogpost" className="route_link">
+            <Link to="/dashboard/Sponsored" className="route_link">
               {" "}
               <IoMdArrowRoundBack className="back_icon" /> Back
             </Link>
           </h5>
         </div>
         <div className="btn-text-right">
-          <Link to={`/dashboard/blogpost/edit/${id}`}>
+          <Link to={`/dashboard/Sponsored/edit/${id}`}>
             <button className="button-62" type="button">
               Edit
             </button>
@@ -228,4 +228,4 @@ const ShowBlogPost = () => {
   );
 };
 
-export default ShowBlogPost;
+export default ShowSponsoredPost;

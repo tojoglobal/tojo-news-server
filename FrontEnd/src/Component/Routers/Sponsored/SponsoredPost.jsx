@@ -20,7 +20,7 @@ import { MdOutlineArrowDownward } from "react-icons/md";
 import Pagination from "../../Pagination/Pagination";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
-const BlogPost = () => {
+const SponsoredPost = () => {
   const { state } = useContext(AppContext);
   // path
   const isHomePageRoute = location.pathname;
@@ -40,7 +40,7 @@ const BlogPost = () => {
   // fetch data
   useEffect(() => {
     axios
-      .get(`${state.port}/api/admin/blogpost`)
+      .get(`${state.port}/api/admin/Sponsored`)
       .then((result) => {
         if (result.data.Status) {
           setBlogpost(result.data.Result);
@@ -92,10 +92,10 @@ const BlogPost = () => {
 
   const handleDelete = () => {
     axios
-      .delete(`${state.port}/api/admin/blogpost/delete/` + dataDeleteId)
+      .delete(`${state.port}/api/admin/Sponsored/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
-          navigate("/dashboard/blogpost");
+          navigate("/dashboard/Sponsored");
           setBlogPostToDelete(`deleted successfully`);
           toast.success(`deleted successfully`, {
             position: "top-right",
@@ -120,12 +120,12 @@ const BlogPost = () => {
     <div className="conatiner dashboard_All">
       <ToastContainer />
       <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All blog </h1>
+      <h1 className="dashboard_name">All Sponsored</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       <div>
         <div>
-          <Link to="/dashboard/blogpost/create">
+          <Link to="/dashboard/Sponsored/create">
             <button className="button-62" role="button">
               Create News Post{" "}
               <span>
@@ -250,4 +250,4 @@ const BlogPost = () => {
   );
 };
 
-export default BlogPost;
+export default SponsoredPost;
