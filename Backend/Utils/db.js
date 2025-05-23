@@ -11,6 +11,8 @@ const db = mysql.createPool({
   queueLimit: 0,
 });
 
+export default db;
+
 // Test connection function
 async function testConnection() {
   try {
@@ -26,5 +28,3 @@ async function testConnection() {
 
 // Test the connection immediately
 testConnection();
-
-export default db;
