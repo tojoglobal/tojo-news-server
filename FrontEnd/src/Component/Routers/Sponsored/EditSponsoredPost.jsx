@@ -65,7 +65,8 @@ const EditSponsoredPost = () => {
       description: SponsoredPost.description || "",
       start_date: SponsoredPost.start_date || "",
       end_date: SponsoredPost.end_date || "",
-      file: "", // start empty, only set if user selects new image
+      file: "",
+      is_recent: SponsoredPost.is_recent ? true : false,
     },
     validate: (values) => {
       const errors = {};
@@ -83,6 +84,7 @@ const EditSponsoredPost = () => {
       formData.append("description", values.description);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
+      formData.append("is_recent", values.is_recent ? "true" : "false");
 
       // Append file only if a new file is selected
       if (values.file instanceof File) {
@@ -195,7 +197,21 @@ const EditSponsoredPost = () => {
                 <div className="text-danger">{formik.errors.end_date}</div>
               )}
             </div>
-
+            <div className="col-md-6 inputfield">
+              <label htmlFor="is_recent">Mark as Recent Article</label>
+              <select
+                id="is_recent"
+                className="text_input_field"
+                name="is_recent"
+                onChange={(e) => {
+                  formik.setFieldValue("is_recent", e.target.value === "true");
+                }}
+                value={formik.values.is_recent ? "true" : "false"}
+              >
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
             {/* Image Upload */}
             <div className="col-md-6 inputfield">
               <h5>Upload Image</h5>

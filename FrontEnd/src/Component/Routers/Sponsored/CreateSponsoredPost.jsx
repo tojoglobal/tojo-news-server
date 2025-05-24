@@ -25,6 +25,7 @@ const CreateSponsoredPost = () => {
       start_date: "",
       end_date: "",
       file: "",
+      is_recent: false,
     },
     onSubmit: async (values, { resetForm }) => {
       const today = new Date();
@@ -48,12 +49,13 @@ const CreateSponsoredPost = () => {
         setErrorMessage("End date must be at least one day after start date");
         return;
       }
-
+      const isRecent = values.is_recent === "true";
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("description", values.description);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
+      formData.append("is_recent", isRecent.toString()); 
       formData.append("file", values.file);
 
       try {
@@ -182,6 +184,19 @@ const CreateSponsoredPost = () => {
                 }
                 required
               />
+            </div>
+            <div className="col-md-6 inputfield">
+              <label htmlFor="is_recent">Mark as Recent Article</label>
+              <select
+                id="is_recent"
+                className="text_input_field"
+                name="is_recent"
+                onChange={formik.handleChange}
+                value={formik.values.is_recent || "false"}
+              >
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
             </div>
             <div className="col-md-6 inputfield">
               <h5>Upload Image</h5>

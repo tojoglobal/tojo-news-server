@@ -987,10 +987,14 @@ const adminLogout = (req, res) => {
 };
 
 // Sponsored area
+// Update createSponsoredPost
 const createSponsoredPost = async (req, res) => {
   try {
     const imageFile = req.file ? req.file.filename : null;
     const currentDate = new Date();
+
+    // Convert is_recent to boolean properly
+    const isRecent = req.body.is_recent === "true" ? true : false;
 
     const values = [
       req.body.title,
@@ -999,6 +1003,7 @@ const createSponsoredPost = async (req, res) => {
       req.body.start_date,
       req.body.end_date,
       currentDate,
+      isRecent, // Now properly converted to boolean
     ];
 
     const [result] = await db.query(createSponsoredPostQuery, [values]);
@@ -1009,26 +1014,36 @@ const createSponsoredPost = async (req, res) => {
   }
 };
 
+// Update editSponsoredPost
 const editSponsoredPost = async (req, res) => {
   try {
     const id = req.params.id;
 
-    // Get current image_url from DB for this post
+    // Get current data from DB for this post
     const [currentRows] = await db.query(
-      "SELECT image_url FROM sponsored_posts WHERE id = ?",
+      "SELECT image_url, is_recent FROM sponsored_posts WHERE id = ?",
       [id]
     );
     if (currentRows.length === 0) {
       return res.json({ Status: false, Error: "Sponsored post not found" });
     }
     const currentImageUrl = currentRows[0].image_url;
+    const currentIsRecent = currentRows[0].is_recent;
+
+    // Convert is_recent to boolean properly
+    const isRecent =
+      req.body.is_recent === "true"
+        ? true
+        : req.body.is_recent === undefined
+        ? currentIsRecent
+        : false;
 
     // Decide which image to use
     const newImage = req.file
-      ? req.file.filename // new uploaded file
+      ? req.file.filename
       : req.body.file && req.body.file !== ""
-      ? req.body.file // filename sent in body (if any)
-      : currentImageUrl; // keep old image if no new file & no file in body
+      ? req.body.file
+      : currentImageUrl;
 
     const currentDate = new Date();
 
@@ -1039,6 +1054,7 @@ const editSponsoredPost = async (req, res) => {
       req.body.start_date,
       req.body.end_date,
       currentDate,
+      isRecent, // Now properly converted to boolean
       id,
     ];
 
@@ -1050,7 +1066,7 @@ const editSponsoredPost = async (req, res) => {
   }
 };
 
-
+// Update allSponsoredPost to include is_recent
 const allSponsoredPost = async (req, res) => {
   try {
     const [data] = await db.query(allSponsoredPostQuery);
