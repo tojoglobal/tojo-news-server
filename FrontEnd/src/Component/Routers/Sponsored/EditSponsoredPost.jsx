@@ -1,13 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
-import { useContext } from "react";
+
+// ✅ Helper function to convert UTC date to local yyyy-mm-dd
+const formatDateToLocal = (utcDate) => {
+  const date = new Date(utcDate);
+  const offset = date.getTimezoneOffset(); // in minutes
+  const localDate = new Date(date.getTime() - offset * 60000);
+  return localDate.toISOString().split("T")[0];
+};
 
 const EditSponsoredPost = () => {
   const { state } = useContext(AppContext);
@@ -16,41 +23,40 @@ const EditSponsoredPost = () => {
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [SponsoredPost, setSponsoredPost] = useState({});
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState(null); // for preview of new image only
 
+  // Fetch data from DB
   useEffect(() => {
     axios
       .get(`${state.port}/api/admin/Sponsoredbyid/${id}`)
       .then((result) => {
         if (result.data.Status) {
           const post = result.data.Result[0];
-          const formattedStartDate = post.start_date
-            ? new Date(post.start_date).toISOString().split("T")[0]
-            : "";
-          const formattedEndDate = post.end_date
-            ? new Date(post.end_date).toISOString().split("T")[0]
-            : "";
-
           setSponsoredPost({
             ...post,
-            start_date: formattedStartDate,
-            end_date: formattedEndDate,
+            start_date: post.start_date
+              ? formatDateToLocal(post.start_date)
+              : "",
+            end_date: post.end_date ? formatDateToLocal(post.end_date) : "",
           });
-
-          setFile(
-            post.image_url ? `${state.port}/Images/${post.image_url}` : null
-          );
+          setFile(null); // no new file selected initially
         } else {
           alert(result.data.Error);
         }
       })
       .catch((err) => console.log(err));
-  }, [id]);  
+  }, [id]);
 
+  // Handle image change
   const handleChange = (e) => {
-    setFile(URL.createObjectURL(e.target.files[0]));
-    formik.setFieldValue("file", e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(URL.createObjectURL(selectedFile)); // preview new image
+      formik.setFieldValue("file", selectedFile); // store file in formik
+    }
   };
+
+  const today = new Date().toISOString().split("T")[0];
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -59,7 +65,17 @@ const EditSponsoredPost = () => {
       description: SponsoredPost.description || "",
       start_date: SponsoredPost.start_date || "",
       end_date: SponsoredPost.end_date || "",
-      file: SponsoredPost.image_url || "",
+      file: "", // start empty, only set if user selects new image
+    },
+    validate: (values) => {
+      const errors = {};
+      if (values.start_date < today) {
+        errors.start_date = "Start date cannot be before today";
+      }
+      if (values.end_date <= values.start_date) {
+        errors.end_date = "End date must be after start date";
+      }
+      return errors;
     },
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
@@ -68,7 +84,7 @@ const EditSponsoredPost = () => {
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
 
-      // Only append file if it's a File object
+      // Append file only if a new file is selected
       if (values.file instanceof File) {
         formData.append("file", values.file);
       }
@@ -83,7 +99,6 @@ const EditSponsoredPost = () => {
             },
           }
         );
-        console.log(response);
         if (response.data.Status) {
           setErrorMessage(null);
           toast.success(`Sponsored Post updated successfully`, {
@@ -117,6 +132,7 @@ const EditSponsoredPost = () => {
           encType="multipart/form-data"
         >
           <div className="row">
+            {/* Title */}
             <div className="col-md-12 inputfield">
               <label htmlFor="title">Title</label>
               <input
@@ -125,12 +141,12 @@ const EditSponsoredPost = () => {
                 type="text"
                 name="title"
                 onChange={formik.handleChange}
-                placeholder="Write Title..."
                 value={formik.values.title}
                 required
               />
             </div>
 
+            {/* Description */}
             <div className="col-md-12 inputfield">
               <label htmlFor="description">Description</label>
               <textarea
@@ -138,13 +154,13 @@ const EditSponsoredPost = () => {
                 className="text_input_field"
                 name="description"
                 onChange={formik.handleChange}
-                placeholder="Write Description..."
                 value={formik.values.description}
                 required
                 rows="4"
               />
             </div>
 
+            {/* Start Date */}
             <div className="col-md-6 inputfield">
               <label htmlFor="start_date">Start Date</label>
               <input
@@ -154,10 +170,15 @@ const EditSponsoredPost = () => {
                 name="start_date"
                 onChange={formik.handleChange}
                 value={formik.values.start_date}
+                min={today}
                 required
               />
+              {formik.errors.start_date && (
+                <div className="text-danger">{formik.errors.start_date}</div>
+              )}
             </div>
 
+            {/* End Date */}
             <div className="col-md-6 inputfield">
               <label htmlFor="end_date">End Date</label>
               <input
@@ -167,10 +188,15 @@ const EditSponsoredPost = () => {
                 name="end_date"
                 onChange={formik.handleChange}
                 value={formik.values.end_date}
+                min={formik.values.start_date || today}
                 required
               />
+              {formik.errors.end_date && (
+                <div className="text-danger">{formik.errors.end_date}</div>
+              )}
             </div>
 
+            {/* Image Upload */}
             <div className="col-md-6 inputfield">
               <h5>Upload Image</h5>
               <div className="thumble_inputField_style">
@@ -187,6 +213,7 @@ const EditSponsoredPost = () => {
               </div>
             </div>
 
+            {/* Preview Image */}
             <div className="col-md-6 inputfield">
               <h5>Preview Image</h5>
               <img
@@ -195,7 +222,7 @@ const EditSponsoredPost = () => {
                     ? file
                     : SponsoredPost.image_url
                     ? `${state.port}/Images/${SponsoredPost.image_url}`
-                    : "https://i.postimg.cc/KzNdw0LX/Group.png"
+                    : ""
                 }
                 alt="Sponsored Post Preview"
                 className="blog_Image"
@@ -203,10 +230,11 @@ const EditSponsoredPost = () => {
               />
             </div>
 
+            {/* Submit Button */}
             <div className="col-md-12 inputFiledMiddel">
               <button
                 type="submit"
-                className="button-62 cetificate_image_AddBtn "
+                className="button-62 cetificate_image_AddBtn"
                 role="button"
               >
                 UPDATE SPONSORED

@@ -70,8 +70,24 @@ app.post("/api/jwt", async (req, res) => {
     .send({ success: true, token });
 });
 
+// app.get("/", (req, res) => {
+//   return res.send(" <h1>Welcome to the TOJO News Server</h1>");
+// });
+
 app.get("/", (req, res) => {
-  return res.send(" <h1>Welcome to the TOJO News Server</h1>");
+  const currentTime = new Date().toLocaleString("en-BD", {
+    timeZone: "Asia/Dhaka",
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+  });
+
+  res.send(`<h2>Welcome to the TOJO News Server</h2>Today: ${currentTime}`);
 });
 
 app.get("/verify", verifyUser, (req, res) => {

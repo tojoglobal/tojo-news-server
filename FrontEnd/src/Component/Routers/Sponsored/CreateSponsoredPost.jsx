@@ -1,12 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useFormik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
-import { useContext } from "react";
 
 const CreateSponsoredPost = () => {
   const { state } = useContext(AppContext);
@@ -28,26 +27,25 @@ const CreateSponsoredPost = () => {
       file: "",
     },
     onSubmit: async (values, { resetForm }) => {
-      // Date validation - improved version
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Set to start of day
+      today.setHours(0, 0, 0, 0);
 
-      // Parse input dates
       const startDate = new Date(values.start_date);
       const endDate = new Date(values.end_date);
 
-      // Reset time portions for comparison
       startDate.setHours(0, 0, 0, 0);
       endDate.setHours(0, 0, 0, 0);
 
-      // Validate dates
       if (startDate < today) {
         setErrorMessage("Start date cannot be in the past");
         return;
       }
 
-      if (endDate <= startDate) {
-        setErrorMessage("End date must be after start date");
+      const minEndDate = new Date(startDate);
+      minEndDate.setDate(minEndDate.getDate() + 1);
+
+      if (endDate < minEndDate) {
+        setErrorMessage("End date must be at least one day after start date");
         return;
       }
 
@@ -98,7 +96,6 @@ const CreateSponsoredPost = () => {
     },
   });
 
-  // Set minimum date for start_date (today)
   const today = new Date().toISOString().split("T")[0];
 
   return (
@@ -161,7 +158,7 @@ const CreateSponsoredPost = () => {
                 name="start_date"
                 onChange={formik.handleChange}
                 value={formik.values.start_date}
-                min={today} // Set minimum date to today
+                min={today}
                 required
               />
             </div>
@@ -174,7 +171,15 @@ const CreateSponsoredPost = () => {
                 name="end_date"
                 onChange={formik.handleChange}
                 value={formik.values.end_date}
-                min={formik.values.start_date || today} // Minimum is start_date or today
+                min={
+                  formik.values.start_date
+                    ? (() => {
+                        const minEnd = new Date(formik.values.start_date);
+                        minEnd.setDate(minEnd.getDate() + 1);
+                        return minEnd.toISOString().split("T")[0];
+                      })()
+                    : today
+                }
                 required
               />
             </div>

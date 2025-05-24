@@ -1012,7 +1012,24 @@ const createSponsoredPost = async (req, res) => {
 const editSponsoredPost = async (req, res) => {
   try {
     const id = req.params.id;
-    const newImage = req.file ? req.file.filename : req.body.file;
+
+    // Get current image_url from DB for this post
+    const [currentRows] = await db.query(
+      "SELECT image_url FROM sponsored_posts WHERE id = ?",
+      [id]
+    );
+    if (currentRows.length === 0) {
+      return res.json({ Status: false, Error: "Sponsored post not found" });
+    }
+    const currentImageUrl = currentRows[0].image_url;
+
+    // Decide which image to use
+    const newImage = req.file
+      ? req.file.filename // new uploaded file
+      : req.body.file && req.body.file !== ""
+      ? req.body.file // filename sent in body (if any)
+      : currentImageUrl; // keep old image if no new file & no file in body
+
     const currentDate = new Date();
 
     const values = [
@@ -1026,13 +1043,13 @@ const editSponsoredPost = async (req, res) => {
     ];
 
     const [data] = await db.query(editSponsoredPostQuery, values);
-    console.log(data);
     return res.json({ Status: true, Result: data });
   } catch (err) {
     console.error("Error in editSponsoredPost:", err);
     return res.json({ Status: false, Error: err.message });
   }
 };
+
 
 const allSponsoredPost = async (req, res) => {
   try {
