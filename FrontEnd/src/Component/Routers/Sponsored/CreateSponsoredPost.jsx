@@ -202,7 +202,7 @@ const CreateSponsoredPost = () => {
             <div className="col-md-6 inputfield">
               <h5>Preview Image</h5>
               <img
-                src={file ? file : "https://i.postimg.cc/KzNdw0LX/Group.png"}
+                src={file}
                 alt="Sponsored Post Preview"
                 className="blog_Image"
                 loading="lazy"
