@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2025 at 02:00 PM
+-- Generation Time: May 25, 2025 at 10:09 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -367,11 +367,22 @@ CREATE TABLE `sponsored_posts` (
   `title` varchar(300) NOT NULL,
   `description` text NOT NULL,
   `image_url` varchar(700) DEFAULT NULL,
-  `sponsor_id` int(11) DEFAULT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `published_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `published_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_recent` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sponsored_posts`
+--
+
+INSERT INTO `sponsored_posts` (`id`, `title`, `description`, `image_url`, `start_date`, `end_date`, `published_at`, `is_recent`) VALUES
+(5, 'Sponsored Poster', 'Description trying koroaa', 'be257936-fedc-4395-9cc2-56d1b36c4c92_1748064248349-JMqcf5wY.png', '2025-05-24', '2025-05-25', '2025-05-24 07:39:10', 1),
+(6, 'sponsor for youtube add', 'You may include paid product placements, endorsements, sponsorships, or other content that requires disclosure to viewers in your videos. You have to let us know if you include any of those by selecting the paid promotion box in your video details. \r\n\r\nAll paid promotions need to follow Google Ads policies and YouTube\'s Community Guidelines. You and the brands you work with are responsible for understanding and complying with local and legal obligations to disclose Paid Promotion in their content. Some of these obligations include when and how to disclose, and to whom to disclose.\r\n\r\nThe vast majority of YouTubers make money by monetizing their videos through YouTube’s partnership program, commonly known as YouTube Partner Program or YPP.\r\n\r\nSo, why bother with trying to find sponsors when you can simply make videos, sit back, and let YouTube do all the work?\r\n\r\nThere are two big reasons:\r\n\r\nFirst, sponsorship is a great option for content creators to monetize their channels and generate (good) income beyond traditional ad revenue.\r\n\r\nSecond, it’s not all that easy to get accepted into the YPP these days, so you may look for alternatives.\r\n\r\nRecently YouTube has drastically increased the requirements for the channels to be considered for the program.', 'e8c95c79-4b4e-4337-9c87-9e38f7ad6c4d_1748063755808-YouTube-Image-panorama.jpg', '2025-05-24', '2025-05-31', '2025-05-24 07:46:06', 1),
+(7, 'What is a sponsored post? Definition, examples, and best practices', 'Sponsored posts – both in the form of social media content ads and written or video content – are a way for brands to cut through the clutter in a crowded online marketplace and say more than they can with a simple banner ad.\r\n\r\nIn this guide, we’ll explain what a sponsored post is and why they are valuable to B2B marketers. Additionally, we’ll outline LinkedIn sponsored content ads best practices that generate measurable success.\r\n\r\n', 'a4c4f341-30b3-4f65-991f-cb4a8167bac9_1748064624938-BPT-Blog-How-To-Make-The-Most-of-Your-Media-Placements-8-Expert-Tips-768x384.png', '2025-05-24', '2025-05-26', '2025-05-24 07:32:40', 1),
+(8, 'nice working', 'asda', '51691e13-97ca-451a-8db7-65af2d700bef_1748072816791-macos-monterey-wwdc-21-stock-dark-mode-5k-6016x6016-5585.jpg', '2025-05-24', '2025-06-02', '2025-05-24 07:46:56', 0),
+(9, 'check', 'check now', 'e1f2ffdc-75ff-4bd7-be2c-02eb480fb2f9_1748072840895-neon-circles-hi-tech-dark-background-loop-5k-8k-7680x4320-8312.png', '2025-05-25', '2025-05-26', '2025-05-24 07:47:39', 0);
 
 -- --------------------------------------------------------
 
@@ -563,8 +574,7 @@ ALTER TABLE `podcasts`
 -- Indexes for table `sponsored_posts`
 --
 ALTER TABLE `sponsored_posts`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `sponsor_id` (`sponsor_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `sponsors`
@@ -679,7 +689,7 @@ ALTER TABLE `podcasts`
 -- AUTO_INCREMENT for table `sponsored_posts`
 --
 ALTER TABLE `sponsored_posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `sponsors`
@@ -747,12 +757,6 @@ ALTER TABLE `episodes`
 --
 ALTER TABLE `newsletter_subscriptions`
   ADD CONSTRAINT `newsletter_subscriptions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
-
---
--- Constraints for table `sponsored_posts`
---
-ALTER TABLE `sponsored_posts`
-  ADD CONSTRAINT `sponsored_posts_ibfk_1` FOREIGN KEY (`sponsor_id`) REFERENCES `sponsors` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
