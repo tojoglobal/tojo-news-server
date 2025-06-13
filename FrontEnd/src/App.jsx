@@ -79,6 +79,10 @@ import SponsoredPost from "./Component/Routers/Sponsored/SponsoredPost";
 import CreateSponsoredPost from "./Component/Routers/Sponsored/CreateSponsoredPost";
 import ShowSponsoredPost from "./Component/Routers/Sponsored/ShowSponsoredPost";
 import EditSponsoredPost from "./Component/Routers/Sponsored/EditSponsoredPost";
+import EventsPost from "./Component/Routers/Events/EventsPost";
+import CreateEventsPost from "./Component/Routers/Events/CreateEventsPost";
+import ShowEventsPost from "./Component/Routers/Events/ShowEventsPost";
+import EditEventsPost from "./Component/Routers/Events/EditEventsPost";
 
 function App() {
   return (
@@ -136,6 +140,12 @@ function App() {
             <Route path="Sponsored/create" element={<CreateSponsoredPost />} />
             <Route path="Sponsored/:id" element={<ShowSponsoredPost />} />
             <Route path="Sponsored/edit/:id" element={<EditSponsoredPost />} />
+
+            {/* Events Post */}
+            <Route path="events" element={<EventsPost />} />
+            <Route path="events/create" element={<CreateEventsPost />} />
+            <Route path="events/:id" element={<ShowEventsPost />} />
+            <Route path="events/edit/:id" element={<EditEventsPost />} />
 
             {/* Episodes Post */}
             <Route path="Episodes" element={<Episodes />} />

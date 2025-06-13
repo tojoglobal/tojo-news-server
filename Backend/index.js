@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import { PublicApiRouters } from "./src/Routers/PublicApiRoute.js";
 import { UserRouters } from "./src/Routers/UserRoute.js";
 import adminlogin from "./src/Routers/AdminLogin.route.js";
+import eventRoute from "./src/Routers/eventRoute.js";
 
 dotenv.config();
 const app = express();
@@ -38,6 +39,7 @@ app.use("/api/admin", AdminRouters);
 app.use(adminlogin);
 app.use("/api/user", UserRouters);
 app.use("/api", PublicApiRouters);
+app.use("/api/admin/events", eventRoute);
 
 app.use(express.static("public"));
 

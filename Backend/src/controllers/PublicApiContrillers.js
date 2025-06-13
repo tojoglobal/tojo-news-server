@@ -321,6 +321,29 @@ const newsLetterSubscribe = async (req, res) => {
   }
 };
 
+const getAllEventsPublic = async (req, res) => {
+  try {
+    const [result] = await db.query("SELECT * FROM events ORDER BY date DESC");
+    res.status(200).json({ success: true, result });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const getEventByIdPublic = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const [result] = await db.query("SELECT * FROM events WHERE uuid = ?", [
+      id,
+    ]);
+    if (result.length === 0)
+      return res.status(404).json({ success: false, error: "Not found" });
+    res.status(200).json({ success: true, event: result[0] });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 export {
   registerUser,
   updateViewCount,
@@ -334,4 +357,6 @@ export {
   getAuthors,
   newsLetterSubscribe,
   checkSubscription,
+  getAllEventsPublic,
+  getEventByIdPublic,
 };
