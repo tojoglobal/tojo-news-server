@@ -956,12 +956,23 @@ const EpisodesToDelete = (req, res) => {
 };
 
 // Many Counts Number
-const clinetCounts = (req, res) => {
-  const sql = `SELECT count(uuid) AS totalClient FROM clientlist;`;
-  db.query(sql, (err, result) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" + err });
+// const clinetCounts = (req, res) => {
+//   const sql = `SELECT count(uuid) AS totalClient FROM clientlist;`;
+//   db.query(sql, (err, result) => {
+//     if (err) return res.json({ Status: false, Error: "Query Error" + err });
+//     return res.json({ Status: true, Result: result });
+//   });
+// };
+
+// new updated 13 june
+const clinetCounts = async (req, res) => {
+  try {
+    const sql = `SELECT count(uuid) AS totalClient FROM clientlist;`;
+    const [result] = await db.query(sql);
     return res.json({ Status: true, Result: result });
-  });
+  } catch (err) {
+    return res.json({ Status: false, Error: "Query Error: " + err.message });
+  }
 };
 
 const teamMemberCount = (req, res) => {
