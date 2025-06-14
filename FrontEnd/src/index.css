@@ -208,6 +208,22 @@ ul li a {
   margin-bottom: 1.5rem;
 }
 
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-2 {
+  gap: 8px;
+}
+
+.gap-2 {
+  gap: 12px;
+}
+
 .dashboard-card {
   margin-bottom: 3rem;
   border-radius: 5px;

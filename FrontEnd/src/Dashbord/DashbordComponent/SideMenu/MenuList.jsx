@@ -3,7 +3,7 @@ import { SettingOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { MdContacts } from "react-icons/md";
 import { RxDashboard } from "react-icons/rx";
-import { FaList, FaHandsHelping, FaChartLine } from "react-icons/fa";
+import { FaList, FaHandsHelping, FaCalendarAlt, FaBullhorn, FaFilm } from "react-icons/fa";
 import { AiFillTags } from "react-icons/ai";
 import PropTypes from "prop-types";
 import {
@@ -51,7 +51,7 @@ const MenuList = ({ darkTheme }) => {
       </Menu.Item>
       <Menu.Item
         key="documentaries"
-        icon={<FaChartLine className="dashbord_icon" />}
+        icon={<FaFilm className="dashbord_icon" />}
       >
         <Link to="/dashboard/documentaries" className="route_link">
           Documentaries
@@ -59,13 +59,16 @@ const MenuList = ({ darkTheme }) => {
       </Menu.Item>
       <Menu.Item
         key="sponsored"
-        icon={<FaChartLine className="dashbord_icon" />}
+        icon={<FaBullhorn className="dashbord_icon" />}
       >
         <Link to="/dashboard/sponsored" className="route_link">
           Sponsored
         </Link>
       </Menu.Item>
-      <Menu.Item key="events" icon={<FaChartLine className="dashbord_icon" />}>
+      <Menu.Item
+        key="events"
+        icon={<FaCalendarAlt className="dashbord_icon" />}
+      >
         <Link to="/dashboard/events" className="route_link">
           Events
         </Link>

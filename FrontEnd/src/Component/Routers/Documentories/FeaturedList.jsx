@@ -155,24 +155,29 @@ export default function FeaturedList() {
         </div>
         <div className="col-md-12 inputfield">
           <label>Show In:</label> <br />
-          <label>
-            <input
-              type="checkbox"
-              value="featured"
-              checked={form.show_in.includes("featured")}
-              onChange={handleCheckbox}
-            />
-            Featured News
-          </label>
-          <label style={{ marginLeft: 16 }}>
-            <input
-              type="checkbox"
-              value="continue"
-              checked={form.show_in.includes("continue")}
-              onChange={handleCheckbox}
-            />
-            Continue Watching
-          </label>
+          <div
+            className="flex items-center gap-3"
+            style={{ marginTop: 8, marginBottom: 16 }}
+          >
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                value="featured"
+                checked={form.show_in.includes("featured")}
+                onChange={handleCheckbox}
+              />
+              Featured News
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                value="continue"
+                checked={form.show_in.includes("continue")}
+                onChange={handleCheckbox}
+              />
+              Continue Watching
+            </label>
+          </div>
         </div>
         <div className="col-md-12 inputFiledMiddel">
           <button type="submit" className="button-62 cetificate_image_AddBtn">
@@ -187,23 +192,30 @@ export default function FeaturedList() {
               <img
                 src={`${state.port}/Images/${card.image}`}
                 alt=""
-                style={{ maxWidth: "100%", borderRadius: 6 }}
+                style={{
+                  width: 100,
+                  height: "auto",
+                  borderRadius: 6,
+                  display: "block",
+                  margin: "12px auto 0 auto",
+                }}
               />
               <div style={{ marginTop: 8 }}>{card.link}</div>
-              <button
-                onClick={() => handleEdit(card)}
-                className="button-62"
-                style={{ marginRight: 8 }}
+              <div
+                className="flex items-center gap-2"
+                style={{ marginTop: 12 }}
               >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(card.id)}
-                className="button-62"
-                style={{ background: "#e15555" }}
-              >
-                Delete
-              </button>
+                <button onClick={() => handleEdit(card)} className="button-62">
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(card.id)}
+                  className="button-62"
+                  style={{ background: "#e15555" }}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}

@@ -29,7 +29,7 @@ const registerAdmin = async (req, res) => {
 const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
+    // console.log(email, password);
 
     if (!email || !password) {
       return res.status(400).json({
