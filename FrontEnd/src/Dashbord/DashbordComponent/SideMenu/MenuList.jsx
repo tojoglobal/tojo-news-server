@@ -50,6 +50,14 @@ const MenuList = ({ darkTheme }) => {
         </Link>
       </Menu.Item>
       <Menu.Item
+        key="documentaries"
+        icon={<FaChartLine className="dashbord_icon" />}
+      >
+        <Link to="/dashboard/documentaries" className="route_link">
+          Documentaries
+        </Link>
+      </Menu.Item>
+      <Menu.Item
         key="sponsored"
         icon={<FaChartLine className="dashbord_icon" />}
       >

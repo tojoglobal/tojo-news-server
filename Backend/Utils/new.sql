@@ -1,0 +1,7 @@
+CREATE TABLE documentaries_hero (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  logo VARCHAR(255) NOT NULL,
+  heading VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

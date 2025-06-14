@@ -83,6 +83,7 @@ import EventsPost from "./Component/Routers/Events/EventsPost";
 import CreateEventsPost from "./Component/Routers/Events/CreateEventsPost";
 import ShowEventsPost from "./Component/Routers/Events/ShowEventsPost";
 import EditEventsPost from "./Component/Routers/Events/EditEventsPost";
+import DocumentariesPost from "./Component/Routers/Documentories/DocumentariesPost";
 
 function App() {
   return (
@@ -134,6 +135,12 @@ function App() {
             <Route path="blogpost/create" element={<CreateBlogPost />} />
             <Route path="blogpost/:id" element={<ShowBlogPost />} />
             <Route path="blogpost/edit/:id" element={<EditBlogPost />} />
+
+            {/* Documentaries Post */}
+            <Route path="documentaries" element={<DocumentariesPost />} />
+            {/* <Route path="Sponsored/create" element={<CreateSponsoredPost />} />
+            <Route path="Sponsored/:id" element={<ShowSponsoredPost />} />
+            <Route path="Sponsored/edit/:id" element={<EditSponsoredPost />} /> */}
 
             {/* Sponsored Post */}
             <Route path="Sponsored" element={<SponsoredPost />} />
