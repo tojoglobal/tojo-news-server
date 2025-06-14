@@ -11,6 +11,12 @@ const db = mysql.createPool({
   queueLimit: 0,
 });
 
+// database tojonews_tojonews
+// pass e9eFVZA0luLccE?&
+// user tojonews_tojonews_new
+// db host 107.181.238.60
+// DB_PORT = 3306
+
 // Test connection function
 async function testConnection() {
   try {

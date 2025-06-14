@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "./../../Dashbord/SmallComponent/AppContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -25,12 +26,32 @@ const AdminLogin = () => {
         console.log(result.data);
         if (result.data.loginStatus) {
           localStorage.setItem("valid", true);
-          navigate("/dashboard");
+          Swal.fire({
+            icon: "success",
+            title: "Login Successful!",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(() => {
+            navigate("/dashboard");
+          });
         } else {
           setError(result.data.Error);
+          Swal.fire({
+            icon: "error",
+            title: "Login Failed",
+            text: result.data.Error || "Invalid credentials",
+          });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setError("An error occurred. Please try again.");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "An error occurred. Please try again.",
+        });
+        console.log(err);
+      });
   };
 
   return (
@@ -60,7 +81,6 @@ const AdminLogin = () => {
             </label>
             <input
               type={showPassword ? "text" : "password"}
-              // type="password"
               name="password"
               placeholder="Enter Password"
               onChange={(e) =>
