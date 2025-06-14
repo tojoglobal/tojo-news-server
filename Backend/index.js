@@ -10,6 +10,7 @@ import { UserRouters } from "./src/Routers/UserRoute.js";
 import adminlogin from "./src/Routers/AdminLogin.route.js";
 import eventRoute from "./src/Routers/eventRoute.js";
 import documentariesHeroRouter from "./src/controllers/documentariesHero.js";
+import documentariesFeaturedRouter from "./src/controllers/documentariesFeatured.js";
 
 dotenv.config();
 const app = express();
@@ -42,6 +43,7 @@ app.use("/api/user", UserRouters);
 app.use("/api", PublicApiRouters);
 app.use("/api/admin/events", eventRoute);
 app.use("/api/documentaries-hero", documentariesHeroRouter);
+app.use("/api/documentaries-featured", documentariesFeaturedRouter);
 
 app.use(express.static("public"));
 

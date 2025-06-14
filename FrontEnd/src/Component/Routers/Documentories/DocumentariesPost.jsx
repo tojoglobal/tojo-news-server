@@ -4,6 +4,7 @@ import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import FeaturedList from "./FeaturedList";
 
 export default function DocumentariesPost() {
   const { state } = useContext(AppContext);
@@ -148,6 +149,7 @@ export default function DocumentariesPost() {
           </div>
         </div>
       </form>
+      <FeaturedList />
     </div>
   );
 }
