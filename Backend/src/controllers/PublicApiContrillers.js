@@ -147,7 +147,7 @@ const getLoveCount = async (req, res) => {
 
 const getLatestNews = async (req, res) => {
   try {
-    const getLatestNewsQuery = `SELECT * FROM blognews ORDER BY dateAndTime DESC LIMIT 4`;
+    const getLatestNewsQuery = `SELECT * FROM blognews ORDER BY dateAndTime DESC`;
 
     const [LatestBlogResult] = await db.query(getLatestNewsQuery);
     res.status(200).json({
@@ -168,8 +168,7 @@ const getMostReadBlogs = async (req, res) => {
       FROM blognews b
       LEFT JOIN blog_reading_time br ON b.ID = br.blog_id
       GROUP BY b.ID
-      ORDER BY total_reading_time DESC
-      LIMIT 4;
+      ORDER BY total_reading_time DESC;
     `;
     const [mostReadBlogs] = await db.query(getMostReadQuery);
     res.status(200).json({
@@ -189,8 +188,7 @@ const getMostPopulerViews = async (req, res) => {
       FROM blognews b
       LEFT JOIN blog_views v ON b.ID = v.blog_id
       GROUP BY b.ID
-      ORDER BY total_views DESC
-      LIMIT 6;
+      ORDER BY total_views DESC;
     `;
     const [mostPopularBlogs] = await db.query(getMostPopularQuery);
     res.status(200).json({
