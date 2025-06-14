@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
@@ -150,6 +151,12 @@ export default function DocumentariesPost() {
         </div>
       </form>
       <FeaturedList />
+      <Link
+        className="featured-link-btn"
+        to="/dashboard/documentaries/featured"
+      >
+        Update Featured This Week
+      </Link>
     </div>
   );
 }

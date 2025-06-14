@@ -442,6 +442,42 @@ ul li a {
   white-space: nowrap;
 }
 
+.featured-link-btn {
+  background: linear-gradient(186deg, #18c8ff 14.89%, #c608ffc9 85.85%);
+  border: 0;
+  border-radius: 12px;
+  color: #ffffff;
+  cursor: pointer;
+  display: block;
+  font-family: var(--font-main, 'Inter', sans-serif);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 2.5;
+  outline: transparent;
+  padding: 0 1.5rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s, color 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px #c608ff33;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 370px;
+  min-width: 220px;
+  width: fit-content;
+}
+
+.featured-link-btn:hover,
+.featured-link-btn:focus {
+  box-shadow: 0 6px 20px #c608ff55;
+  transform: translateY(-2px) scale(1.03);
+  text-decoration: none;
+  color: #ffffff;
+  /* Ensure text stays white on hover */
+}
 /* Add certificate */
 input[type="file"] {
   display: none;
