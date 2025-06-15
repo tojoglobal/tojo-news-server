@@ -13,17 +13,25 @@ const AdminLogin = () => {
   axios.defaults.withCredentials = true;
   //state
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
+  const [agree, setAgree] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!agree) {
+      setError("Please agree with terms & conditions.");
+      return;
+    }
+
+    setLoading(true);
     axios
       .post(`${state.port}/api/adminlogin`, values)
       .then((result) => {
-        console.log(result.data);
+        setLoading(false);
         if (result.data.loginStatus) {
           localStorage.setItem("valid", true);
           Swal.fire({
@@ -44,6 +52,7 @@ const AdminLogin = () => {
         }
       })
       .catch((err) => {
+        setLoading(false);
         setError("An error occurred. Please try again.");
         Swal.fire({
           icon: "error",
@@ -75,7 +84,7 @@ const AdminLogin = () => {
               className="form-control rounded-0"
             />
           </div>
-          <div className="mb-3 passwordFiled">
+          <div className="mb-3 passwordFiled" style={{ position: "relative" }}>
             <label htmlFor="password">
               <strong>Password:</strong>
             </label>
@@ -91,14 +100,46 @@ const AdminLogin = () => {
             <div
               className="passwordToggleEye"
               onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                top: "38px",
+                right: "12px",
+                cursor: "pointer",
+                color: "#777",
+              }}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </div>
           </div>
-          <button className="custombtn">Log in</button>
-          <div className="mb-1">
-            <input type="checkbox" name="tick" id="tick" className="me-2" />
-            <label htmlFor="password">
+          <button
+            className="custombtn"
+            type="submit"
+            disabled={loading}
+            style={{ width: "100%", position: "relative" }}
+          >
+            {loading ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Logging In...
+              </>
+            ) : (
+              "Log in"
+            )}
+          </button>
+          <div className="mb-1 mt-2">
+            <input
+              type="checkbox"
+              name="tick"
+              id="tick"
+              className="me-2"
+              checked={agree}
+              onChange={(e) => setAgree(e.target.checked)}
+            />
+            <label htmlFor="tick" style={{ cursor: "pointer" }}>
               You are Agree with terms & conditions
             </label>
           </div>

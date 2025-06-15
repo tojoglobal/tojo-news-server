@@ -25,6 +25,9 @@ const allowedOrigins = [
   `http://localhost:${localhostPort1}`,
   `http://localhost:${localhostPort2}`,
   `http://localhost:${localhostPort3}`,
+  `https://dashboard.tojonews.com`,
+  `https://tojonews.netlify.app`,
+  `https://tojonews.com`,
 ];
 app.use(
   cors({
