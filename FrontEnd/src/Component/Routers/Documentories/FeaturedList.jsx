@@ -12,6 +12,15 @@ function extractYouTubeId(url) {
   return match ? match[1] : "";
 }
 
+// Helper to validate YouTube URL
+function isValidYouTubeUrl(url) {
+  if (!url) return false;
+  return (
+    /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/.test(url) &&
+    !!extractYouTubeId(url)
+  );
+}
+
 export default function FeaturedList() {
   const { state } = useContext(AppContext);
   const [cards, setCards] = useState([]);
@@ -21,6 +30,7 @@ export default function FeaturedList() {
     show_in: ["featured"], // default
   });
   const [mode, setMode] = useState("add");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     axios
@@ -41,13 +51,21 @@ export default function FeaturedList() {
     });
   };
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+    if (e.target.name === "youtube_url") setError(""); // clear error on change
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.youtube_url) {
+      setError("YouTube URL is required");
       toast.error("YouTube URL is required");
+      return;
+    }
+    if (!isValidYouTubeUrl(form.youtube_url)) {
+      setError("Please enter a valid YouTube URL.");
+      toast.error("Please enter a valid YouTube URL.");
       return;
     }
     const payload = {
@@ -71,6 +89,7 @@ export default function FeaturedList() {
         show_in: ["featured"],
       });
       setMode("add");
+      setError("");
       const res = await axios.get(`${state.port}/api/documentaries-featured`);
       setCards(res.data);
     } catch (err) {
@@ -85,6 +104,7 @@ export default function FeaturedList() {
       show_in: card.show_in ? card.show_in.split(",") : [],
     });
     setMode("edit");
+    setError("");
   };
 
   const handleDelete = async (id) => {
@@ -108,6 +128,11 @@ export default function FeaturedList() {
             placeholder="https://www.youtube.com/watch?v=..."
             required
           />
+          {error && (
+            <div style={{ color: "red", marginTop: 4, fontSize: 13 }}>
+              {error}
+            </div>
+          )}
         </div>
         <div className="col-md-12 inputfield">
           <label>Show In:</label> <br />

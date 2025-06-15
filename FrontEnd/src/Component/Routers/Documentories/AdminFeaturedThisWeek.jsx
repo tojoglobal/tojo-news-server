@@ -13,6 +13,16 @@ function extractYouTubeId(url) {
   return match ? match[1] : "";
 }
 
+// Helper to validate YouTube URL
+function isValidYouTubeUrl(url) {
+  if (!url) return false;
+  // Accepts: https://youtu.be/xxx, https://www.youtube.com/watch?v=xxx, https://youtube.com/shorts/xxx etc.
+  return (
+    /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/.test(url) &&
+    !!extractYouTubeId(url)
+  );
+}
+
 export default function AdminFeaturedThisWeek() {
   const { state } = useContext(AppContext);
   const API = `${state.port}/api/featured-this-week`;
@@ -24,6 +34,7 @@ export default function AdminFeaturedThisWeek() {
     youtube_url: "",
   });
   const [mode, setMode] = useState("add");
+  const [error, setError] = useState("");
 
   const { data: news = [], isLoading } = useQuery({
     queryKey: ["admin-featured-this-week"],
@@ -33,11 +44,17 @@ export default function AdminFeaturedThisWeek() {
     },
   });
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+    if (e.target.name === "youtube_url") setError(""); // clear error on change
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isValidYouTubeUrl(form.youtube_url)) {
+      setError("Please enter a valid YouTube URL.");
+      return;
+    }
     const payload = {
       title: form.title,
       youtube_url: form.youtube_url,
@@ -57,6 +74,7 @@ export default function AdminFeaturedThisWeek() {
         youtube_url: "",
       });
       setMode("add");
+      setError("");
       queryClient.invalidateQueries(["admin-featured-this-week"]);
     } catch (err) {
       toast.error("Failed");
@@ -70,6 +88,7 @@ export default function AdminFeaturedThisWeek() {
       youtube_url: item.youtube_url,
     });
     setMode("edit");
+    setError("");
   };
 
   const handleDelete = async (id) => {
@@ -94,7 +113,9 @@ export default function AdminFeaturedThisWeek() {
           />
         </div>
         <div className="col-md-12 inputfield">
-          <label>YouTube URL</label>
+          <label>
+            YouTube URL <span>(required)</span>
+          </label>
           <input
             type="text"
             name="youtube_url"
@@ -102,7 +123,13 @@ export default function AdminFeaturedThisWeek() {
             onChange={handleChange}
             className="text_input_field"
             required
+            placeholder="https://www.youtube.com/watch?v=??"
           />
+          {error && (
+            <div style={{ color: "red", marginTop: 4, fontSize: 13 }}>
+              {error}
+            </div>
+          )}
         </div>
         <div className="col-md-12 inputFiledMiddel">
           <button type="submit" className="button-62 cetificate_image_AddBtn">
@@ -114,6 +141,7 @@ export default function AdminFeaturedThisWeek() {
               onClick={() => {
                 setForm({ id: null, title: "", youtube_url: "" });
                 setMode("add");
+                setError("");
               }}
               className="button-62"
               style={{ background: "#e15555", marginLeft: 10 }}
