@@ -2,8 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { MdOutlineArrowDownward } from "react-icons/md";
 import { useNavigate } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { HiPlus } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import {
@@ -74,10 +73,10 @@ const ContactList = () => {
   };
 
   const handleDelete = () => {
-    
     axios
       .delete(
-        `https://api.tojoglobal.com/api/admin/contactlist/delete/`+dataDeleteId
+        `https://api.tojoglobal.com/api/admin/contactlist/delete/` +
+          dataDeleteId
       )
       .then((result) => {
         if (result.data.Status) {
@@ -104,7 +103,6 @@ const ContactList = () => {
 
   return (
     <div className="conatiner dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">Contact List</h1>
       <hr />

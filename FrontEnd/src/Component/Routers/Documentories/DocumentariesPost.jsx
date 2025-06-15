@@ -3,8 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import FeaturedList from "./FeaturedList";
 
 export default function DocumentariesPost() {
@@ -79,7 +78,6 @@ export default function DocumentariesPost() {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h2 className="dashboard_name">Edit Documentaries Hero Section</h2>
       <form
         onSubmit={handleSubmit}

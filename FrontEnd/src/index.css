@@ -153,11 +153,11 @@ ul li a {
 }
 
 .loginForm {
-  width: 25%;
+  width: 27%;
   background: #060044;
   color: white;
   padding: 3.5rem 1.2rem;
-  border: 1px solid wheat;
+  border: 1px solid rgb(116, 105, 86);
   border-radius: 1rem;
 }
 
@@ -478,6 +478,7 @@ ul li a {
   color: #ffffff;
   /* Ensure text stays white on hover */
 }
+
 /* Add certificate */
 input[type="file"] {
   display: none;
@@ -843,6 +844,7 @@ label[for="files"]:active {
 
 .Logout_navigation {
   width: 100%;
+  cursor: pointer;
 }
 
 .logout_img {

@@ -3,8 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { IoStarSharp } from "react-icons/io5";
 // data picker mui
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -22,8 +21,8 @@ const CreateAppointment = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [contactList, setContactList] = useState([]);
 
-   // fetch data
-   useEffect(() => {
+  // fetch data
+  useEffect(() => {
     axios
       .get("https://api.tojoglobal.com/api/admin/contactlist")
       .then((result) => {
@@ -47,7 +46,6 @@ const CreateAppointment = () => {
       note: "",
     },
     onSubmit: async (values, { resetForm }) => {
-
       try {
         const response = await axios.post(
           "https://api.tojoglobal.com/api/admin/appointment/create",
@@ -82,7 +80,6 @@ const CreateAppointment = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">Create Appointment</h1>
       <hr />
@@ -187,7 +184,7 @@ const CreateAppointment = () => {
               <h5>Note</h5>
               <Editor
                 id="note"
-                apiKey='heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb'
+                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 textareaName="note"
                 initialValue="Get Start ..."
                 onEditorChange={(content) => {

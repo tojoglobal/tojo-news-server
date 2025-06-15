@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import "react-toastify/dist/ReactToastify.css";
+
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 import DOMPurify from "dompurify";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { useContext } from "react";
+import toast from "react-hot-toast";
 
 const ShowBlogPost = () => {
   const { state } = useContext(AppContext);
@@ -34,7 +35,7 @@ const ShowBlogPost = () => {
             dateAndTime: result.data.Result[0].dateAndTime,
           });
         } else {
-          alert(result.data.Error);
+          toast.error(result.data.Error);
           setErrorMessage(result.data.Error);
         }
       })

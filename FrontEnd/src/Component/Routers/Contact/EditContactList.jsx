@@ -3,8 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { IoStarSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
@@ -25,7 +24,7 @@ const EditContactList = () => {
       .get(`https://api.tojoglobal.com/api/admin/contactlist/${id}`)
       .then((result) => {
         if (result.data.Status) {
-            setContactInfo({
+          setContactInfo({
             ...contactInfo,
             contactName: result.data.Result[0].contactName,
             category: result.data.Result[0].category,
@@ -39,7 +38,7 @@ const EditContactList = () => {
       })
       .catch((err) => setErrorMessage(err));
   }, [id]);
-  
+
   useEffect(() => {
     axios
       .get("https://api.tojoglobal.com/api/admin/contactName")
@@ -57,14 +56,13 @@ const EditContactList = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-        contactName: contactInfo.contactName || "",
-        category: contactInfo.category || "",
-        mobileNo:contactInfo.mobileNo || "",
-        email: contactInfo.eamil || "",
-        note: contactInfo.note || ""
+      contactName: contactInfo.contactName || "",
+      category: contactInfo.category || "",
+      mobileNo: contactInfo.mobileNo || "",
+      email: contactInfo.eamil || "",
+      note: contactInfo.note || "",
     },
     onSubmit: async (values, { resetForm }) => {
-      
       try {
         const response = await axios.put(
           `https://api.tojoglobal.com/api/admin/contactlist/edit/${id}`,
@@ -99,7 +97,6 @@ const EditContactList = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>
         <Link to="/dashboard/contact" className="route_link">
           {" "}
@@ -113,7 +110,7 @@ const EditContactList = () => {
       {/* form start */}
       {/* ++++++========part 1 =======++++++++ */}
       <div className="from_div">
-      <form
+        <form
           onSubmit={formik.handleSubmit}
           className="p-4"
           encType="multipart/form-data"
@@ -136,7 +133,8 @@ const EditContactList = () => {
             </div>
             <div className="col-md-12 inputfield">
               <label htmlFor="category">
-              Category<IoStarSharp className="reqired_symbole" />
+                Category
+                <IoStarSharp className="reqired_symbole" />
               </label>
 
               <select
@@ -166,8 +164,8 @@ const EditContactList = () => {
                 name="mobileNo"
                 onChange={formik.handleChange}
                 placeholder="Mobile No"
-                value={formik.values.mobileNo}                
-              />             
+                value={formik.values.mobileNo}
+              />
             </div>
 
             <div className="col-md-6 inputfield">
@@ -178,15 +176,15 @@ const EditContactList = () => {
                 name="email"
                 onChange={formik.handleChange}
                 placeholder="Email"
-                value={formik.values.email}                
-              />             
-            </div>           
+                value={formik.values.email}
+              />
+            </div>
 
             <div className="col-md-12 inputfield">
               <h5>Note</h5>
               <Editor
                 id="note"
-                apiKey='heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb'
+                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 textareaName="note"
                 initialValue="Get Start ..."
                 onEditorChange={(content) => {

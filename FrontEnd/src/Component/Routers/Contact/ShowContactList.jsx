@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import "react-toastify/dist/ReactToastify.css";
+
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 import DOMPurify from "dompurify";
+import toast from "react-hot-toast";
 
 const ShowContactList = () => {
   // Router
@@ -28,7 +29,7 @@ const ShowContactList = () => {
             note: result.data.Result[0].note,
           });
         } else {
-          alert(result.data.Error);
+          toast.error(result.data.Error);
         }
       })
       .catch((err) => setErrorMessage(err));
@@ -60,32 +61,32 @@ const ShowContactList = () => {
             <tbody>
               <tr>
                 <td>
-                  <span > Contact Name </span>
+                  <span> Contact Name </span>
                 </td>
                 <td> {contactInfo.contactName}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Mobile No </span>
+                  <span> Mobile No </span>
                 </td>
                 <td>{contactInfo.mobileNo}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Email </span>
+                  <span> Email </span>
                 </td>
                 <td>{contactInfo.eamil}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Category </span>
+                  <span> Category </span>
                 </td>
                 <td>{contactInfo.category}</td>
               </tr>
 
               <tr>
                 <td>
-                  <span >Note</span>
+                  <span>Note</span>
                 </td>
                 <td>
                   {" "}

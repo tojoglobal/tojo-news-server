@@ -2,11 +2,12 @@ import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
+
 import { FaCloudUploadAlt } from "react-icons/fa";
-import "react-toastify/dist/ReactToastify.css";
+
 import { Editor } from "@tinymce/tinymce-react";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import toast from "react-hot-toast";
 
 const EditEpisodes = () => {
   const { id } = useParams();
@@ -27,7 +28,7 @@ const EditEpisodes = () => {
           setEpisodes(result.data.Result[0]);
           setFile(`${state.port}/Audio/${result.data.Result[0].audioFile}`);
         } else {
-          alert(result.data.Error);
+          toast.error(result.data.Error);
         }
       })
       .catch((err) => console.log(err));
@@ -126,7 +127,6 @@ const EditEpisodes = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>/dashboard/Episodes/edit/</h5>
       <h1 className="dashboard_name">Edit Episodes</h1>
       <hr />

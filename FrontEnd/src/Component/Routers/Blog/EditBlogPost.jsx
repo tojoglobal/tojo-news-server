@@ -3,12 +3,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
+
 import { FaCloudUploadAlt } from "react-icons/fa";
-import "react-toastify/dist/ReactToastify.css";
+
 import { Editor } from "@tinymce/tinymce-react";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { useContext } from "react";
+import toast from "react-hot-toast";
 
 const EditBlogPost = () => {
   const { state } = useContext(AppContext);
@@ -34,7 +35,7 @@ const EditBlogPost = () => {
           setBlogPost(result.data.Result[0]);
           setFile(`${state.port}/Images/${result.data.Result[0].thumble}`);
         } else {
-          alert(result.data.Error);
+          toast.error(result.data.Error);
         }
       })
       .catch((err) => console.log(err));
@@ -144,7 +145,6 @@ const EditBlogPost = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>/dashboard/blogpost/edit/</h5>
       <h1 className="dashboard_name">Edit blogpost </h1>
       <hr />

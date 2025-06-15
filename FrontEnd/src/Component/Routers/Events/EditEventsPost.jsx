@@ -2,10 +2,11 @@ import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+
 import { FaCloudUploadAlt } from "react-icons/fa";
-import "react-toastify/dist/ReactToastify.css";
+
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import toast from "react-hot-toast";
 
 const formatDateToLocal = (utcDate) => {
   const date = new Date(utcDate);
@@ -110,7 +111,6 @@ const EditEventsPost = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h1 className="dashboard_name">Edit Event</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}

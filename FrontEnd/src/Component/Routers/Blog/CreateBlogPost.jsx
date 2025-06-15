@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { Editor } from "@tinymce/tinymce-react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
@@ -118,7 +117,6 @@ const CreateBlogPost = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h1 className="dashboard_name">Create News</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}

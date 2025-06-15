@@ -2,8 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 
 export default function AdminFeaturedThisWeek() {
   const { state } = useContext(AppContext);
@@ -92,7 +91,6 @@ export default function AdminFeaturedThisWeek() {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h2 className="dashboard_name">Featured This Week</h2>
       <form
         onSubmit={handleSubmit}

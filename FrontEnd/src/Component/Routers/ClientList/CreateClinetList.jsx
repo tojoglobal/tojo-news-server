@@ -3,8 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { IoStarSharp } from "react-icons/io5";
 import { Country, State, City } from "country-state-city";
 
@@ -23,7 +22,7 @@ const CreateClinetList = () => {
 
   // Event handle method
   const handleCountryChange = (countryCode) => {
-    const countryStates = State.getStatesOfCountry(countryCode);    
+    const countryStates = State.getStatesOfCountry(countryCode);
     setCountryCode(countryCode);
     setStates(countryStates);
   };
@@ -69,7 +68,7 @@ const CreateClinetList = () => {
       clientAddress: "",
       note: "",
     },
-    onSubmit: async (values, { resetForm }) => {      
+    onSubmit: async (values, { resetForm }) => {
       try {
         const response = await axios.post(
           "https://api.tojoglobal.com/api/admin/clientlist/create",
@@ -103,7 +102,6 @@ const CreateClinetList = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">Create Client</h1>
       <hr />
@@ -190,7 +188,7 @@ const CreateClinetList = () => {
                   formik.setFieldValue("clientCategory", e.target.value)
                 }
               >
-                <option  value=''>Choose Category</option>
+                <option value="">Choose Category</option>
                 {ClientCatagoryList.length > 0 &&
                   ClientCatagoryList.map((CaNa) => (
                     <option value={CaNa.categoryName} key={CaNa.uuid}>
@@ -207,8 +205,8 @@ const CreateClinetList = () => {
                 id="clientCountry"
                 className="text_input_field"
                 value={formik.values.clientCountryCode}
-                onChange={(e) => {                  
-                  formik.setFieldValue("clientCountryCode" , e.target.value);
+                onChange={(e) => {
+                  formik.setFieldValue("clientCountryCode", e.target.value);
                   handleCountryChange(e.target.value);
                 }}
               >
@@ -278,7 +276,7 @@ const CreateClinetList = () => {
               <h5>Description</h5>
               <Editor
                 id="note"
-                apiKey='heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb'
+                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 textareaName="note"
                 initialValue="Get Start ..."
                 onEditorChange={(content) => {

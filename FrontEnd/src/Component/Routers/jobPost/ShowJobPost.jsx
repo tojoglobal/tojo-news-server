@@ -3,8 +3,9 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import "react-toastify/dist/ReactToastify.css";
+
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import toast from "react-hot-toast";
 
 const ShowJobPost = () => {
   const { state } = useContext(AppContext);
@@ -28,7 +29,7 @@ const ShowJobPost = () => {
             applyLink: result.data.Result[0].applyLink,
           });
         } else {
-          alert(result.data.Error);
+          toast.error(result.data.Error);
         }
       })
       .catch((err) => {

@@ -2,8 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { Editor } from "@tinymce/tinymce-react";
 import { Form, InputGroup } from "react-bootstrap";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
@@ -86,7 +85,6 @@ const EditPodcasts = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>/dashboard/Podcasts/edit/</h5>
       <h1 className="dashboard_name">Edit Team Member Data </h1>
       <hr />

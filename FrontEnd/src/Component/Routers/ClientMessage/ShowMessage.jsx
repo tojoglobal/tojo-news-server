@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import "react-toastify/dist/ReactToastify.css";
+
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import toast from "react-hot-toast";
 
 const ShowMessage = () => {
   const { state } = useContext(AppContext);
@@ -29,7 +30,7 @@ const ShowMessage = () => {
             message: result.data.Result[0].message,
           });
         } else {
-          alert(result.data.Error);
+          toast.error(result.data.Error);
         }
       })
       .catch((err) => setErrorMessage(err));

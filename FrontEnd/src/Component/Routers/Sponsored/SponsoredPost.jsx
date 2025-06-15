@@ -2,8 +2,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import {
   Dialog,
@@ -123,7 +122,6 @@ const SponsoredPost = () => {
 
   return (
     <div className="conatiner dashboard_All">
-      <ToastContainer />
       <h1 className="dashboard_name">All Sponsored Posts</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}

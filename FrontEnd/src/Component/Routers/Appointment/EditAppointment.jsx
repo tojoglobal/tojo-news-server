@@ -3,8 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { IoStarSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
 // data picker mui
@@ -107,7 +106,6 @@ const EditAppointment = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>
         <Link to="/dashboard/appointment/" className="route_link">
           {" "}
@@ -218,7 +216,7 @@ const EditAppointment = () => {
               <h5>Note</h5>
               <Editor
                 id="note"
-                apiKey='heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb'
+                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 textareaName="note"
                 onEditorChange={(content) => {
                   formik.setFieldValue("note", content);

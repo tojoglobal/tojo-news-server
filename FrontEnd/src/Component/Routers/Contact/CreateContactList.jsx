@@ -3,8 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { IoStarSharp } from "react-icons/io5";
 
 const CreateContactList = () => {
@@ -14,7 +13,7 @@ const CreateContactList = () => {
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
-  const [ContactCatagoryList, setContactCatagoryList] = useState([]);  
+  const [ContactCatagoryList, setContactCatagoryList] = useState([]);
 
   // fetch data
   useEffect(() => {
@@ -30,18 +29,17 @@ const CreateContactList = () => {
       .catch((err) => console.log(err));
   }, []);
 
-
   // use fromik method
   const formik = useFormik({
     initialValues: {
-        contactName: "",
-        category: "",
-        mobileNo: "",
-        email: "",
-        note: ""
+      contactName: "",
+      category: "",
+      mobileNo: "",
+      email: "",
+      note: "",
     },
     onSubmit: async (values, { resetForm }) => {
-          try {
+      try {
         const response = await axios.post(
           "https://api.tojoglobal.com/api/admin/contactlist/create",
           values
@@ -61,7 +59,7 @@ const CreateContactList = () => {
           const delay = 1500; // 1.5 seconds delay
           const timer = setTimeout(() => {
             navigate("/dashboard/contact");
-          }, delay);         
+          }, delay);
           return () => clearTimeout(timer);
         }
       } catch (error) {
@@ -74,7 +72,6 @@ const CreateContactList = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">Create Contact</h1>
       <hr />
@@ -106,7 +103,8 @@ const CreateContactList = () => {
             </div>
             <div className="col-md-12 inputfield">
               <label htmlFor="category">
-              Category<IoStarSharp className="reqired_symbole" />
+                Category
+                <IoStarSharp className="reqired_symbole" />
               </label>
 
               <select
@@ -136,8 +134,8 @@ const CreateContactList = () => {
                 name="mobileNo"
                 onChange={formik.handleChange}
                 placeholder="Mobile No"
-                value={formik.values.mobileNo}                
-              />             
+                value={formik.values.mobileNo}
+              />
             </div>
 
             <div className="col-md-6 inputfield">
@@ -148,15 +146,15 @@ const CreateContactList = () => {
                 name="email"
                 onChange={formik.handleChange}
                 placeholder="Email"
-                value={formik.values.email}                
-              />             
-            </div>           
+                value={formik.values.email}
+              />
+            </div>
 
             <div className="col-md-12 inputfield">
               <h5>Note</h5>
               <Editor
                 id="note"
-                apiKey='heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb'
+                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 textareaName="note"
                 initialValue="Get Start ..."
                 onEditorChange={(content) => {

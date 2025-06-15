@@ -2,8 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { MdOutlineArrowDownward } from "react-icons/md";
 import { useNavigate } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { HiPlus } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import {
@@ -103,7 +102,6 @@ const NewsCategory = () => {
 
   return (
     <div className="conatiner dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">News Category </h1>
       <hr />

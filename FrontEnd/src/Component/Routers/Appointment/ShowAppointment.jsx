@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import "react-toastify/dist/ReactToastify.css";
+
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import DOMPurify from "dompurify";
+import toast from "react-hot-toast";
 
 const ShowAppointment = () => {
   // Router
@@ -30,7 +31,7 @@ const ShowAppointment = () => {
             note: result.data.Result[0].note,
           });
         } else {
-          alert(result.data.Error);
+          toast.error(result.data.Error);
         }
       })
       .catch((err) => setErrorMessage(err));
@@ -50,29 +51,27 @@ const ShowAppointment = () => {
 
       <div className="from_div">
         <div key={appointmentDetails.uuid} className="grid_container_div">
-          
           <table className="table">
             <tbody>
               <tr>
                 <td>
-                  <span > Title </span>
+                  <span> Title </span>
                 </td>
                 <td>: {appointmentDetails.problemTitle}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Contact Name </span>
+                  <span> Contact Name </span>
                 </td>
                 <td>: {appointmentDetails.contactName}</td>
               </tr>
               <tr>
                 <td>
-                  <span >
-                    Appointment Data & Time
-                  </span>
+                  <span>Appointment Data & Time</span>
                 </td>
                 <td>
-                  : {appointmentDetails.ApoDate
+                  :{" "}
+                  {appointmentDetails.ApoDate
                     ? dayjs(appointmentDetails.ApoDate).format(`DD MMM , YYYY`)
                     : ""}
                   , {appointmentDetails.ApoTime}
@@ -80,15 +79,17 @@ const ShowAppointment = () => {
               </tr>
               <tr>
                 <td>
-                  <span >Reason </span>
+                  <span>Reason </span>
                 </td>
-                <td>:  {appointmentDetails.reason}</td>
+                <td>: {appointmentDetails.reason}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Note</span>
+                  <span> Note</span>
                 </td>
-                <td> : <span
+                <td>
+                  :
+                  <span
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(appointmentDetails.note),
                     }}

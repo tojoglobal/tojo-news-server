@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "./../../Dashbord/SmallComponent/AppContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -34,45 +34,31 @@ const AdminLogin = () => {
         setLoading(false);
         if (result.data.loginStatus) {
           localStorage.setItem("valid", true);
-          Swal.fire({
-            icon: "success",
-            title: "Login Successful!",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(() => {
-            navigate("/dashboard");
-          });
+          toast.success("Login Successful!");
+          navigate("/dashboard");
         } else {
           setError(result.data.Error);
-          Swal.fire({
-            icon: "error",
-            title: "Login Failed",
-            text: result.data.Error || "Invalid credentials",
-          });
+          toast.error(
+            result.data.Error || "Login Failed. Invalid credentials."
+          );
         }
       })
       .catch((err) => {
         setLoading(false);
         setError("An error occurred. Please try again.");
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "An error occurred. Please try again.",
-        });
+        toast.error("An error occurred. Please try again.");
         console.log(err);
       });
   };
-
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 loginPage">
       <div className="loginForm">
         <h2 className="text-center">Login Admin</h2>
-        <br />
         <div className="text-warning">{error && error}</div>
         <br />
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="email">
+            <label htmlFor="email" className="mb-1">
               <strong>Email:</strong>
             </label>
             <input
@@ -81,11 +67,11 @@ const AdminLogin = () => {
               autoComplete="off"
               placeholder="Enter Admin Email"
               onChange={(e) => setValues({ ...values, email: e.target.value })}
-              className="form-control rounded-0"
+              className="form-control rounded-md"
             />
           </div>
           <div className="mb-3 passwordFiled" style={{ position: "relative" }}>
-            <label htmlFor="password">
+            <label htmlFor="password" className="mb-1">
               <strong>Password:</strong>
             </label>
             <input
@@ -95,20 +81,20 @@ const AdminLogin = () => {
               onChange={(e) =>
                 setValues({ ...values, password: e.target.value })
               }
-              className="form-control rounded-0"
+              className="form-control rounded-md"
             />
             <div
               className="passwordToggleEye"
               onClick={() => setShowPassword(!showPassword)}
               style={{
                 position: "absolute",
-                top: "38px",
-                right: "12px",
+                top: "33px",
+                right: "10px",
                 cursor: "pointer",
                 color: "#777",
               }}
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              {showPassword ? <FaEye /> : <FaEyeSlash />}
             </div>
           </div>
           <button

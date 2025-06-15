@@ -2,9 +2,8 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import toast from "react-hot-toast";
 
 const EditJobPost = () => {
   const { state } = useContext(AppContext);
@@ -83,7 +82,6 @@ const EditJobPost = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>/dashboard/job/edit/</h5>
       <h1 className="dashboard_name">Edit Job post </h1>
       <hr />

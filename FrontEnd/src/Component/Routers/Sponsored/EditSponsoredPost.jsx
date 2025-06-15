@@ -3,9 +3,8 @@ import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 // ✅ Helper function to convert UTC date to local yyyy-mm-dd
@@ -116,14 +115,12 @@ const EditSponsoredPost = () => {
           error.response?.data?.Error || error.message || "Update failed"
         );
       }
-
       resetForm();
     },
   });
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h1 className="dashboard_name">Edit Sponsored Post</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}

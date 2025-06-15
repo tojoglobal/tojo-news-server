@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import "react-toastify/dist/ReactToastify.css";
+
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 import DOMPurify from "dompurify";
 import { Country, State } from "country-state-city";
+import toast from "react-hot-toast";
 
 const ShowClinetList = () => {
   // Router
@@ -34,7 +35,7 @@ const ShowClinetList = () => {
             note: result.data.Result[0].note,
           });
         } else {
-          alert(result.data.Error);
+          toast.error(result.data.Error);
         }
       })
       .catch((err) => setErrorMessage(err));
@@ -72,56 +73,56 @@ const ShowClinetList = () => {
             <tbody>
               <tr>
                 <td>
-                  <span > Client Name </span>
+                  <span> Client Name </span>
                 </td>
                 <td> {clientInfo.clientName}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Mobile </span>
+                  <span> Mobile </span>
                 </td>
                 <td>{clientInfo.clientmobile}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Email </span>
+                  <span> Email </span>
                 </td>
                 <td>{clientInfo.clientemail}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Client Category </span>
+                  <span> Client Category </span>
                 </td>
                 <td>{clientInfo.clientCategory}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Address </span>
+                  <span> Address </span>
                 </td>
                 <td>{clientInfo.clientAddress}</td>
               </tr>
               <tr>
                 <td>
-                  <span > Country </span>
+                  <span> Country </span>
                 </td>
                 <td>{country ? country.name : ""}</td>
               </tr>
               <tr>
                 <td>
-                  <span > State </span>
+                  <span> State </span>
                 </td>
                 <td>{state ? state.name : ""}</td>
               </tr>
               <tr>
                 <td>
-                  <span > City </span>
+                  <span> City </span>
                 </td>
                 <td>{clientInfo.clientCity}</td>
               </tr>
 
               <tr>
                 <td>
-                  <span >Description</span>
+                  <span>Description</span>
                 </td>
                 <td>
                   {" "}

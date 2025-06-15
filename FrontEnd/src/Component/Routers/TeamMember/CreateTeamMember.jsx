@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { useFormik } from "formik";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { Editor } from "@tinymce/tinymce-react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import Form from "react-bootstrap/Form";
@@ -88,7 +87,6 @@ const CreateTeamMember = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">Create Team Member</h1>
       <hr />

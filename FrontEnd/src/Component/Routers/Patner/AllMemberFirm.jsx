@@ -14,8 +14,7 @@ import {
 // import { useTheme } from "@mui/material/styles";
 import { BsExclamationCircle } from "react-icons/bs";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const AllMemberFirm = () => {
@@ -99,7 +98,6 @@ const AllMemberFirm = () => {
 
   return (
     <div className="conatiner dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">All Member</h1>
       <hr />

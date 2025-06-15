@@ -2,8 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { useContext } from "react";
 
@@ -57,7 +56,6 @@ const CreateTagNameRouter = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">Tag</h1>
       <hr />

@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { useFormik } from "formik";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -77,7 +76,6 @@ const CreatePodcasts = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">Create Podcast</h1>
       <hr />

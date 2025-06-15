@@ -10,6 +10,7 @@ import axios from "axios";
 import Logo from "./SmallComponent/logo";
 import MenuList from "./DashbordComponent/SideMenu/MenuList";
 import Clock from "./SmallComponent/Clock";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   // handle logout function
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const handleLogout = () => {
     axios.get("https://api.tojonews.com/api/admin/logout").then((result) => {
       if (result.data.Status) {
+        toast.success("Successfully Logout.");
         localStorage.removeItem("valid");
         anvigate("/");
         location.reload("/");

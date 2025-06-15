@@ -2,8 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi";
 import { useNavigate } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import {
   Dialog,
@@ -101,7 +100,6 @@ const JobPost = () => {
 
   return (
     <div className="conatiner dashboard_All">
-      <ToastContainer />
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">All Job</h1>
       <hr />

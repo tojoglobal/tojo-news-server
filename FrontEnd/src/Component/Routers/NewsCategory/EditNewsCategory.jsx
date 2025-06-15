@@ -2,8 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { IoStarSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Link } from "react-router-dom";
@@ -80,7 +79,6 @@ const EditNewsCategory = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h5>
         <Link to="/dashboard/newscategory" className="route_link">
           {" "}

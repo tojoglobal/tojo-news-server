@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useState, useContext } from "react";
 import { useFormik } from "formik";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
@@ -55,7 +54,7 @@ const CreateSponsoredPost = () => {
       formData.append("description", values.description);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
-      formData.append("is_recent", isRecent.toString()); 
+      formData.append("is_recent", isRecent.toString());
       formData.append("file", values.file);
 
       try {
@@ -102,7 +101,6 @@ const CreateSponsoredPost = () => {
 
   return (
     <div className="container dashboard_All">
-      <ToastContainer />
       <h1 className="dashboard_name">Create Sponsored Post</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
