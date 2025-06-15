@@ -1,13 +1,7 @@
 import express from "express";
 import db from "../../Utils/db.js";
-import multer from "multer";
 
 const featuredThisWeekRouter = express.Router();
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "public/Images/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
-});
-const upload = multer({ storage });
 
 // GET all featured news
 featuredThisWeekRouter.get("/", async (req, res) => {
@@ -16,30 +10,27 @@ featuredThisWeekRouter.get("/", async (req, res) => {
 });
 
 // POST new featured news
-featuredThisWeekRouter.post("/", upload.single("image"), async (req, res) => {
-  const { title, link } = req.body;
-  console.log(req.body);
-  const image = req.file ? req.file.filename : "";
-  if (!image || !title || !link)
-    return res.status(400).json({ error: "All fields required" });
+featuredThisWeekRouter.post("/", async (req, res) => {
+  const { title, youtube_url } = req.body;
+  if (!title || !youtube_url)
+    return res.status(400).json({ error: "Title and YouTube URL required" });
   await db.query(
-    "INSERT INTO featured_news (image, title, link) VALUES (?, ?, ?)",
-    [image, title, link]
+    "INSERT INTO featured_news (title, youtube_url) VALUES (?, ?)",
+    [title, youtube_url]
   );
   res.json({ success: true });
 });
 
 // PUT update featured news
-featuredThisWeekRouter.put("/:id", upload.single("image"), async (req, res) => {
-  const { title, link, imageFilename } = req.body;
-  let image = imageFilename;
-  if (req.file) image = req.file.filename;
-  if (!title || !link || !image)
-    return res.status(400).json({ error: "All fields required" });
-  await db.query(
-    "UPDATE featured_news SET image=?, title=?, link=? WHERE id=?",
-    [image, title, link, req.params.id]
-  );
+featuredThisWeekRouter.put("/:id", async (req, res) => {
+  const { title, youtube_url } = req.body;
+  if (!title || !youtube_url)
+    return res.status(400).json({ error: "Title and YouTube URL required" });
+  await db.query("UPDATE featured_news SET title=?, youtube_url=? WHERE id=?", [
+    title,
+    youtube_url,
+    req.params.id,
+  ]);
   res.json({ success: true });
 });
 
