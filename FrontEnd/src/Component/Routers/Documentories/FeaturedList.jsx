@@ -1,18 +1,23 @@
+/* eslint-disable no-useless-escape */
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import { FaCloudUploadAlt } from "react-icons/fa";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import toast from "react-hot-toast";
+
+// Helper to extract YouTube video ID
+function extractYouTubeId(url) {
+  const match = url.match(
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/
+  );
+  return match ? match[1] : "";
+}
 
 export default function FeaturedList() {
   const { state } = useContext(AppContext);
   const [cards, setCards] = useState([]);
   const [form, setForm] = useState({
     id: null,
-    image: null,
-    link: "",
-    preview: "",
-    imageFilename: "",
+    youtube_url: "",
     show_in: ["featured"], // default
   });
   const [mode, setMode] = useState("add");
@@ -22,15 +27,6 @@ export default function FeaturedList() {
       .get(`${state.port}/api/documentaries-featured`)
       .then((res) => setCards(res.data));
   }, [state.port]);
-
-  const handleFile = (e) => {
-    const file = e.target.files[0];
-    setForm((f) => ({
-      ...f,
-      image: file,
-      preview: file ? URL.createObjectURL(file) : f.preview,
-    }));
-  };
 
   const handleCheckbox = (e) => {
     const value = e.target.value;
@@ -50,32 +46,28 @@ export default function FeaturedList() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("link", form.link);
-    if (form.image) formData.append("image", form.image);
-    if (mode === "edit" && form.imageFilename && !form.image)
-      formData.append("imageFilename", form.imageFilename);
-    formData.append("show_in", form.show_in.join(","));
+    if (!form.youtube_url) {
+      toast.error("YouTube URL is required");
+      return;
+    }
+    const payload = {
+      youtube_url: form.youtube_url,
+      show_in: form.show_in.join(","),
+    };
     try {
       if (mode === "add") {
-        await axios.post(`${state.port}/api/documentaries-featured`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await axios.post(`${state.port}/api/documentaries-featured`, payload);
         toast.success("Card Added!");
       } else {
         await axios.put(
           `${state.port}/api/documentaries-featured/${form.id}`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
+          payload
         );
         toast.success("Card Updated!");
       }
       setForm({
         id: null,
-        image: null,
-        link: "",
-        preview: "",
-        imageFilename: "",
+        youtube_url: "",
         show_in: ["featured"],
       });
       setMode("add");
@@ -89,10 +81,7 @@ export default function FeaturedList() {
   const handleEdit = (card) => {
     setForm({
       id: card.id,
-      image: null,
-      link: card.link,
-      preview: `${state.port}/Images/${card.image}`,
-      imageFilename: card.image,
+      youtube_url: card.youtube_url,
       show_in: card.show_in ? card.show_in.split(",") : [],
     });
     setMode("edit");
@@ -107,47 +96,16 @@ export default function FeaturedList() {
   return (
     <div className="container dashboard_All">
       <h2 className="dashboard_name">Featured News & Continue Watching</h2>
-      <form
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-        className="p-4 row"
-      >
-        <div className="col-md-6 inputfield">
-          <h5>Upload Image</h5>
-          <div className="thumble_inputField_style">
-            <label htmlFor="image" style={{ cursor: "pointer" }}>
-              Upload Image <FaCloudUploadAlt />
-            </label>
-            <input
-              id="image"
-              type="file"
-              name="image"
-              onChange={handleFile}
-              accept=".jpg,.png,.jpeg"
-              style={{ display: "none" }}
-            />
-          </div>
-        </div>
-        <div className="col-md-6 inputfield">
-          <h5>Preview Image</h5>
-          {form.preview && (
-            <img
-              src={form.preview}
-              alt="Preview"
-              className="blog_Image"
-              loading="lazy"
-              style={{ maxHeight: 120, borderRadius: 8, marginTop: 8 }}
-            />
-          )}
-        </div>
+      <form onSubmit={handleSubmit} className="p-4 row">
         <div className="col-md-12 inputfield">
-          <label>Link</label>
+          <label>YouTube URL</label>
           <input
             type="text"
-            name="link"
-            value={form.link}
+            name="youtube_url"
+            value={form.youtube_url}
             onChange={handleChange}
             className="text_input_field"
+            placeholder="https://www.youtube.com/watch?v=..."
             required
           />
         </div>
@@ -187,18 +145,21 @@ export default function FeaturedList() {
         {cards.map((card) => (
           <div className="col-md-4" key={card.id}>
             <div className="card" style={{ padding: 8, marginBottom: 16 }}>
-              <img
-                src={`${state.port}/Images/${card.image}`}
-                alt=""
-                style={{
-                  width: 100,
-                  height: "auto",
-                  borderRadius: 6,
-                  display: "block",
-                  margin: "12px auto 0 auto",
-                }}
-              />
-              <div style={{ marginTop: 8 }}>{card.link}</div>
+              {card.youtube_url && (
+                <img
+                  src={`https://img.youtube.com/vi/${extractYouTubeId(
+                    card.youtube_url
+                  )}/hqdefault.jpg`}
+                  alt="YouTube thumbnail"
+                  style={{
+                    width: 100,
+                    height: "auto",
+                    borderRadius: 6,
+                    display: "block",
+                    margin: "12px auto 0 auto",
+                  }}
+                />
+              )}
               <div
                 className="flex items-center gap-2"
                 style={{ marginTop: 12 }}
