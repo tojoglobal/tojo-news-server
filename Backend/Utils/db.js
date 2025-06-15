@@ -1,5 +1,7 @@
-import mysql from "mysql2/promise";
+import dotenv from "dotenv";
+dotenv.config();
 
+import mysql from "mysql2/promise";
 // // Create a connection pool
 const db = mysql.createPool({
   host: "localhost",
@@ -10,12 +12,6 @@ const db = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0,
 });
-
-// database tojonews_tojonews
-// pass e9eFVZA0luLccE?&
-// user tojonews_tojonews_new
-// db host 107.181.238.60
-// DB_PORT = 3306
 
 // Test connection function
 async function testConnection() {
