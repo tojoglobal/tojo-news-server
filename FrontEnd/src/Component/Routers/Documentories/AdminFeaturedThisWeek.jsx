@@ -1,8 +1,17 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import toast from "react-hot-toast";
+
+// Helper to extract YouTube video ID from URL
+function extractYouTubeId(url) {
+  if (!url) return "";
+  const regExp =
+    /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
+  const match = url.match(regExp);
+  return match ? match[1] : "";
+}
 
 export default function AdminFeaturedThisWeek() {
   const { state } = useContext(AppContext);
@@ -15,7 +24,6 @@ export default function AdminFeaturedThisWeek() {
     youtube_url: "",
   });
   const [mode, setMode] = useState("add");
-  const [editingId, setEditingId] = useState(null);
 
   const { data: news = [], isLoading } = useQuery({
     queryKey: ["admin-featured-this-week"],
@@ -49,7 +57,6 @@ export default function AdminFeaturedThisWeek() {
         youtube_url: "",
       });
       setMode("add");
-      setEditingId(null);
       queryClient.invalidateQueries(["admin-featured-this-week"]);
     } catch (err) {
       toast.error("Failed");
@@ -62,7 +69,6 @@ export default function AdminFeaturedThisWeek() {
       title: item.title,
       youtube_url: item.youtube_url,
     });
-    setEditingId(item.id);
     setMode("edit");
   };
 
@@ -71,15 +77,6 @@ export default function AdminFeaturedThisWeek() {
     toast.success("Deleted!");
     queryClient.invalidateQueries(["admin-featured-this-week"]);
   };
-
-  // Helper to extract YouTube video ID from URL
-  function extractYouTubeId(url) {
-    if (!url) return "";
-    const regExp =
-      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
-    const match = url.match(regExp);
-    return match ? match[1] : "";
-  }
 
   return (
     <div className="container dashboard_All">
@@ -117,7 +114,6 @@ export default function AdminFeaturedThisWeek() {
               onClick={() => {
                 setForm({ id: null, title: "", youtube_url: "" });
                 setMode("add");
-                setEditingId(null);
               }}
               className="button-62"
               style={{ background: "#e15555", marginLeft: 10 }}
