@@ -3,8 +3,6 @@ import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
 import toast from "react-hot-toast";
-import { Editor } from "@tinymce/tinymce-react";
-import { Form, InputGroup } from "react-bootstrap";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const EditPodcasts = () => {
@@ -47,7 +45,6 @@ const EditPodcasts = () => {
       AppleUrl: Podcasts.AppleUrl || "",
     },
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       try {
         const response = await axios.put(
           `${state.port}/api/admin/Podcasts/edit/${id}`,
@@ -81,8 +78,6 @@ const EditPodcasts = () => {
     },
   });
 
-  // console.log(Podcasts.check);
-
   return (
     <div className="container dashboard_All">
       <h5>/dashboard/Podcasts/edit/</h5>
@@ -98,14 +93,14 @@ const EditPodcasts = () => {
         >
           <div className="row">
             <div className="col-md-12 inputfield">
-              <Form.Label htmlFor="HostedName" className="label">
+              <label htmlFor="HostedName" className="label block mb-1">
                 Hosted Name
-              </Form.Label>
-              <Form.Control
+              </label>
+              <input
                 placeholder="Write Hosted name..."
                 id="HostedName"
                 aria-describedby="HostedName"
-                className="link_input_field"
+                className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 type="text"
                 name="HostedName"
                 onChange={formik.handleChange}
@@ -115,14 +110,14 @@ const EditPodcasts = () => {
             </div>
 
             <div className="col-md-12 inputfield">
-              <Form.Label htmlFor="HostedInfo" className="label">
+              <label htmlFor="HostedInfo" className="label block mb-1">
                 Hosted Info
-              </Form.Label>
-              <Form.Control
+              </label>
+              <input
                 placeholder="Write Hosted Info..."
                 id="HostedInfo"
                 aria-describedby="HostedInfo"
-                className="link_input_field"
+                className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 type="text"
                 name="HostedInfo"
                 onChange={formik.handleChange}
@@ -135,18 +130,17 @@ const EditPodcasts = () => {
               <h5 className="mb-4">Upload Hosted Image</h5>
               <div className="row">
                 <div className="col-md-4">
-                  <Form.Label htmlFor="file" className="label">
+                  <label htmlFor="file" className="label block mb-1">
                     <span className="pe-3">Upload</span> <FaCloudUploadAlt />
-                  </Form.Label>
-                  <Form.Control
+                  </label>
+                  <input
                     aria-describedby="file"
-                    className="link_input_field"
+                    className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     id="file"
                     type="file"
                     name="file"
                     onChange={handleChange}
                     accept=".jpg, .png"
-                    
                   />
                 </div>
 
@@ -162,44 +156,40 @@ const EditPodcasts = () => {
               </div>
             </div> */}
 
-            <div className="col-md-12 inputfield ">
-              <Form.Label htmlFor="SpotifyUrl" className="label">
+            <div className="col-md-12 inputfield">
+              <label htmlFor="SpotifyUrl" className="label block mb-1">
                 Spotify url
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <Form.Control
-                  placeholder="Spotify Url"
-                  id="SpotifyUrl"
-                  name="SpotifyUrl"
-                  aria-describedby="SpotifyUrl"
-                  className="link_input_field"
-                  onChange={formik.handleChange}
-                  value={formik.values.SpotifyUrl}
-                />
-              </InputGroup>
+              </label>
+              <input
+                placeholder="Spotify Url"
+                id="SpotifyUrl"
+                name="SpotifyUrl"
+                aria-describedby="SpotifyUrl"
+                className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={formik.handleChange}
+                value={formik.values.SpotifyUrl}
+              />
             </div>
 
-            <div className="col-md-12 inputfield ">
-              <Form.Label htmlFor="AppleUrl" className="label">
+            <div className="col-md-12 inputfield">
+              <label htmlFor="AppleUrl" className="label block mb-1">
                 Apple url
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <Form.Control
-                  name="AppleUrl"
-                  onChange={formik.handleChange}
-                  value={formik.values.AppleUrl}
-                  placeholder="Apple Url"
-                  id="AppleUrl"
-                  aria-describedby="AppleUrl"
-                  className="link_input_field"
-                />
-              </InputGroup>
+              </label>
+              <input
+                name="AppleUrl"
+                onChange={formik.handleChange}
+                value={formik.values.AppleUrl}
+                placeholder="Apple Url"
+                id="AppleUrl"
+                aria-describedby="AppleUrl"
+                className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
 
             <div className="col-md-12 inputFiledMiddel">
               <button
                 type="submit"
-                className="button-62 cetificate_image_AddBtn "
+                className="button-62 cetificate_image_AddBtn"
                 role="button"
               >
                 edit podcasts

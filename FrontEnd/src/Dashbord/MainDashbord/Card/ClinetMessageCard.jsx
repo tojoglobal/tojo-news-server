@@ -10,7 +10,7 @@ const ClinetMessageCard = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedData, setPaginatedData] = useState([]);
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
 
   // client message
   useEffect(() => {

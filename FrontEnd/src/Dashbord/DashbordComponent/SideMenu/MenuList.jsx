@@ -49,6 +49,15 @@ const MenuList = ({ darkTheme }) => {
           News
         </Link>
       </Menu.Item>
+
+      <Menu.Item
+        key="clientCategory"
+        icon={<FaList className="dashbord_icon" />}
+      >
+        <Link to="/dashboard/newscategory" className="route_link">
+          News Category
+        </Link>{" "}
+      </Menu.Item>
       <Menu.Item
         key="documentaries"
         icon={<FaFilm className="dashbord_icon" />}
@@ -72,15 +81,6 @@ const MenuList = ({ darkTheme }) => {
         <Link to="/dashboard/events" className="route_link">
           Events
         </Link>
-      </Menu.Item>
-
-      <Menu.Item
-        key="clientCategory"
-        icon={<FaList className="dashbord_icon" />}
-      >
-        <Link to="/dashboard/newscategory" className="route_link">
-          News Category
-        </Link>{" "}
       </Menu.Item>
 
       <Menu.Item

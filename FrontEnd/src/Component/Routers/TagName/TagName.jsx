@@ -106,7 +106,7 @@ const TagNameServerRouter = () => {
       <h5>{isHomePageRoute}</h5>
       <h1 className="dashboard_name">All TagName</h1>
       <hr />
-      <div className="">
+      <div>
         <div>
           <Link to="/dashboard/TagName/create">
             <button className="button-62" role="button">

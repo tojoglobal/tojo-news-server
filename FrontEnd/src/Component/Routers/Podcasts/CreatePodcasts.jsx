@@ -3,8 +3,6 @@ import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
@@ -23,7 +21,7 @@ const CreatePodcasts = () => {
     formik.setFieldValue("file", e.target.files[0]);
   };
 
-  // use fromik method
+  // use formik method
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -34,7 +32,6 @@ const CreatePodcasts = () => {
       AppleUrl: "",
     },
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       const formData = new FormData();
       formData.append("HostedName", values.HostedName);
       formData.append("HostedInfo", values.HostedInfo);
@@ -81,7 +78,6 @@ const CreatePodcasts = () => {
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       {/* form start */}
-      {/* ++++++========part 1 =======++++++++ */}
       <div className="from_div">
         <form
           onSubmit={formik.handleSubmit}
@@ -90,14 +86,14 @@ const CreatePodcasts = () => {
         >
           <div className="row">
             <div className="col-md-12 inputfield">
-              <Form.Label htmlFor="HostedName" className="label">
+              <label htmlFor="HostedName" className="label block mb-1">
                 Hosted Name
-              </Form.Label>
-              <Form.Control
+              </label>
+              <input
                 placeholder="Write Hosted name..."
                 id="HostedName"
                 aria-describedby="HostedName"
-                className="link_input_field"
+                className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 type="text"
                 name="HostedName"
                 onChange={formik.handleChange}
@@ -107,14 +103,14 @@ const CreatePodcasts = () => {
             </div>
 
             <div className="col-md-12 inputfield">
-              <Form.Label htmlFor="HostedInfo" className="label">
+              <label htmlFor="HostedInfo" className="label block mb-1">
                 Hosted Info
-              </Form.Label>
-              <Form.Control
+              </label>
+              <input
                 placeholder="Write Hosted Info..."
                 id="HostedInfo"
                 aria-describedby="HostedInfo"
-                className="link_input_field"
+                className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 type="text"
                 name="HostedInfo"
                 onChange={formik.handleChange}
@@ -127,12 +123,15 @@ const CreatePodcasts = () => {
               <h5 className="mb-4">Upload Hosted Image</h5>
               <div className="row">
                 <div className="col-md-4">
-                  <Form.Label htmlFor="file" className="label">
+                  <label
+                    htmlFor="file"
+                    className="label flex items-center gap-2 cursor-pointer"
+                  >
                     <span className="pe-3">Upload</span> <FaCloudUploadAlt />
-                  </Form.Label>
-                  <Form.Control
+                  </label>
+                  <input
                     aria-describedby="file"
-                    className="link_input_field"
+                    className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     id="file"
                     type="file"
                     name="file"
@@ -141,7 +140,6 @@ const CreatePodcasts = () => {
                     required
                   />
                 </div>
-
                 <div className="col-md-4">
                   <img
                     src={
@@ -154,44 +152,40 @@ const CreatePodcasts = () => {
               </div>
             </div>
 
-            <div className="col-md-12 inputfield ">
-              <Form.Label htmlFor="SpotifyUrl" className="label">
+            <div className="col-md-12 inputfield">
+              <label htmlFor="SpotifyUrl" className="label block mb-1">
                 Spotify url
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <Form.Control
-                  placeholder="Spotify Url"
-                  id="SpotifyUrl"
-                  name="SpotifyUrl"
-                  aria-describedby="SpotifyUrl"
-                  className="link_input_field"
-                  onChange={formik.handleChange}
-                  value={formik.values.SpotifyUrl}
-                />
-              </InputGroup>
+              </label>
+              <input
+                placeholder="Spotify Url"
+                id="SpotifyUrl"
+                name="SpotifyUrl"
+                aria-describedby="SpotifyUrl"
+                className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={formik.handleChange}
+                value={formik.values.SpotifyUrl}
+              />
             </div>
 
-            <div className="col-md-12 inputfield ">
-              <Form.Label htmlFor="AppleUrl" className="label">
+            <div className="col-md-12 inputfield">
+              <label htmlFor="AppleUrl" className="label block mb-1">
                 Apple url
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <Form.Control
-                  name="AppleUrl"
-                  onChange={formik.handleChange}
-                  value={formik.values.AppleUrl}
-                  placeholder="Apple Url"
-                  id="AppleUrl"
-                  aria-describedby="AppleUrl"
-                  className="link_input_field"
-                />
-              </InputGroup>
+              </label>
+              <input
+                name="AppleUrl"
+                onChange={formik.handleChange}
+                value={formik.values.AppleUrl}
+                placeholder="Apple Url"
+                id="AppleUrl"
+                aria-describedby="AppleUrl"
+                className="link_input_field w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
 
             <div className="col-md-12 inputFiledMiddel">
               <button
                 type="submit"
-                className="button-62 cetificate_image_AddBtn "
+                className="button-62 cetificate_image_AddBtn"
                 role="button"
               >
                 ADD NEW podcasts

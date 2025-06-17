@@ -4,21 +4,16 @@ import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
 import toast from "react-hot-toast";
 import { Editor } from "@tinymce/tinymce-react";
-import { Form, InputGroup } from "react-bootstrap";
-// import { FaCloudUploadAlt } from "react-icons/fa";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const EditTeamMember = () => {
   const { state } = useContext(AppContext);
-  // Router
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // state
   const [errorMessage, setErrorMessage] = useState(null);
   const [teamMember, setTeamMember] = useState([]);
 
-  //Data Fetching
   useEffect(() => {
     axios
       .get(`${state.port}/api/admin/teamMember/${id}`)
@@ -43,7 +38,6 @@ const EditTeamMember = () => {
       .catch((err) => console.log(err));
   }, [id]);
 
-  // use fromik method
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -58,7 +52,6 @@ const EditTeamMember = () => {
       WhatsAppNumber: teamMember.WhatsAppNumber || "",
     },
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       try {
         const response = await axios.put(
           `${state.port}/api/admin/teamMember/edit/${id}`,
@@ -77,220 +70,251 @@ const EditTeamMember = () => {
             theme: "light",
           });
 
-          const delay = 2000; // 2 seconds delay
+          const delay = 2000;
           const timer = setTimeout(() => {
             navigate(`/dashboard/teamMember`);
           }, delay);
-          // Clear the timer if the component unmounts before the delay is complete
           return () => clearTimeout(timer);
         }
       } catch (error) {
         setErrorMessage(`${error}`);
       }
-
       resetForm();
     },
   });
 
-  // console.log(teamMember.check);
-
   return (
-    <div className="container dashboard_All">
-      <h5>/dashboard/teamMember/edit/</h5>
-      <h1 className="dashboard_name">Edit Team Member Data </h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {/* form start */}
-      <div className="from_div">
-        <form
-          onSubmit={formik.handleSubmit}
-          className="p-4"
-          encType="multipart/form-data"
-        >
-          <div className="row">
-            <div className="col-md-12 inputfield">
-              <Form.Label htmlFor="name" className="label">
-                Name
-              </Form.Label>
-              <Form.Control
-                placeholder="Write Member name..."
-                id="name"
-                aria-describedby="basic-addon1"
-                className="link_input_field"
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-8">
+      <h5 className="text-sm text-gray-400 mb-2">
+        /dashboard/teamMember/edit/
+      </h5>
+      <h1 className="text-3xl font-bold mb-4 text-gray-800">
+        Edit Team Member Data
+      </h1>
+      <hr className="mb-6" />
+      {errorMessage && (
+        <div className="bg-red-100 text-red-700 p-2 rounded mb-4">
+          {errorMessage}
+        </div>
+      )}
+      <form
+        onSubmit={formik.handleSubmit}
+        className="space-y-6"
+        encType="multipart/form-data"
+      >
+        <div className="grid grid-cols-1 gap-6">
+          {/* Name field */}
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Name
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Write Member name..."
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={formik.handleChange}
+              value={formik.values.name}
+            />
+          </div>
+          {/* Position field */}
+          <div>
+            <label
+              htmlFor="position"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Position
+            </label>
+            <input
+              id="position"
+              name="positionName"
+              type="text"
+              placeholder="Write Member Position..."
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={formik.handleChange}
+              value={formik.values.positionName}
+            />
+          </div>
+          {/* Bio Editor */}
+          <div>
+            <label
+              htmlFor="BioData"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Member Bio
+            </label>
+            <Editor
+              id="BioData"
+              textareaName="BioData"
+              initialValue={formik.values.BioData}
+              onEditorChange={(content) => {
+                formik.setFieldValue("BioData", content);
+              }}
+              apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
+              init={{
+                height: 250,
+                menubar: false,
+                plugins: [
+                  "advlist",
+                  "autolink",
+                  "lists",
+                  "link",
+                  "image",
+                  "charmap",
+                  "preview",
+                  "anchor",
+                  "searchreplace",
+                  "visualblocks",
+                  "code",
+                  "fullscreen",
+                  "insertdatetime",
+                  "media",
+                  "table",
+                  "code",
+                  "help",
+                  "wordcount",
+                ],
+                toolbar:
+                  "undo redo |fullscreen blocks|" +
+                  "bold italic forecolor fontsize |code link image preview| alignleft aligncenter " +
+                  "alignright alignjustify | bullist numlist outdent indent | table | " +
+                  "removeformat | help",
+                content_style:
+                  "body { font-family:Helvetica,Arial,sans-serif; font-size: 1rem;  color: #3f3e3e; }",
+              }}
+            />
+          </div>
+          {/* Facebook URL */}
+          <div>
+            <label
+              htmlFor="facebookName"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Facebook URL
+            </label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 rounded-l border border-r-0 bg-gray-100 text-gray-600 text-sm">
+                https://facebook.com/
+              </span>
+              <input
+                id="facebookName"
+                name="facebookName"
                 type="text"
-                name="name"
+                placeholder="xyzName"
+                className="w-full px-3 py-2 border rounded-r focus:outline-none focus:ring-2 focus:ring-blue-500"
                 onChange={formik.handleChange}
-                value={formik.values.name}
+                value={formik.values.facebookName}
               />
-            </div>
-            <div className="col-md-12 inputfield">
-              <Form.Label htmlFor="position" className="label">
-                Position
-              </Form.Label>
-              <Form.Control
-                placeholder="Write Member Position..."
-                id="position"
-                aria-describedby="basic-addon2"
-                className="link_input_field"
-                type="text"
-                name="positionName"
-                onChange={formik.handleChange}
-                value={formik.values.positionName}
-              />
-            </div>
-
-            <div className="col-md-12 inputfield">
-              <h5>Member Bio</h5>
-              <Editor
-                id="BioData"
-                textareaName="BioData"
-                initialValue={formik.values.BioData}
-                onEditorChange={(content) => {
-                  formik.setFieldValue("BioData", content);
-                }}
-                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
-                init={{
-                  height: 250,
-                  menubar: false,
-                  plugins: [
-                    "advlist",
-                    "autolink",
-                    "lists",
-                    "link",
-                    "image",
-                    "charmap",
-                    "preview",
-                    "anchor",
-                    "searchreplace",
-                    "visualblocks",
-                    "code",
-                    "fullscreen",
-                    "insertdatetime",
-                    "media",
-                    "table",
-                    "code",
-                    "help",
-                    "wordcount",
-                  ],
-                  toolbar:
-                    "undo redo |fullscreen blocks|" +
-                    "bold italic forecolor fontsize |code link image preview| alignleft aligncenter " +
-                    "alignright alignjustify | bullist numlist outdent indent | table | " +
-                    "removeformat | help",
-                  content_style:
-                    "body { font-family:Helvetica,Arial,sans-serif; font-size: 1rem;  color: #3f3e3e; }",
-                }}
-              />
-            </div>
-            <div className="col-md-12 inputfield ">
-              <Form.Label htmlFor="Facebook-url" className="label">
-                Facebook URL
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon4" className="link_input_field">
-                  https://facebook.com/
-                </InputGroup.Text>
-                <Form.Control
-                  placeholder="xyzName"
-                  id="basic-addon4"
-                  name="facebookName"
-                  aria-describedby="basic-addon4"
-                  className="link_input_field"
-                  onChange={formik.handleChange}
-                  value={formik.values.facebookName}
-                />
-              </InputGroup>
-            </div>
-            <div className="col-md-12 inputfield ">
-              <Form.Label htmlFor="basic-addon5" className="label">
-                YouTube URL
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon5" className="link_input_field">
-                  https://www.youtube.com/
-                </InputGroup.Text>
-                <Form.Control
-                  name="youtubeName"
-                  onChange={formik.handleChange}
-                  value={formik.values.youtubeName}
-                  placeholder="@xyzName"
-                  id="basic-addon5"
-                  aria-describedby="basic-addon5"
-                  className="link_input_field"
-                />
-              </InputGroup>
-            </div>
-            <div className="col-md-12 inputfield ">
-              <Form.Label htmlFor="basic-addon6" className="label">
-                Linkedin URL
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon6" className="link_input_field">
-                  https://www.linkedin.com/in/
-                </InputGroup.Text>
-                <Form.Control
-                  name="linkedinName"
-                  onChange={formik.handleChange}
-                  value={formik.values.linkedinName}
-                  placeholder="xyzName"
-                  id="basic-addon6"
-                  aria-describedby="basic-addon6"
-                  className="link_input_field"
-                />
-              </InputGroup>
-            </div>
-            <div className="col-md-12 inputfield ">
-              <Form.Label htmlFor="basic-addon7" className="label">
-                xTwitter URL
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon7" className="link_input_field">
-                  https://twitter.com/
-                </InputGroup.Text>
-                <Form.Control
-                  name="twitterName"
-                  onChange={formik.handleChange}
-                  value={formik.values.twitterName}
-                  placeholder="xyzName"
-                  id="basic-url"
-                  aria-describedby="basic-addon7"
-                  className="link_input_field"
-                />
-              </InputGroup>
-            </div>
-            <div className="col-md-12 inputfield ">
-              <Form.Label htmlFor="basic-addon8" className="label">
-                WhatsApp URL
-              </Form.Label>
-              <InputGroup className="mb-3">
-                <InputGroup.Text id="basic-addon3" className="link_input_field">
-                  https://wa.me/
-                </InputGroup.Text>
-                <Form.Control
-                  name="WhatsAppNumber"
-                  onChange={formik.handleChange}
-                  value={formik.values.WhatsAppNumber}
-                  placeholder="8801602555023"
-                  id="basic-addon9"
-                  type="number"
-                  aria-describedby="basic-addon9"
-                  className="link_input_field"
-                />
-              </InputGroup>
-            </div>
-
-            <div className="col-md-12 inputFiledMiddel">
-              <button
-                type="submit"
-                className="button-62 cetificate_image_AddBtn "
-                role="button"
-              >
-                EDIT MEMBER
-              </button>
             </div>
           </div>
-        </form>
-      </div>
+          {/* YouTube URL */}
+          <div>
+            <label
+              htmlFor="youtubeName"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              YouTube URL
+            </label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 rounded-l border border-r-0 bg-gray-100 text-gray-600 text-sm">
+                https://www.youtube.com/
+              </span>
+              <input
+                id="youtubeName"
+                name="youtubeName"
+                type="text"
+                placeholder="@xyzName"
+                className="w-full px-3 py-2 border rounded-r focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={formik.handleChange}
+                value={formik.values.youtubeName}
+              />
+            </div>
+          </div>
+          {/* Linkedin URL */}
+          <div>
+            <label
+              htmlFor="linkedinName"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              Linkedin URL
+            </label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 rounded-l border border-r-0 bg-gray-100 text-gray-600 text-sm">
+                https://www.linkedin.com/in/
+              </span>
+              <input
+                id="linkedinName"
+                name="linkedinName"
+                type="text"
+                placeholder="xyzName"
+                className="w-full px-3 py-2 border rounded-r focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={formik.handleChange}
+                value={formik.values.linkedinName}
+              />
+            </div>
+          </div>
+          {/* Twitter URL */}
+          <div>
+            <label
+              htmlFor="twitterName"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              xTwitter URL
+            </label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 rounded-l border border-r-0 bg-gray-100 text-gray-600 text-sm">
+                https://twitter.com/
+              </span>
+              <input
+                id="twitterName"
+                name="twitterName"
+                type="text"
+                placeholder="xyzName"
+                className="w-full px-3 py-2 border rounded-r focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={formik.handleChange}
+                value={formik.values.twitterName}
+              />
+            </div>
+          </div>
+          {/* WhatsApp URL */}
+          <div>
+            <label
+              htmlFor="WhatsAppNumber"
+              className="block text-gray-700 font-semibold mb-1"
+            >
+              WhatsApp URL
+            </label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 rounded-l border border-r-0 bg-gray-100 text-gray-600 text-sm">
+                https://wa.me/
+              </span>
+              <input
+                id="WhatsAppNumber"
+                name="WhatsAppNumber"
+                type="number"
+                placeholder="8801602555023"
+                className="w-full px-3 py-2 border rounded-r focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={formik.handleChange}
+                value={formik.values.WhatsAppNumber}
+              />
+            </div>
+          </div>
+          {/* Submit Button */}
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded transition font-semibold shadow"
+              role="button"
+            >
+              EDIT MEMBER
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   );
 };
