@@ -16,17 +16,13 @@ const AdminLogin = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
       email: "",
       password: "",
-      agree: false,
     },
   });
-
-  const agree = watch("agree");
 
   const onSubmit = (values) => {
     setLoading(true);
@@ -98,7 +94,7 @@ const AdminLogin = () => {
               type="email"
               id="email"
               autoComplete="off"
-              placeholder="admin@gmail.com"
+              placeholder="Enter Email"
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -106,7 +102,7 @@ const AdminLogin = () => {
                   message: "Invalid email address",
                 },
               })}
-              className={`w-full p-2 rounded-lg bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
+              className={`w-full p-2 rounded-md bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
                 errors.email ? "ring-2 ring-red-400" : ""
               }`}
             />
@@ -130,7 +126,7 @@ const AdminLogin = () => {
               {...register("password", {
                 required: "Password is required",
               })}
-              className={`w-full p-2 rounded-lg bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
+              className={`w-full p-2 rounded-md bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
                 errors.password ? "ring-2 ring-red-400" : ""
               }`}
             />
@@ -138,7 +134,7 @@ const AdminLogin = () => {
               type="button"
               aria-label="Toggle Password"
               tabIndex={-1}
-              className="absolute top-[70%] right-2 -translate-y-1/2 text-gray-500 hover:text-[#6a8cff] focus:outline-none"
+              className="absolute cursor-pointer top-[73%] right-2 -translate-y-1/2 text-gray-500 hover:text-[#6a8cff] focus:outline-none"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FaEye /> : <FaEyeSlash />}
@@ -150,9 +146,9 @@ const AdminLogin = () => {
             )}
           </div>
           <button
-            className="w-full rounded-lg text-white font-bold py-2 mt-1 mb-1 transition disabled:opacity-60 bg-gradient-to-r from-[#a259ff] to-[#01cfff] text-lg"
+            className="w-full cursor-pointer rounded-md text-white font-bold py-2 mt-1 mb-1 transition disabled:opacity-60 bg-gradient-to-r from-[#a259ff] to-[#01cfff] text-lg"
             type="submit"
-            disabled={loading || !agree}
+            disabled={loading}
           >
             {loading ? <span>Logging In...</span> : "Log In"}
           </button>
@@ -170,11 +166,6 @@ const AdminLogin = () => {
               You are Agree with terms & conditions
             </label>
           </div>
-          {errors.agree && (
-            <span className="text-sm text-red-500 -mt-3">
-              You must agree with terms & conditions
-            </span>
-          )}
         </form>
       </div>
     </div>
