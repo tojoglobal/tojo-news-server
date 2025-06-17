@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import toast from "react-hot-toast";
+import { FaYoutube, FaEdit, FaTrash } from "react-icons/fa";
 
 // Helper to extract YouTube video ID from URL
 function extractYouTubeId(url) {
@@ -98,41 +99,50 @@ export default function AdminFeaturedThisWeek() {
   };
 
   return (
-    <div className="container dashboard_All">
-      <h2 className="dashboard_name">Featured This Week</h2>
-      <form onSubmit={handleSubmit} className="p-4 row">
-        <div className="col-md-12 inputfield">
-          <label>Title</label>
+    <div className="w-full max-w-4xl mx-auto px-2 py-8">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 tracking-tight">
+        <FaYoutube className="inline mr-2 text-[#ff0000]" /> Featured This Week
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gradient-to-br from-[#22263a] to-[#22283f] rounded-xl shadow-md p-6 mb-10 border border-[#283250]/60"
+      >
+        <div className="mb-5">
+          <label className="block text-gray-200 font-semibold mb-2">
+            Title <span className="text-red-400">*</span>
+          </label>
           <input
             type="text"
             name="title"
             value={form.title}
             onChange={handleChange}
-            className="text_input_field"
+            className="w-full bg-[#1a1e2c] border border-[#283250]/50 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             required
+            placeholder="Video Title"
           />
         </div>
-        <div className="col-md-12 inputfield">
-          <label>
-            YouTube URL <span>(required)</span>
+        <div className="mb-5">
+          <label className="block text-gray-200 font-semibold mb-2">
+            YouTube URL <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             name="youtube_url"
             value={form.youtube_url}
             onChange={handleChange}
-            className="text_input_field"
+            className={`w-full bg-[#1a1e2c] border ${
+              error ? "border-red-500" : "border-[#283250]/50"
+            } rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition`}
             required
-            placeholder="https://www.youtube.com/watch?v=??"
+            placeholder="https://www.youtube.com/watch?v=..."
           />
-          {error && (
-            <div style={{ color: "red", marginTop: 4, fontSize: 13 }}>
-              {error}
-            </div>
-          )}
+          {error && <div className="text-red-400 mt-2 text-sm">{error}</div>}
         </div>
-        <div className="col-md-12 inputFiledMiddel">
-          <button type="submit" className="button-62 cetificate_image_AddBtn">
+        <div className="flex gap-4 mt-6">
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition"
+          >
             {mode === "add" ? "Add" : "Update"}
           </button>
           {mode === "edit" && (
@@ -143,55 +153,59 @@ export default function AdminFeaturedThisWeek() {
                 setMode("add");
                 setError("");
               }}
-              className="button-62"
-              style={{ background: "#e15555", marginLeft: 10 }}
+              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg shadow transition"
             >
               Cancel
             </button>
           )}
         </div>
       </form>
-      <div className="row" style={{ marginTop: 24 }}>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {isLoading ? (
-          <div>Loading...</div>
+          <div className="col-span-full text-center text-gray-300">
+            Loading...
+          </div>
+        ) : news.length === 0 ? (
+          <div className="col-span-full text-center text-gray-400">
+            No featured videos yet.
+          </div>
         ) : (
           news.map((item) => (
-            <div className="col-md-4" key={item.id}>
-              <div className="card" style={{ padding: 8, marginBottom: 16 }}>
+            <div
+              className="bg-gradient-to-br from-[#23263a] to-[#283250] rounded-2xl shadow-lg p-5 flex flex-col items-center text-center border border-[#2c324b]/60"
+              key={item.id}
+            >
+              <a
+                href={item.youtube_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full"
+              >
                 <img
                   src={`https://img.youtube.com/vi/${extractYouTubeId(
                     item.youtube_url
                   )}/hqdefault.jpg`}
-                  alt=""
-                  style={{
-                    width: 100,
-                    height: "auto",
-                    borderRadius: 6,
-                    display: "block",
-                    margin: "12px auto 0 auto",
-                  }}
+                  alt={item.title}
+                  className="rounded-lg mx-auto mb-3 w-full max-w-[220px] border border-[#283250]/40 shadow"
                 />
-                <div style={{ marginTop: 8, fontWeight: 600 }}>
-                  {item.title}
-                </div>
-                <div
-                  className="flex items-center gap-2"
-                  style={{ marginTop: 12 }}
+              </a>
+              <h3 className="font-semibold text-lg text-white mb-2">
+                {item.title}
+              </h3>
+              <div className="flex gap-3 mt-2">
+                <button
+                  onClick={() => handleEdit(item)}
+                  className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-semibold shadow-sm transition"
                 >
-                  <button
-                    onClick={() => handleEdit(item)}
-                    className="button-62"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="button-62"
-                    style={{ background: "#e15555" }}
-                  >
-                    Delete
-                  </button>
-                </div>
+                  <FaEdit /> Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg font-semibold shadow-sm transition"
+                >
+                  <FaTrash /> Delete
+                </button>
               </div>
             </div>
           ))

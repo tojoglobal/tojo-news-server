@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { MdOutlineArrowDownward } from "react-icons/md";
-import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { HiPlus } from "react-icons/hi";
 import { Link } from "react-router-dom";
@@ -20,9 +19,6 @@ import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const NewsCategory = () => {
   const { state } = useContext(AppContext);
-  // path
-  const isHomePageRoute = location.pathname;
-  const navigate = useNavigate();
 
   // state
   const [errorMessage, setErrorMessage] = useState(null);
@@ -30,6 +26,10 @@ const NewsCategory = () => {
   const [open, setOpen] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState(null);
   const [faqToDelete, setFaqToDelete] = useState();
+  const [openDropdownId, setOpenDropdownId] = useState(null); // <--- NEW
+
+  // For closing dropdown on outside click
+  const dropdownRefs = useRef({});
 
   // fetch data
   useEffect(() => {
@@ -43,35 +43,21 @@ const NewsCategory = () => {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [state.port]);
 
-  // matrial dialog box
+  // material dialog box
   const themes = useTheme();
   const fullScreen = useMediaQuery(themes.breakpoints.down("md"));
 
-  // diolog box open and cloge function
+  // Dialog box open and close
   const handleClickOpen = (id) => {
     setOpen(true);
     setDataDeleteId(id);
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  // data delete and cancel function
+  const handleClose = () => setOpen(false);
   const handleCancel = () => {
-    // console.log(id);
-    toast.error(`Cancel`, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.error(`Cancel`);
     setOpen(false);
-    // setDataDeleteCancel(true)
   };
 
   const handleDelete = () => {
@@ -79,18 +65,11 @@ const NewsCategory = () => {
       .delete(`${state.port}/api/admin/newsCategory/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
-          navigate("/dashboard/newscategory");
           setFaqToDelete(`deleted successfully`);
-          toast.success(`deleted successfully`, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
+          toast.success(`deleted successfully`);
+          setNewsCategory((prev) =>
+            prev.filter((c) => c.uuid !== dataDeleteId)
+          );
         } else {
           setFaqToDelete(result.data.Error);
         }
@@ -100,121 +79,135 @@ const NewsCategory = () => {
     setOpen(false);
   };
 
+  // Click outside to close dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        openDropdownId !== null &&
+        dropdownRefs.current[openDropdownId] &&
+        !dropdownRefs.current[openDropdownId].contains(event.target)
+      ) {
+        setOpenDropdownId(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [openDropdownId]);
+
   return (
-    <div className="conatiner dashboard_All">
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">News Category </h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div>
-        <div>
-          <Link to="/dashboard/newscategory/create">
-            <button className="button-62" role="button">
-              New Category
-              <span>
-                {" "}
-                <HiPlus />
-              </span>
-            </button>
-          </Link>
-          <p className="success-message">{faqToDelete}</p>
+    <div className="w-full max-w-4xl mx-auto px-2 py-8">
+      <h1 className="text-3xl font-bold text-white mb-2">News Category</h1>
+      <hr className="mb-6 border-gray-700" />
+      {errorMessage && (
+        <div className="my-4 text-red-400 bg-red-900/30 px-4 py-2 rounded">
+          {errorMessage}
         </div>
-        {/* ++++++========part 3 =======++++++++ */}
-        <div>
-          <div>
-            <table id="customers" className="">
-              <tr>
-                <th>SL</th>
-                <th>NEWS CATEGORY</th>
-                {/* <th>ON BEHALF</th> */}
-                <th>ACTIONS</th>
-              </tr>
-
-              {NewsCategory.length > 0 &&
-                NewsCategory.map((cl, index) => (
-                  <tr key={cl.uuid}>
-                    <td>{index + 1}</td>
-                    <td>{cl.name}</td>
-
-                    {/* <td>
-                      {cl.OnBehalf === "Complainant" ? (
-                        <span className="complainant">{cl.OnBehalf}</span>
-                      ) : (
-                        <span className="defendant">{cl.OnBehalf}</span>
-                      )}
-                    </td> */}
-                    <td>
-                      <div className="dropdown">
-                        <button className="dropbtn">
-                          Select <MdOutlineArrowDownward />
-                        </button>
-                        <div className="dropdown-content">
+      )}
+      <div className="flex justify-between items-center mb-6">
+        <Link to="/dashboard/newscategory/create">
+          <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-bold shadow transition">
+            <span>New Category</span>
+            <HiPlus className="text-lg" />
+          </button>
+        </Link>
+        <p className="text-green-400 text-sm">{faqToDelete}</p>
+      </div>
+      <div className="overflow-x-auto rounded-lg shadow-lg bg-gradient-to-br from-[#23263a] to-[#22283f] border border-[#2c324b]/60">
+        <table className="min-w-full text-sm text-left text-gray-200">
+          <thead>
+            <tr className="bg-[#23263a]">
+              <th className="py-3 px-4">SL</th>
+              <th className="py-3 px-4">NEWS CATEGORY</th>
+              <th className="py-3 px-4">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            {NewsCategory.length > 0 ? (
+              NewsCategory.map((cl, index) => (
+                <tr key={cl.uuid} className="hover:bg-[#293455]/40 transition">
+                  <td className="py-2 px-4">{index + 1}</td>
+                  <td className="py-2 px-4">{cl.name}</td>
+                  <td className="py-2 px-4">
+                    <div
+                      className="relative inline-block"
+                      ref={(el) => (dropdownRefs.current[cl.uuid] = el)}
+                    >
+                      <button
+                        className="flex items-center gap-1 bg-gray-700 hover:bg-blue-600 px-3 py-1.5 rounded-md font-semibold shadow transition text-white"
+                        onClick={() =>
+                          setOpenDropdownId(
+                            openDropdownId === cl.uuid ? null : cl.uuid
+                          )
+                        }
+                        type="button"
+                      >
+                        Select <MdOutlineArrowDownward className="text-base" />
+                      </button>
+                      {openDropdownId === cl.uuid && (
+                        <div className="absolute left-0 top-full mt-2 z-10 min-w-[120px] bg-[#212639] border border-[#2c324b]/60 rounded-md shadow-lg animate-fadeIn">
                           <Link
                             to={`/dashboard/newscategory/edit/${cl.uuid}`}
-                            className="routeLink"
+                            className="block px-4 py-2 hover:bg-blue-700 hover:text-white transition text-sm cursor-pointer"
                           >
-                            <span className="actionBtn"> Edit</span>
+                            Edit
                           </Link>
-
-                          <span
+                          <button
                             onClick={() => handleClickOpen(cl.uuid)}
-                            className="actionBtn"
+                            className="w-full text-left px-4 py-2 hover:bg-red-700 hover:text-white transition text-sm cursor-pointer"
                           >
-                            {" "}
                             DELETE
-                          </span>
+                          </button>
                         </div>
-                      </div>
-                      <Dialog
-                        fullScreen={fullScreen}
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="responsive-dialog-title"
+                      )}
+                    </div>
+                    {/* Delete confirmation dialog */}
+                    <Dialog
+                      fullScreen={fullScreen}
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby="responsive-dialog-title"
+                    >
+                      <DialogTitle
+                        id="responsive-dialog-title"
+                        className="flex flex-col items-center gap-2"
                       >
-                        <DialogTitle
-                          id="responsive-dialog-title "
-                          className="icon_div"
+                        <BsExclamationCircle className="text-4xl text-yellow-400 mb-2" />
+                        <span className="text-lg font-bold">Are you sure?</span>
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText className="text-gray-700">
+                          Are you sure you want to delete this news category?
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          autoFocus
+                          onClick={handleCancel}
+                          style={{ color: "#E16565" }}
                         >
-                          <div style={{ textAlign: "center" }}>
-                            <BsExclamationCircle className="icon" />
-                            <h3 style={{ paddingTop: "20px" }}>
-                              Are You sure?{" "}
-                            </h3>
-                          </div>
-                        </DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>
-                            Are you sure delete this client Info
-                          </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button
-                            autoFocus
-                            onClick={handleCancel}
-                            style={{ color: "#E16565" }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button onClick={handleDelete} autoFocus>
-                            <Link
-                              to={`/dashboard/newscategory/delete`}
-                              style={{
-                                color: "#E16565",
-                                textDecoration: "none",
-                              }}
-                            >
-                              Yes,delete it!
-                            </Link>
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </td>
-                  </tr>
-                ))}
-            </table>
-          </div>
-          {/* table */}
-        </div>
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleDelete}
+                          autoFocus
+                          style={{ color: "#E16565" }}
+                        >
+                          Yes, delete it!
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3} className="py-5 px-4 text-center text-gray-400">
+                  No categories found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

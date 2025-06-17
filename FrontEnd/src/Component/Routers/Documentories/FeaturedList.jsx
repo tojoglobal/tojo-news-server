@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import toast from "react-hot-toast";
+import { FaYoutube, FaEdit, FaTrash } from "react-icons/fa";
 
 // Helper to extract YouTube video ID
 function extractYouTubeId(url) {
@@ -114,92 +115,116 @@ export default function FeaturedList() {
   };
 
   return (
-    <div className="container dashboard_All">
-      <h2 className="dashboard_name">Featured News & Continue Watching</h2>
-      <form onSubmit={handleSubmit} className="p-4 row">
-        <div className="col-md-12 inputfield">
-          <label>YouTube URL</label>
+    <div className="mt-12 mb-10">
+      <h2 className="text-xl md:text-2xl font-bold text-white mb-6 flex items-center gap-2">
+        <FaYoutube className="text-[#ff0000]" /> Featured News & Continue
+        Watching
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gradient-to-br from-[#23263a] to-[#283250] rounded-xl shadow-md p-6 mb-10 border border-[#283250]/60"
+      >
+        <div className="mb-5">
+          <label className="block text-gray-200 font-semibold mb-2">
+            YouTube URL <span className="text-red-400">*</span>
+          </label>
           <input
             type="text"
             name="youtube_url"
             value={form.youtube_url}
             onChange={handleChange}
-            className="text_input_field"
+            className={`w-full bg-[#1a1e2c] border ${
+              error ? "border-red-500" : "border-[#283250]/50"
+            } rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition`}
             placeholder="https://www.youtube.com/watch?v=..."
             required
           />
-          {error && (
-            <div style={{ color: "red", marginTop: 4, fontSize: 13 }}>
-              {error}
-            </div>
-          )}
+          {error && <div className="text-red-400 mt-2 text-sm">{error}</div>}
         </div>
-        <div className="col-md-12 inputfield">
-          <label>Show In:</label> <br />
-          <div
-            className="flex items-center gap-3"
-            style={{ marginTop: 8, marginBottom: 16 }}
-          >
-            <label className="flex items-center gap-2">
+        <div className="mb-5">
+          <label className="block text-gray-200 font-semibold mb-2">
+            Show In:
+          </label>
+          <div className="flex gap-6 mt-2">
+            <label className="flex items-center gap-2 text-gray-100">
               <input
                 type="checkbox"
                 value="featured"
                 checked={form.show_in.includes("featured")}
                 onChange={handleCheckbox}
+                className="accent-blue-500"
               />
               Featured News
             </label>
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 text-gray-100">
               <input
                 type="checkbox"
                 value="continue"
                 checked={form.show_in.includes("continue")}
                 onChange={handleCheckbox}
+                className="accent-blue-500"
               />
               Continue Watching
             </label>
           </div>
         </div>
-        <div className="col-md-12 inputFiledMiddel">
-          <button type="submit" className="button-62 cetificate_image_AddBtn">
+        <div className="flex gap-4 mt-6">
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition"
+          >
             {mode === "add" ? "Add Card" : "Update Card"}
           </button>
+          {mode === "edit" && (
+            <button
+              type="button"
+              className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg shadow transition"
+              onClick={() => {
+                setForm({ id: null, youtube_url: "", show_in: ["featured"] });
+                setMode("add");
+                setError("");
+              }}
+            >
+              Cancel
+            </button>
+          )}
         </div>
       </form>
-      <div className="row" style={{ marginTop: 24 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {cards.map((card) => (
-          <div className="col-md-4" key={card.id}>
-            <div className="card" style={{ padding: 8, marginBottom: 16 }}>
-              {card.youtube_url && (
+          <div
+            key={card.id}
+            className="bg-gradient-to-br from-[#23263a] to-[#283250] rounded-2xl shadow-lg p-5 flex flex-col items-center text-center border border-[#2c324b]/60"
+          >
+            {card.youtube_url && (
+              <a
+                href={card.youtube_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full"
+              >
                 <img
                   src={`https://img.youtube.com/vi/${extractYouTubeId(
                     card.youtube_url
                   )}/hqdefault.jpg`}
                   alt="YouTube thumbnail"
-                  style={{
-                    width: 100,
-                    height: "auto",
-                    borderRadius: 6,
-                    display: "block",
-                    margin: "12px auto 0 auto",
-                  }}
+                  className="rounded-lg mx-auto mb-3 w-full max-w-[220px] border border-[#283250]/40 shadow"
                 />
-              )}
-              <div
-                className="flex items-center gap-2"
-                style={{ marginTop: 12 }}
+              </a>
+            )}
+            <div className="flex justify-center gap-3 mt-2">
+              <button
+                onClick={() => handleEdit(card)}
+                className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-semibold shadow-sm transition"
               >
-                <button onClick={() => handleEdit(card)} className="button-62">
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(card.id)}
-                  className="button-62"
-                  style={{ background: "#e15555" }}
-                >
-                  Delete
-                </button>
-              </div>
+                <FaEdit /> Edit
+              </button>
+              <button
+                onClick={() => handleDelete(card.id)}
+                className="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg font-semibold shadow-sm transition"
+              >
+                <FaTrash /> Delete
+              </button>
             </div>
           </div>
         ))}

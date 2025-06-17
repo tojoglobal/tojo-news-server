@@ -5,15 +5,12 @@ import Pagination from "../../../Component/Pagination/Pagination";
 import { Link } from "react-router-dom";
 
 const AppointMentCard = () => {
-  // state
   const [errorMessage, setErrorMessage] = useState(null);
   const [appointment, setAppointment] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedData, setPaginatedData] = useState([]);
   const itemsPerPage = 10;
 
-  // fetch data
   useEffect(() => {
     axios
       .get("https://api.tojoglobal.com/api/admin/appointment")
@@ -25,7 +22,7 @@ const AppointMentCard = () => {
           setErrorMessage(result.data.Error);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => setErrorMessage(err.message));
   }, []);
 
   useEffect(() => {
@@ -34,54 +31,54 @@ const AppointMentCard = () => {
     setPaginatedData(appointment.slice(startIndex, endIndex));
   }, [currentPage, appointment]);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <>
-      <div className="col-sm-12 col-md-6">
-        <div className="card card-chart">
-          <div className="card-header">
-            <h5 className="card-category">LATEST NEWS from Tojoglobal</h5>
-          </div>
-          <div className="card-body">
-            <p>{errorMessage}</p>
-            <table id="customers">
-              <tr>
-                <th>Title</th>
-                <th>Date & Time</th>
-              </tr>
-              {paginatedData.length > 0 &&
-                paginatedData.map((ms) => (
-                  <tr key={ms.uuid}>
-                    <td>
-                      <Link
-                        to={`/dashboard/appointment/${ms.uuid}`}
-                        className="dashbord_text"
-                      >
-                        {ms.problemTitle}
-                      </Link>
-                    </td>
-                    <td>
-                      {ms.ApoDate
-                        ? dayjs(ms.ApoDate).format(`DD MMM , YYYY`)
-                        : ""}{" "}
-                      <br /> {ms.ApoTime}
-                    </td>
-                  </tr>
-                ))}
-            </table>
-            <Pagination
-              totalItems={appointment.length}
-              itemsPerPage={itemsPerPage}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        </div>
+    <div className="rounded-xl bg-gradient-to-tr from-[#22263a] to-[#22283f] shadow-lg p-4 md:p-6 border border-[#2c324b]/60">
+      <div className="mb-4 flex items-center justify-between">
+        <h5 className="text-lg font-semibold text-blue-300">
+          LATEST NEWS from Tojoglobal
+        </h5>
       </div>
-    </>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-200">
+          <thead>
+            <tr className="bg-[#23263a]">
+              <th className="py-2 px-3">Title</th>
+              <th className="py-2 px-3">Date & Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.length > 0 &&
+              paginatedData.map((ms) => (
+                <tr key={ms.uuid} className="hover:bg-[#26304d]/60 transition">
+                  <td className="py-2 px-3">
+                    <Link
+                      to={`/dashboard/appointment/${ms.uuid}`}
+                      className="text-blue-400 hover:text-blue-200 font-semibold"
+                    >
+                      {ms.problemTitle}
+                    </Link>
+                  </td>
+                  <td className="py-2 px-3">
+                    {ms.ApoDate
+                      ? dayjs(ms.ApoDate).format(`DD MMM , YYYY`)
+                      : ""}{" "}
+                    <br /> {ms.ApoTime}
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+      <Pagination
+        totalItems={appointment.length}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
+    </div>
   );
 };
 

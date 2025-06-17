@@ -2,15 +2,19 @@ import PropTypes from "prop-types";
 
 const DashboardCard = ({ title, count }) => {
   return (
-    <div className="dashboard-card">
-      <div className="row dashboard-header">
-        <div className="col-sm-7 col-md-9">
-          <h3 className="dashboard-card_title">{title}</h3>
-          <h5 className="dashboard-card_text">Total {title}</h5>
+    <div className="rounded-xl bg-gradient-to-br from-[#23263a] to-[#2c324b] shadow-lg p-6 flex items-center justify-between hover:shadow-2xl transition group border border-[#2c324b]/60">
+      <div>
+        <h3 className="text-xl md:text-2xl font-bold text-blue-300 group-hover:text-blue-400">
+          {title}
+        </h3>
+        <div className="text-gray-400 mt-1 text-sm md:text-base">
+          Total {title}
         </div>
-        <div className="col-sm-5 col-md-3 p-2">
-          <h3 className="dashboard-card_countNumebr">{count}</h3>
-        </div>
+      </div>
+      <div>
+        <span className="text-4xl md:text-5xl font-extrabold text-blue-400 group-hover:text-white transition">
+          {count}
+        </span>
       </div>
     </div>
   );

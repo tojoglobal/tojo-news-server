@@ -4,15 +4,12 @@ import Pagination from "../../../Component/Pagination/Pagination";
 import { Link } from "react-router-dom";
 
 const ClinetMessageCard = () => {
-  // state
   const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedData, setPaginatedData] = useState([]);
   const itemsPerPage = 8;
 
-  // client message
   useEffect(() => {
     axios
       .get("https://api.tojoglobal.com/api/admin/clientMessage")
@@ -33,54 +30,49 @@ const ClinetMessageCard = () => {
     setPaginatedData(message.slice(startIndex, endIndex));
   }, [currentPage, message]);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <>
-      <div className="col-sm-12 col-md-6">
-        <div className="card card-chart">
-          <div className="card-header">
-            <h5 className="card-category">Client Mail from Tojoglobal</h5>
-          </div>
-          <div className="card-body">
-            {errorMessage && <p>{errorMessage}</p>}{" "}
-            {/* Conditionally render errorMessage */}
-            <table id="customers">
-              <thead>
-                <tr>
-                  <th>NAME</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedData.length > 0 &&
-                  paginatedData.map((ms, i) => (
-                    <tr key={i}>
-                      <td>
-                        <Link
-                          to={`/dashboard/message/${ms.uuid}`}
-                          className="dashboard_text route_link"
-                        >
-                          {ms.Name}
-                        </Link>
-                      </td>
-                      <td>{ms.Email}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-            <Pagination
-              totalItems={message.length}
-              itemsPerPage={itemsPerPage}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        </div>
+    <div className="rounded-xl bg-gradient-to-tr from-[#22263a] to-[#22283f] shadow-lg p-4 md:p-6 border border-[#2c324b]/60">
+      <div className="mb-4 flex items-center justify-between">
+        <h5 className="text-lg font-semibold text-blue-300">
+          Client Mail from Tojoglobal
+        </h5>
       </div>
-    </>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-200">
+          <thead>
+            <tr className="bg-[#23263a]">
+              <th className="py-2 px-3">NAME</th>
+              <th className="py-2 px-3">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.length > 0 &&
+              paginatedData.map((ms, i) => (
+                <tr key={i} className="hover:bg-[#26304d]/60 transition">
+                  <td className="py-2 px-3">
+                    <Link
+                      to={`/dashboard/message/${ms.uuid}`}
+                      className="text-blue-400 hover:text-blue-200 font-semibold"
+                    >
+                      {ms.Name}
+                    </Link>
+                  </td>
+                  <td className="py-2 px-3">{ms.Email}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+      <Pagination
+        totalItems={message.length}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
+    </div>
   );
 };
 

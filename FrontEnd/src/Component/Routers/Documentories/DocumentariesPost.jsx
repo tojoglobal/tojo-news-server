@@ -74,87 +74,105 @@ export default function DocumentariesPost() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="text-white p-8">Loading...</div>;
 
   return (
-    <div className="container dashboard_All">
-      <h2 className="dashboard_name">Edit Documentaries Hero Section</h2>
+    <div className="max-w-4xl mx-auto w-full px-4 py-8">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
+        Edit Documentaries Hero Section
+      </h2>
       <form
         onSubmit={handleSubmit}
         encType="multipart/form-data"
-        className="p-4"
+        className="bg-gradient-to-br from-[#22263a] to-[#23283f] rounded-xl shadow-lg p-6 mb-14 border border-[#283250]/60"
       >
-        <div className="row">
+        <div className="grid md:grid-cols-2 gap-8">
           {/* Upload Image Field */}
-          <div className="col-md-6 inputfield">
-            <h5>Upload Logo</h5>
-            <div className="thumble_inputField_style">
-              <label htmlFor="logo" style={{ cursor: "pointer" }}>
-                Upload Image <FaCloudUploadAlt />
-              </label>
+          <div>
+            <h5 className="font-semibold text-gray-300 mb-2">Upload Logo</h5>
+            <label
+              htmlFor="logo"
+              className="cursor-pointer inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 bg-[#22283f] hover:bg-[#1b1f2e] rounded-md px-4 py-2 transition"
+            >
+              <FaCloudUploadAlt className="text-xl" />
+              <span>Upload Image</span>
               <input
                 id="logo"
                 type="file"
                 name="logo"
                 onChange={handleChange}
                 accept=".jpg, .png, .jpeg"
-                style={{ display: "none" }}
+                className="hidden"
               />
-            </div>
+            </label>
           </div>
           {/* Preview */}
-          <div className="col-md-6 inputfield">
-            <h5>Preview Logo</h5>
-            {form.logoPreview && (
+          <div>
+            <h5 className="font-semibold text-gray-300 mb-2">Preview Logo</h5>
+            {form.logoPreview ? (
               <img
                 src={form.logoPreview}
                 alt="Logo Preview"
-                className="blog_Image"
+                className="rounded-lg shadow-md max-h-32 mt-2 mx-auto"
                 loading="lazy"
-                style={{ maxHeight: 120, borderRadius: 8, marginTop: 8 }}
               />
+            ) : (
+              <div className="text-gray-500 italic mt-3">No image selected</div>
             )}
           </div>
-          {/* Heading */}
-          <div className="col-md-12 inputfield">
-            <label htmlFor="heading">Heading</label>
-            <input
-              id="heading"
-              className="text_input_field"
-              type="text"
-              name="heading"
-              onChange={handleChange}
-              value={form.heading}
-              required
-            />
-          </div>
-          {/* Description */}
-          <div className="col-md-12 inputfield">
-            <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              className="text_input_field"
-              name="description"
-              onChange={handleChange}
-              value={form.description}
-              required
-              rows="4"
-            />
-          </div>
-          <div className="col-md-12 inputFiledMiddel">
-            <button type="submit" className="button-62 cetificate_image_AddBtn">
-              Save
-            </button>
-          </div>
+        </div>
+        <div className="mt-7">
+          <label
+            htmlFor="heading"
+            className="block text-gray-200 font-semibold mb-2"
+          >
+            Heading
+          </label>
+          <input
+            id="heading"
+            className="w-full bg-[#1a1e2c] border border-[#283250]/50 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            type="text"
+            name="heading"
+            onChange={handleChange}
+            value={form.heading}
+            required
+          />
+        </div>
+        <div className="mt-7">
+          <label
+            htmlFor="description"
+            className="block text-gray-200 font-semibold mb-2"
+          >
+            Description
+          </label>
+          <textarea
+            id="description"
+            className="w-full bg-[#1a1e2c] border border-[#283250]/50 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            name="description"
+            onChange={handleChange}
+            value={form.description}
+            required
+            rows="4"
+          />
+        </div>
+        <div className="mt-8 flex justify-end">
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition"
+          >
+            Save
+          </button>
         </div>
       </form>
       <FeaturedList />
-      <Link
-        className="featured-link-btn"
-        to="/dashboard/documentaries/featured"
-      >
-        Update Featured This Week
-      </Link>
+      <div className="flex justify-end mt-8">
+        <Link
+          className="inline-block bg-blue-400 hover:bg-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow transition"
+          to="/dashboard/documentaries/featured"
+        >
+          Update Featured This Week
+        </Link>
+      </div>
     </div>
   );
 }

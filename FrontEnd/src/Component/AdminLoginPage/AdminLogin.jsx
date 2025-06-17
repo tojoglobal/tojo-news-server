@@ -21,6 +21,7 @@ const AdminLogin = () => {
     defaultValues: {
       email: "",
       password: "",
+      agree: false,
     },
   });
 
@@ -152,11 +153,12 @@ const AdminLogin = () => {
           >
             {loading ? <span>Logging In...</span> : "Log In"}
           </button>
+          {/* Checkbox for design only, NOT required */}
           <div className="flex items-center mt-1">
             <input
               type="checkbox"
               id="tick"
-              {...register("agree", { required: true })}
+              {...register("agree")}
               className="accent-[#6a8cff] mr-2"
             />
             <label

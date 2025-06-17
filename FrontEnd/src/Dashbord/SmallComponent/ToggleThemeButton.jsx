@@ -1,16 +1,22 @@
-import { Button } from "antd";
-import { HiSun, HiMoon } from "react-icons/hi";
 import PropTypes from "prop-types";
 
-const ToggleThemeButton = ({ darkTheme, toggleTheme }) => {
-  return (
-    <div className="toggle_theme_btn">
-      <Button onClick={toggleTheme}>
-        {darkTheme ? <HiMoon /> : <HiSun />}
-      </Button>
-    </div>
-  );
-};
+const ToggleThemeButton = ({ darkTheme, toggleTheme, collapsed }) => (
+  <div
+    className={`p-4 ${
+      collapsed ? "flex justify-center" : "flex justify-between items-center"
+    }`}
+  >
+    {!collapsed && <span className="text-sm">Dark Mode</span>}
+    <button
+      onClick={toggleTheme}
+      className={`p-2 rounded-full ${
+        darkTheme ? "bg-gray-700" : "bg-gray-200"
+      }`}
+    >
+      {darkTheme ? "🌙" : "☀️"}
+    </button>
+  </div>
+);
 
 ToggleThemeButton.propTypes = {
   darkTheme: PropTypes.bool.isRequired,
