@@ -4,30 +4,33 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "./../../Dashbord/SmallComponent/AppContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
   const { state } = useContext(AppContext);
   const [showPassword, setShowPassword] = useState(false);
-
-  axios.defaults.withCredentials = true;
-  //state
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState({
-    email: "",
-    password: "",
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+      agree: false,
+    },
   });
-  const [agree, setAgree] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // if (!agree) {
-    //   setError("Please agree with terms & conditions.");
-    //   return;
-    // }
+  const agree = watch("agree");
 
+  const onSubmit = (values) => {
     setLoading(true);
+    setError(null);
     axios
       .post(`${state.port}/api/adminlogin`, values)
       .then((result) => {
@@ -50,85 +53,128 @@ const AdminLogin = () => {
         console.log(err);
       });
   };
+
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 loginPage">
-      <div className="loginForm">
-        <h2 className="text-center">Login Admin</h2>
-        <div className="text-warning">{error && error}</div>
-        <br />
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="email" className="mb-1">
-              <strong>Email:</strong>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#0a0647] to-[#4427ad] relative overflow-hidden">
+      {/* Optional SVG lines background */}
+      <svg
+        className="absolute inset-0 w-full h-full z-0 pointer-events-none"
+        viewBox="0 0 1440 900"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          opacity="0.12"
+          d="M0 300 Q720 100 1440 300"
+          stroke="#fff"
+          strokeWidth="2"
+        />
+        <path
+          opacity="0.08"
+          d="M0 500 Q720 700 1440 500"
+          stroke="#fff"
+          strokeWidth="2"
+        />
+        <path
+          opacity="0.08"
+          d="M0 800 Q720 900 1440 800"
+          stroke="#fff"
+          strokeWidth="2"
+        />
+      </svg>
+      <div className="relative z-10 w-full max-w-sm bg-[#18116a]/[.97] rounded-2xl border border-[#9996dc] shadow-2xl p-5 flex flex-col">
+        <h2 className="text-xl md:text-2xl font-bold text-center text-white mb-8 font-sans tracking-wide">
+          Login Admin
+        </h2>
+        {error && (
+          <div className="text-red-400 text-sm text-center mb-2">{error}</div>
+        )}
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div>
+            <label htmlFor="email" className="block text-white font-bold mb-2">
+              Email:
             </label>
             <input
               type="email"
-              name="email"
+              id="email"
               autoComplete="off"
-              placeholder="Enter Admin Email"
-              onChange={(e) => setValues({ ...values, email: e.target.value })}
-              className="form-control rounded-md"
+              placeholder="admin@gmail.com"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Invalid email address",
+                },
+              })}
+              className={`w-full p-2 rounded-lg bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
+                errors.email ? "ring-2 ring-red-400" : ""
+              }`}
             />
+            {errors.email && (
+              <span className="text-sm text-red-500">
+                {errors.email.message}
+              </span>
+            )}
           </div>
-          <div className="mb-3 passwordFiled" style={{ position: "relative" }}>
-            <label htmlFor="password" className="mb-1">
-              <strong>Password:</strong>
+          <div className="relative">
+            <label
+              htmlFor="password"
+              className="block text-white font-bold mb-2"
+            >
+              Password:
             </label>
             <input
               type={showPassword ? "text" : "password"}
-              name="password"
+              id="password"
               placeholder="Enter Password"
-              onChange={(e) =>
-                setValues({ ...values, password: e.target.value })
-              }
-              className="form-control rounded-md"
+              {...register("password", {
+                required: "Password is required",
+              })}
+              className={`w-full p-2 rounded-lg bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
+                errors.password ? "ring-2 ring-red-400" : ""
+              }`}
             />
-            <div
-              className="passwordToggleEye"
+            <button
+              type="button"
+              aria-label="Toggle Password"
+              tabIndex={-1}
+              className="absolute top-[70%] right-2 -translate-y-1/2 text-gray-500 hover:text-[#6a8cff] focus:outline-none"
               onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: "absolute",
-                top: "33px",
-                right: "10px",
-                cursor: "pointer",
-                color: "#777",
-              }}
             >
               {showPassword ? <FaEye /> : <FaEyeSlash />}
-            </div>
+            </button>
+            {errors.password && (
+              <span className="text-sm text-red-500">
+                {errors.password.message}
+              </span>
+            )}
           </div>
           <button
-            className="custombtn"
+            className="w-full rounded-lg text-white font-bold py-2 mt-1 mb-1 transition disabled:opacity-60 bg-gradient-to-r from-[#a259ff] to-[#01cfff] text-lg"
             type="submit"
-            disabled={loading}
-            style={{ width: "100%", position: "relative" }}
+            disabled={loading || !agree}
           >
-            {loading ? (
-              <>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-                Logging In...
-              </>
-            ) : (
-              "Log in"
-            )}
+            {loading ? <span>Logging In...</span> : "Log In"}
           </button>
-          <div className="mb-1 mt-2">
+          <div className="flex items-center mt-1">
             <input
               type="checkbox"
-              name="tick"
               id="tick"
-              className="me-2"
-              checked={agree}
-              onChange={(e) => setAgree(e.target.checked)}
+              {...register("agree", { required: true })}
+              className="accent-[#6a8cff] mr-2"
             />
-            <label htmlFor="tick" style={{ cursor: "pointer" }}>
+            <label
+              htmlFor="tick"
+              className="text-white text-sm cursor-pointer select-none"
+            >
               You are Agree with terms & conditions
             </label>
           </div>
+          {errors.agree && (
+            <span className="text-sm text-red-500 -mt-3">
+              You must agree with terms & conditions
+            </span>
+          )}
         </form>
       </div>
     </div>
