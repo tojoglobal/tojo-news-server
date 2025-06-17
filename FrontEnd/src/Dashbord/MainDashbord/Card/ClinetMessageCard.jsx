@@ -42,7 +42,7 @@ const ClinetMessageCard = () => {
       <div className="col-sm-12 col-md-6">
         <div className="card card-chart">
           <div className="card-header">
-            <h5 className="card-category">Client Mail</h5>
+            <h5 className="card-category">Client Mail from Tojoglobal</h5>
           </div>
           <div className="card-body">
             {errorMessage && <p>{errorMessage}</p>}{" "}

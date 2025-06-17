@@ -43,7 +43,7 @@ const AppointMentCard = () => {
       <div className="col-sm-12 col-md-6">
         <div className="card card-chart">
           <div className="card-header">
-            <h5 className="card-category">LATEST NEWS</h5>
+            <h5 className="card-category">LATEST NEWS from Tojoglobal</h5>
           </div>
           <div className="card-body">
             <p>{errorMessage}</p>

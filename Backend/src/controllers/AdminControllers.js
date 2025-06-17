@@ -975,20 +975,51 @@ const clinetCounts = async (req, res) => {
   }
 };
 
-const teamMemberCount = (req, res) => {
+// const teamMemberCount = (req, res) => {
+//   const sql = `SELECT count(uuid) AS totalTeamMember FROM team_member;`;
+//   db.query(sql, (err, result) => {
+//     if (err) return res.json({ Status: false, Error: "Query Error" + err });
+//     return res.json({ Status: true, Result: result });
+//   });
+// };
+
+const teamMemberCount = async (req, res) => {
   const sql = `SELECT count(uuid) AS totalTeamMember FROM team_member;`;
-  db.query(sql, (err, result) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" + err });
+  try {
+    const [result] = await db.query(sql); // No callback, use await
     return res.json({ Status: true, Result: result });
-  });
+  } catch (err) {
+    return res.json({ Status: false, Error: "Query Error" + err });
+  }
 };
 
-const contactCount = (req, res) => {
+// const contactCount = (req, res) => {
+//   const sql = `SELECT count(uuid) AS totalContact FROM contactlist;`;
+//   db.query(sql, (err, result) => {
+//     if (err) return res.json({ Status: false, Error: "Query Error" + err });
+//     return res.json({ Status: true, Result: result });
+//   });
+// };
+
+const contactCount = async (req, res) => {
   const sql = `SELECT count(uuid) AS totalContact FROM contactlist;`;
-  db.query(sql, (err, result) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" + err });
+  try {
+    const [result] = await db.query(sql); // Use await and no callback
     return res.json({ Status: true, Result: result });
-  });
+  } catch (err) {
+    return res.json({ Status: false, Error: "Query Error" + err });
+  }
+};
+
+const getUserCount = async (req, res) => {
+  const sql = `SELECT COUNT(*) AS totalUsers FROM users;`;
+  try {
+    const [result] = await db.query(sql);
+    const totalUsers = result[0]?.totalUsers ?? 0;
+    return res.json({ Status: true, totalUsers });
+  } catch (err) {
+    return res.json({ Status: false, Error: "Query Error: " + err });
+  }
 };
 
 // LOGOUT Route
@@ -1138,6 +1169,7 @@ const SponsoredPostToDelete = async (req, res) => {
 };
 
 export {
+  getUserCount,
   createSponsoredPost,
   allSponsoredPost,
   editSponsoredPost,

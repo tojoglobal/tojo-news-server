@@ -88,6 +88,7 @@ import {
   getSponsoredPostById,
   SponsoredPostToDelete,
   editSponsoredPost,
+  getUserCount,
 } from "../controllers/AdminControllers.js";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
@@ -235,6 +236,7 @@ AdminRouter.put("/newsCategory/edit/:id", editNewsCategory);
 // count many Route
 AdminRouter.get("/client-count", clinetCounts);
 AdminRouter.get("/teamMember-count", teamMemberCount);
+AdminRouter.get("/user-count", getUserCount);
 AdminRouter.get("/contact-count", contactCount);
 
 AdminRouter.get("/logout", adminLogout);

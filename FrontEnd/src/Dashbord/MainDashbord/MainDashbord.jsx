@@ -10,7 +10,6 @@ import { AppContext } from "../SmallComponent/AppContext";
 const MainDashbord = () => {
   const { state } = useContext(AppContext);
   axios.defaults.withCredentials = true;
-  // start
   const [errorMessage, setErrorMessage] = useState(null);
   const [totalNews, setTotalNews] = useState(0);
   const [totalTeamMember, setTotalTeamMember] = useState(0);
@@ -23,9 +22,10 @@ const MainDashbord = () => {
   }, []);
 
   const clinetCount = () => {
-    axios.get(`${state.port}/api/admin/client-count`).then((result) => {
+    axios.get(`${state.port}/api/admin/blogpost`).then((result) => {
       if (result.data.Status) {
-        setTotalNews(result.data.Result[0].totalClient);
+        console.log(result);
+        setTotalNews(result.data?.Result.length);
       } else {
         setErrorMessage(result.data.Error);
       }
@@ -33,9 +33,9 @@ const MainDashbord = () => {
   };
 
   const lawyerCount = () => {
-    axios.get(`${state.port}/api/admin/teamMember-count`).then((result) => {
+    axios.get(`${state.port}/api/admin/user-count`).then((result) => {
       if (result.data.Status) {
-        setTotalTeamMember(result.data.Result[0].totalTeamMember);
+        setTotalTeamMember(result.data?.totalUsers);
       } else {
         setErrorMessage(result.data.Error);
       }

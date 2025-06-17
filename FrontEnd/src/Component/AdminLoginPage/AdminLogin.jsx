@@ -22,10 +22,10 @@ const AdminLogin = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!agree) {
-      setError("Please agree with terms & conditions.");
-      return;
-    }
+    // if (!agree) {
+    //   setError("Please agree with terms & conditions.");
+    //   return;
+    // }
 
     setLoading(true);
     axios
