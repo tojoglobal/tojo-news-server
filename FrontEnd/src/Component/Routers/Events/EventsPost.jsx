@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { HiPlus } from "react-icons/hi";
 import { MdEdit, MdDelete, MdVisibility } from "react-icons/md";
-import { BsExclamationCircle } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import Pagination from "../../Pagination/Pagination";
 
@@ -13,8 +13,6 @@ const EventsPost = () => {
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [events, setEvents] = useState([]);
-  const [deleteId, setDeleteId] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Pagination
@@ -41,22 +39,37 @@ const EventsPost = () => {
   }, []);
 
   const handleDeleteDialog = (uuid) => {
-    setDeleteId(uuid);
-    setOpenDialog(true);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to delete this event?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e16565",
+      cancelButtonColor: "#2c324b",
+      confirmButtonText: "Yes, delete it!",
+      background: "#181c2f",
+      color: "#fff",
+      customClass: {
+        popup: "rounded-2xl",
+        confirmButton: "font-semibold",
+        cancelButton: "font-semibold",
+        title: "font-bold",
+        content: "font-medium",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(uuid);
+      }
+    });
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setDeleteId(null);
-  };
-
-  const handleDelete = () => {
-    if (!deleteId) return;
+  const handleDelete = (uuid) => {
+    if (!uuid) return;
     axios
-      .delete(`${state.port}/api/admin/events/delete/${deleteId}`)
+      .delete(`${state.port}/api/admin/events/delete/${uuid}`)
       .then((result) => {
         if (result.data.Status) {
-          setEvents((prev) => prev.filter((e) => e.uuid !== deleteId));
+          setEvents((prev) => prev.filter((e) => e.uuid !== uuid));
           toast.success("Deleted successfully", {
             position: "top-right",
             style: { background: "#181c2f", color: "#fff" },
@@ -73,8 +86,7 @@ const EventsPost = () => {
           position: "top-right",
           style: { background: "#181c2f", color: "#fff" },
         })
-      )
-      .finally(() => handleCloseDialog());
+      );
   };
 
   const formatDate = (dateString) => {
@@ -189,37 +201,6 @@ const EventsPost = () => {
         currentPage={currentPage}
         onPageChange={setCurrentPage}
       />
-
-      {/* Delete Dialog */}
-      {openDialog && (
-        <div className="fixed top-0 left-0 w-screen h-screen z-[1000] bg-[#181c2ffc] flex items-center justify-center">
-          <div className="bg-[#181c2f] text-white rounded-2xl shadow-2xl min-w-[320px] max-w-[360px] px-8 py-6 flex flex-col items-center">
-            <div className="text-center mb-2">
-              <BsExclamationCircle size={48} color="#e16565" />
-              <h3 className="pt-3 font-bold text-lg text-white">
-                Are you sure?
-              </h3>
-            </div>
-            <div className="text-white text-center mb-6">
-              Are you sure you want to delete this event?
-            </div>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={handleCloseDialog}
-                className="bg-[#2c324b] text-white rounded-md px-6 py-2 font-semibold text-base transition hover:bg-[#23263a]"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="bg-[#e16565] text-white rounded-md px-6 py-2 font-semibold text-base transition hover:bg-[#d32f2f]"
-              >
-                Yes, delete it!
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
