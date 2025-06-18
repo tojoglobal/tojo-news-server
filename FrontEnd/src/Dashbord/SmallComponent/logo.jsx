@@ -3,7 +3,7 @@ const Logo = ({ collapsed }) => (
     {collapsed ? (
       <div className="text-xl font-bold">TN</div>
     ) : (
-      <div className="text-xl font-bold">Tojo News</div>
+      <div className="text-xl font-bold">TOJO News</div>
     )}
   </div>
 );

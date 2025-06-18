@@ -1,95 +1,80 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { HiPlus } from "react-icons/hi";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
-import {
-  Dialog,
-  useTheme,
-  useMediaQuery,
-  DialogContentText,
-  DialogTitle,
-  Button,
-  DialogActions,
-  DialogContent,
-} from "@mui/material";
+import { MdEdit, MdDelete, MdVisibility } from "react-icons/md";
 import { BsExclamationCircle } from "react-icons/bs";
-import { MdOutlineArrowDownward } from "react-icons/md";
-import Pagination from "../../Pagination/Pagination";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import Pagination from "../../Pagination/Pagination";
 
 const EventsPost = () => {
   const { state } = useContext(AppContext);
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [events, setEvents] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [dataDeleteId, setDataDeleteId] = useState(null);
-  const [deleteMessage, setDeleteMessage] = useState();
+  const [deleteId, setDeleteId] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [paginatedData, setPaginatedData] = useState([]);
   const itemsPerPage = 10;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedData = events.slice(startIndex, startIndex + itemsPerPage);
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`${state.port}/api/admin/events`)
       .then((result) => {
         if (result.data.Status) {
           setEvents(result.data.Result);
-          setPaginatedData(result.data.Result.slice(0, itemsPerPage));
+          setErrorMessage(null);
         } else {
           setErrorMessage(result.data.Error);
         }
       })
-      .catch((err) => console.log(err));
+      .catch(() => setErrorMessage("Error loading events."))
+      .finally(() => setLoading(false));
+    // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    setPaginatedData(events.slice(startIndex, endIndex));
-  }, [currentPage, events]);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handleDeleteDialog = (uuid) => {
+    setDeleteId(uuid);
+    setOpenDialog(true);
   };
 
-  const themes = useTheme();
-  const fullScreen = useMediaQuery(themes.breakpoints.down("md"));
-
-  const handleClickOpen = (id) => {
-    setOpen(true);
-    setDataDeleteId(id);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleCancel = () => {
-    toast.error(`Cancel`, { position: "top-right", autoClose: 5000 });
-    setOpen(false);
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setDeleteId(null);
   };
 
   const handleDelete = () => {
+    if (!deleteId) return;
     axios
-      .delete(`${state.port}/api/admin/events/delete/` + dataDeleteId)
+      .delete(`${state.port}/api/admin/events/delete/${deleteId}`)
       .then((result) => {
         if (result.data.Status) {
-          setEvents(events.filter((post) => post.uuid !== dataDeleteId));
-          setDeleteMessage(`Deleted successfully`);
-          toast.success(`Deleted successfully`, {
+          setEvents((prev) => prev.filter((e) => e.uuid !== deleteId));
+          toast.success("Deleted successfully", {
             position: "top-right",
-            autoClose: 5000,
+            style: { background: "#181c2f", color: "#fff" },
           });
         } else {
-          setDeleteMessage(result.data.Error);
+          toast.error(result.data.Error || "Failed to delete", {
+            position: "top-right",
+            style: { background: "#181c2f", color: "#fff" },
+          });
         }
       })
-      .catch((err) => console.error(err));
-    setOpen(false);
+      .catch(() =>
+        toast.error("Failed to delete", {
+          position: "top-right",
+          style: { background: "#181c2f", color: "#fff" },
+        })
+      )
+      .finally(() => handleCloseDialog());
   };
 
   const formatDate = (dateString) => {
@@ -103,136 +88,149 @@ const EventsPost = () => {
   };
 
   return (
-    <div className="conatiner dashboard_All">
-      <h1 className="dashboard_name">All Events</h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div>
-        <div>
-          <Link to="/dashboard/events/create">
-            <button className="button-62" role="button">
-              Create Event{" "}
-              <span>
-                <HiPlus />
-              </span>
-            </button>
-          </Link>
-          <p className="success-message">{deleteMessage}</p>
-        </div>
-        <div>
-          <table id="customers" className="">
-            <thead>
-              <tr>
-                <th>SL</th>
-                <th>TITLE</th>
-                <th>LOCATION</th>
-                <th>DATE</th>
-                <th>IMAGE</th>
-                <th>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedData.length > 0 &&
-                paginatedData.map((post, index) => (
-                  <tr key={post.uuid}>
-                    <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                    <td>{post.title}</td>
-                    <td>{post.location}</td>
-                    <td>{formatDate(post.date)}</td>
-                    <td>
-                      <img
-                        className="Team_member_Image"
-                        src={
-                          post.image_url
-                            ? `${state.port}/Images/${post.image_url}`
-                            : "https://i.postimg.cc/KzNdw0LX/Group.png"
-                        }
-                        alt={post.title}
-                      />
-                    </td>
-                    <td>
-                      <div className="dropdown">
-                        <button className="dropbtn">
-                          Select <MdOutlineArrowDownward />
-                        </button>
-                        <div className="dropdown-content">
-                          <Link
-                            to={`/dashboard/events/edit/${post.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> Edit</span>
-                          </Link>
-                          <Link
-                            to={`/dashboard/events/${post.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> SHOW</span>
-                          </Link>
-                          <span
-                            onClick={() => handleClickOpen(post.uuid)}
-                            className="actionBtn"
-                          >
-                            DELETE
-                          </span>
-                        </div>
-                      </div>
-                      <Dialog
-                        fullScreen={fullScreen}
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="responsive-dialog-title"
-                      >
-                        <DialogTitle
-                          id="responsive-dialog-title "
-                          className="icon_div"
-                        >
-                          <div style={{ textAlign: "center" }}>
-                            <BsExclamationCircle className="icon" />
-                            <h3 style={{ paddingTop: "20px" }}>
-                              Are You sure?{" "}
-                            </h3>
-                          </div>
-                        </DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>
-                            Are you sure you want to delete this event?
-                          </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button
-                            autoFocus
-                            onClick={handleCancel}
-                            style={{ color: "#E16565" }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button onClick={handleDelete} autoFocus>
-                            <span
-                              style={{
-                                color: "#E16565",
-                                textDecoration: "none",
-                              }}
-                            >
-                              Yes, delete it!
-                            </span>
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-          <Pagination
-            totalItems={events.length}
-            itemsPerPage={itemsPerPage}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-        </div>
+    <div className="w-full min-h-screen px-2 md:px-8 py-8 bg-transparent text-white">
+      <h1 className="text-3xl md:text-4xl font-bold mb-2">All Events</h1>
+      <hr className="border-[#222] opacity-20 mb-6" />
+      {errorMessage && (
+        <div className="text-red-400 font-semibold mb-4">{errorMessage}</div>
+      )}
+
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <Link to="/dashboard/events/create" className="no-underline">
+          <button
+            className="rounded-lg font-bold text-base md:text-lg px-7 py-2.5 bg-[#22263a] text-white flex items-center gap-2 shadow-none transition hover:bg-blue-700"
+            type="button"
+          >
+            <HiPlus size={22} />
+            Create Event
+          </button>
+        </Link>
       </div>
+
+      <div className="w-full overflow-x-auto rounded-xl">
+        <table className="w-full min-w-[900px] border-separate border-spacing-0 bg-transparent text-white text-base mb-2">
+          <thead>
+            <tr className="bg-[#28283c]/90 text-[#7aa8e6]">
+              <th className={thClass}>SL</th>
+              <th className={thClass}>TITLE</th>
+              <th className={thClass}>LOCATION</th>
+              <th className={thClass}>DATE</th>
+              <th className={thClass}>IMAGE</th>
+              <th className={thClass + " text-center"}>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="text-center py-10">
+                  <span className="inline-block w-9 h-9 border-4 border-[#23263a] border-t-[#7aa8e6] rounded-full animate-spin"></span>
+                </td>
+              </tr>
+            ) : paginatedData.length > 0 ? (
+              paginatedData.map((post, index) => (
+                <tr
+                  key={post.uuid}
+                  className="bg-[#181c2f] border-b border-[#23263a] text-white"
+                >
+                  <td className={tdClass}>{startIndex + index + 1}</td>
+                  <td className={tdClass}>{post.title}</td>
+                  <td className={tdClass}>{post.location}</td>
+                  <td className={tdClass}>{formatDate(post.date)}</td>
+                  <td className={tdClass}>
+                    <img
+                      src={
+                        post.image_url
+                          ? `${state.port}/Images/${post.image_url}`
+                          : "https://i.postimg.cc/KzNdw0LX/Group.png"
+                      }
+                      alt={post.title}
+                      className="w-[70px] h-[44px] rounded-md object-cover border border-[#23263a] shadow-md"
+                    />
+                  </td>
+                  <td className={tdClass + " text-center min-w-[150px]"}>
+                    <Link
+                      to={`/dashboard/events/edit/${post.uuid}`}
+                      title="Edit"
+                      className={iconBtnLinkClass}
+                    >
+                      <MdEdit size={22} color="#7aa8e6" />
+                    </Link>
+                    <Link
+                      to={`/dashboard/events/${post.uuid}`}
+                      title="Show"
+                      className={iconBtnLinkClass}
+                    >
+                      <MdVisibility size={22} color="#7aa8e6" />
+                    </Link>
+                    <button
+                      title="Delete"
+                      onClick={() => handleDeleteDialog(post.uuid)}
+                      className={iconBtnClass}
+                    >
+                      <MdDelete size={22} color="#e16565" />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="text-center text-gray-400 py-7">
+                  No events found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <Pagination
+        totalItems={events.length}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+      />
+
+      {/* Delete Dialog */}
+      {openDialog && (
+        <div className="fixed top-0 left-0 w-screen h-screen z-[1000] bg-[#181c2ffc] flex items-center justify-center">
+          <div className="bg-[#181c2f] text-white rounded-2xl shadow-2xl min-w-[320px] max-w-[360px] px-8 py-6 flex flex-col items-center">
+            <div className="text-center mb-2">
+              <BsExclamationCircle size={48} color="#e16565" />
+              <h3 className="pt-3 font-bold text-lg text-white">
+                Are you sure?
+              </h3>
+            </div>
+            <div className="text-white text-center mb-6">
+              Are you sure you want to delete this event?
+            </div>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleCloseDialog}
+                className="bg-[#2c324b] text-white rounded-md px-6 py-2 font-semibold text-base transition hover:bg-[#23263a]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="bg-[#e16565] text-white rounded-md px-6 py-2 font-semibold text-base transition hover:bg-[#d32f2f]"
+              >
+                Yes, delete it!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
+const thClass =
+  "py-3 px-3 text-[#7aa8e6] font-bold text-[15.5px] border-b border-[#2a2a44] select-none bg-transparent";
+const tdClass =
+  "py-3 px-3 text-white text-[15.5px] bg-transparent border-b border-[#23263a] align-middle";
+const iconBtnLinkClass =
+  "inline-flex items-center justify-center bg-none border-none mx-1 px-1 py-1 rounded hover:bg-[#1a2542]/60 transition cursor-pointer";
+const iconBtnClass =
+  "inline-flex items-center justify-center bg-none border-none mx-1 px-1 py-1 rounded hover:bg-[#23191a]/60 transition cursor-pointer outline-none";
 
 export default EventsPost;

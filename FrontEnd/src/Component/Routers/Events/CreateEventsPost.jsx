@@ -17,6 +17,8 @@ const CreateEventsPost = () => {
     formik.setFieldValue("file", e.target.files[0]);
   };
 
+  const today = new Date().toISOString().split("T")[0];
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -57,11 +59,12 @@ const CreateEventsPost = () => {
           setErrorMessage(null);
           toast.success(`Event created successfully`, {
             position: "top-right",
-            autoClose: 2000,
+            duration: 2000,
+            style: { background: "#23263a", color: "#fff" },
           });
           setTimeout(() => {
             navigate(`/dashboard/events`);
-          }, 1500);
+          }, 1200);
         } else {
           setErrorMessage(response.data.Error || "Failed to create event");
         }
@@ -71,114 +74,154 @@ const CreateEventsPost = () => {
         );
       }
       resetForm();
+      setFile(null);
     },
   });
 
-  const today = new Date().toISOString().split("T")[0];
-
   return (
-    <div className="container dashboard_All">
-      <h1 className="dashboard_name">Create Event</h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div className="from_div">
-        <form
-          onSubmit={formik.handleSubmit}
-          className="p-4"
-          encType="multipart/form-data"
-        >
-          <div className="row">
-            <div className="col-md-12 inputfield">
-              <label htmlFor="title">Title</label>
+    <div className="w-full min-h-screen px-2 md:px-8 py-8 bg-transparent text-white">
+      <h1 className="text-3xl md:text-4xl font-bold mb-2">Create Event</h1>
+      <hr className="border-[#222] opacity-20 mb-6" />
+      {errorMessage && (
+        <div className="text-red-400 font-semibold mb-4">{errorMessage}</div>
+      )}
+      <form
+        onSubmit={formik.handleSubmit}
+        className="w-full"
+        encType="multipart/form-data"
+        autoComplete="off"
+      >
+        <div className="flex flex-col lg:flex-row gap-7 w-full">
+          {/* Left Side Inputs */}
+          <div className="flex-1 min-w-[260px]">
+            <div className="mb-5">
+              <label
+                htmlFor="title"
+                className="font-semibold text-gray-300 block mb-1"
+              >
+                Title
+              </label>
               <input
                 id="title"
-                className="text_input_field"
                 type="text"
                 name="title"
                 onChange={formik.handleChange}
                 placeholder="Event Title..."
                 value={formik.values.title}
                 required
+                className="w-full p-3 rounded-lg bg-[#181c2f] border border-[#23263a] text-white focus:ring-2 focus:ring-blue-500 outline-none transition"
               />
             </div>
-            <div className="col-md-12 inputfield">
-              <label htmlFor="description">Description</label>
+            <div className="mb-5">
+              <label
+                htmlFor="description"
+                className="font-semibold text-gray-300 block mb-1"
+              >
+                Description
+              </label>
               <textarea
                 id="description"
-                className="text_input_field"
                 name="description"
                 onChange={formik.handleChange}
                 placeholder="Event Description..."
                 value={formik.values.description}
                 required
                 rows="4"
+                className="w-full p-3 rounded-lg bg-[#181c2f] border border-[#23263a] text-white focus:ring-2 focus:ring-blue-500 outline-none transition resize-y min-h-[90px]"
               />
             </div>
-            <div className="col-md-6 inputfield">
-              <label htmlFor="location">Location</label>
-              <input
-                id="location"
-                className="text_input_field"
-                type="text"
-                name="location"
-                onChange={formik.handleChange}
-                placeholder="Event Location..."
-                value={formik.values.location}
-                required
-              />
-            </div>
-            <div className="col-md-6 inputfield">
-              <label htmlFor="date">Date</label>
-              <input
-                id="date"
-                className="text_input_field"
-                type="date"
-                name="date"
-                onChange={formik.handleChange}
-                value={formik.values.date}
-                min={today}
-                required
-              />
-            </div>
-            <div className="col-md-6 inputfield">
-              <h5>Upload Image</h5>
-              <div className="thumble_inputField_style">
-                <label htmlFor="file">
-                  Upload Image <FaCloudUploadAlt />
+            <div className="flex gap-4">
+              <div className="flex-1 mb-5">
+                <label
+                  htmlFor="location"
+                  className="font-semibold text-gray-300 block mb-1"
+                >
+                  Location
                 </label>
+                <input
+                  id="location"
+                  type="text"
+                  name="location"
+                  onChange={formik.handleChange}
+                  placeholder="Event Location..."
+                  value={formik.values.location}
+                  required
+                  className="w-full p-3 rounded-lg bg-[#181c2f] border border-[#23263a] text-white focus:ring-2 focus:ring-blue-500 outline-none transition"
+                />
+              </div>
+              <div className="flex-1 mb-5">
+                <label
+                  htmlFor="date"
+                  className="font-semibold text-gray-300 block mb-1"
+                >
+                  Date
+                </label>
+                <input
+                  id="date"
+                  type="date"
+                  name="date"
+                  onChange={formik.handleChange}
+                  value={formik.values.date}
+                  min={today}
+                  required
+                  className="w-full p-3 rounded-lg bg-[#181c2f] border border-[#23263a] text-white focus:ring-2 focus:ring-blue-500 outline-none transition"
+                />
+              </div>
+            </div>
+          </div>
+          {/* Right Side Upload/Preview */}
+          <div className="flex-1 min-w-[220px] max-w-[350px]">
+            <div className="mb-5">
+              <div className="font-semibold text-gray-400 mb-2">
+                Upload Image
+              </div>
+              <label
+                htmlFor="file"
+                className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#23263a] bg-[#22263a] text-gray-300 font-medium cursor-pointer hover:bg-blue-800 transition"
+              >
+                <FaCloudUploadAlt className="text-xl" />
+                Upload Image
                 <input
                   id="file"
                   type="file"
                   name="file"
+                  className="hidden"
                   onChange={handleChange}
                   accept=".jpg, .png"
                   required
                 />
+              </label>
+            </div>
+            <div>
+              <div className="font-semibold text-gray-400 mb-2">
+                Preview Image
+              </div>
+              <div className="flex items-center justify-center min-h-[120px] w-full border border-[#23263a] bg-[#181a23] rounded-lg p-2">
+                {file ? (
+                  <img
+                    src={file}
+                    alt="Event Preview"
+                    className="w-full max-w-[200px] object-contain rounded-md"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="text-gray-500 text-sm">
+                    No image selected
+                  </span>
+                )}
               </div>
             </div>
-            <div className="col-md-6 inputfield">
-              <h5>Preview Image</h5>
-              {file && (
-                <img
-                  src={file}
-                  alt="Event Preview"
-                  className="blog_Image"
-                  loading="lazy"
-                />
-              )}
-            </div>
-            <div className="col-md-12 inputFiledMiddel">
-              <button
-                type="submit"
-                className="button-62 cetificate_image_AddBtn "
-                role="button"
-              >
-                CREATE EVENT
-              </button>
-            </div>
           </div>
-        </form>
-      </div>
+        </div>
+        <div className="mt-8">
+          <button
+            type="submit"
+            className="w-full py-3 rounded-xl font-bold text-lg bg-[#22263a] text-white shadow-lg hover:bg-blue-700 transition"
+          >
+            CREATE EVENT
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
