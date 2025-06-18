@@ -1,27 +1,20 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
-import { useContext } from "react";
 
 const CreateTagNameRouter = () => {
   const { state } = useContext(AppContext);
-  // path
-  const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
-
-  // state
   const [errorMessage, setErrorMessage] = useState(null);
 
-  // use fromik method
   const formik = useFormik({
     initialValues: {
       TagName: "",
     },
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       try {
         const response = await axios.post(
           `${state.port}/api/admin/TagName/create`,
@@ -29,71 +22,72 @@ const CreateTagNameRouter = () => {
         );
         if (response.data.Status) {
           setErrorMessage(null);
-          toast.success(`Tag Create successfully`, {
+          toast.success("Tag created successfully", {
             position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
+            duration: 3000,
             theme: "light",
           });
-          const delay = 2000; // 2 seconds delay
-          const timer = setTimeout(() => {
+          setTimeout(() => {
             navigate("/dashboard/TagName");
-          }, delay);
-
-          return () => clearTimeout(timer);
+          }, 1500);
+        } else {
+          setErrorMessage(response.data.Error || "Failed to create Tag");
         }
       } catch (error) {
-        setErrorMessage(`${error}`);
+        setErrorMessage(error?.response?.data?.Error || error.message);
       }
-
       resetForm();
     },
   });
 
   return (
-    <div className="container dashboard_All">
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">Tag</h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {/* form start */}
-      {/* ++++++========part 1 =======++++++++ */}
-      <div className="from_div">
-        <form
-          onSubmit={formik.handleSubmit}
-          className="p-4"
-          encType="multipart/form-data"
-        >
-          <div className="row">
-            <div className="col-md-12 inputfield">
-              <label htmlFor="question">Tag Name</label>
-              <input
-                className="text_input_field"
-                type="text"
-                name="TagName"
-                onChange={formik.handleChange}
-                placeholder="Write Tag Name"
-                value={formik.values.TagName}
-                required
-              />
-            </div>
-
-            <div className="col-md-12 inputFiledMiddel">
-              <button
-                type="submit"
-                className="button-62 cetificate_image_AddBtn "
-                role="button"
-              >
-                ADD Tag
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
+    <div className="max-w-lg mx-auto bg-[#181c2f] rounded-2xl p-8 shadow-2xl border border-[#23263a] mt-10">
+      <h2 className="text-3xl font-bold text-white mb-2">
+        <span className="bg-gradient-to-r from-blue-400 via-blue-600 to-pink-500 bg-clip-text text-transparent">
+          Add New Tag
+        </span>
+      </h2>
+      <p className="text-gray-400 text-base mb-4">
+        Create a new tag for your content organization.
+      </p>
+      {errorMessage && (
+        <div className="mb-3 text-red-500 bg-red-100 rounded px-3 py-2 text-sm">
+          {errorMessage}
+        </div>
+      )}
+      <form
+        onSubmit={formik.handleSubmit}
+        encType="multipart/form-data"
+        className="space-y-6"
+      >
+        <div>
+          <label
+            htmlFor="TagName"
+            className="block text-gray-200 font-semibold mb-1"
+          >
+            Tag Name
+          </label>
+          <input
+            id="TagName"
+            className="w-full bg-[#23263a] border border-[#283250]/60 rounded-lg px-4 py-2.5 text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            type="text"
+            name="TagName"
+            onChange={formik.handleChange}
+            placeholder="Write Tag Name"
+            value={formik.values.TagName}
+            required
+            autoComplete="off"
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-600 to-pink-500 hover:from-blue-700 hover:to-pink-600 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-200 text-base"
+          >
+            Add Tag
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

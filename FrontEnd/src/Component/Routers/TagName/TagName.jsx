@@ -1,285 +1,236 @@
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { HiPlus } from "react-icons/hi";
-import { useNavigate } from "react-router";
-import toast from "react-hot-toast";
+import axios from "axios";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { Link } from "react-router-dom";
 import {
-  Dialog,
+  Button,
+  IconButton,
+  Tooltip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Box,
+  CircularProgress,
   useTheme,
   useMediaQuery,
-  DialogContentText,
-  DialogTitle,
-  Button,
-  DialogActions,
-  DialogContent,
 } from "@mui/material";
-import { BsExclamationCircle } from "react-icons/bs";
-
-import { MdOutlineArrowDownward } from "react-icons/md";
-import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import { HiPlus } from "react-icons/hi";
+import { MdEdit, MdDelete } from "react-icons/md";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 const TagNameServerRouter = () => {
   const { state } = useContext(AppContext);
-  // path
-  const isHomePageRoute = location.pathname;
-  const navigate = useNavigate();
-  // state
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [TagName, setTagName] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [dataDeleteId, setDataDeleteId] = useState(null);
-  const [TagNameToDelete, setTagNameToDelete] = useState();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [tagNames, setTagNames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState();
 
-  // fetch data
+  // Fetch Tag Names
   useEffect(() => {
-    axios
-      .get(`${state.port}/api/admin/TagName`)
-      .then((result) => {
-        if (result.data.Status) {
-          setTagName(result.data.Result);
-        } else {
-          setErrorMessage(result.data.Error);
-        }
-      })
-      .catch((err) => console.log(err));
-  }, []);
+    let ignore = false;
+    async function fetchTagNames() {
+      setLoading(true);
+      setError(undefined);
+      try {
+        const res = await axios.get(`${state.port}/api/admin/TagName`);
+        if (!res.data.Status)
+          throw new Error(res.data.Error || "Failed to fetch Tag Names");
+        if (!ignore) setTagNames(res.data.Result);
+      } catch (err) {
+        if (!ignore) setError(err.message);
+      }
+      if (!ignore) setLoading(false);
+    }
+    fetchTagNames();
+    return () => {
+      ignore = true;
+    };
+  }, [state.port]);
 
-  // matrial dialog box
-  const themes = useTheme();
-  const fullScreen = useMediaQuery(themes.breakpoints.down("md"));
-
-  // diolog box open and cloge function
-  const handleClickOpen = (id) => {
-    setOpen(true);
-    setDataDeleteId(id);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  // data delete and cancel function
-  const handleCancel = () => {
-    // console.log(id);
-    toast.error(`Cancel`, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
+  // Delete Tag Name
+  const handleDelete = async (uuid) => {
+    console.log("got",uuid);
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this Tag Name?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#E16565",
+      cancelButtonText: "Cancel",
+      background: "#101829",
+      color: "#fff",
     });
-    setOpen(false);
-    // setDataDeleteCancel(true)
-  };
+    if (!confirm.isConfirmed) return;
 
-  const handleDelete = () => {
-    console.log(dataDeleteId);
-    axios
-      .delete(`${state.port}/api/admin/TagName/delete/` + dataDeleteId)
-      .then((result) => {
-        if (result.data.Status) {
-          navigate("/dashboard/TagName");
-          setTagNameToDelete(`deleted successfully`);
-          toast.success(`deleted successfully`, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        } else {
-          setTagNameToDelete(result.data.Error);
-        }
-      })
-      .catch((err) => console.error(err));
-
-    setOpen(false);
+    try {
+      const res = await axios.delete(
+        `${state.port}/api/admin/TagName/delete/${uuid}`
+      );
+      console.log(res);
+      if (!res.data.Status)
+        throw new Error(res.data.Error || "Failed to delete Tag Name");
+      setTagNames((prev) => prev.filter((item) => item.uuid !== uuid));
+      await Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Tag Name deleted successfully.",
+        timer: 1300,
+        showConfirmButton: false,
+        background: "#23263a",
+        color: "#fff",
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err?.message || "Deletion failed",
+        background: "#23263a",
+        color: "#fff",
+      });
+    }
   };
 
   return (
-    <div className="conatiner dashboard_All">
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All TagName</h1>
-      <hr />
-      <div>
-        <div>
-          <Link to="/dashboard/TagName/create">
-            <button className="button-62" role="button">
-              Create TagName
-              <span>
-                <HiPlus />
-              </span>
-            </button>
-          </Link>
-          <p className="success-message">{TagNameToDelete}</p>
-          <p>{errorMessage}</p>
-        </div>
-        {/* ++++++========part 2 =======++++++++ */}
-        {/* table start */}
-        <div>
-          <div>
-            <table id="customers" className="">
-              <tr>
-                <th>SL</th>
-                <th>TagName</th>
-                <th>ACTIONS</th>
-              </tr>
-
-              {TagName.length > 0 &&
-                TagName.map((fq, index) => (
-                  <tr key={fq.uuid}>
-                    <td>{index + 1}</td>
-                    <td>{fq.name}</td>
-                    <td>
-                      <div className="dropdown">
-                        <button className="dropbtn">
-                          Select <MdOutlineArrowDownward />
-                        </button>
-                        <div className="dropdown-content">
-                          <Link
-                            to={`/dashboard/TagName/edit/${fq.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> Edit</span>
-                          </Link>
-                          <span
-                            onClick={() => handleClickOpen(fq.uuid)}
-                            className="actionBtn"
-                          >
-                            {" "}
-                            DELETE
-                          </span>
-                        </div>
-                      </div>
-                      <Dialog
-                        fullScreen={fullScreen}
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="responsive-dialog-title"
-                      >
-                        <DialogTitle
-                          id="responsive-dialog-title "
-                          className="icon_div"
+    <Box
+      sx={{
+        px: isMobile ? 1 : 2,
+        py: 2,
+        color: "#fff",
+      }}
+    >
+      <h1 className="text-2xl md:text-3xl mb-2 font-bold">All Tag Names</h1>
+      <hr style={{ borderColor: "#222", opacity: 0.2 }} />
+      {error && (
+        <Box sx={{ my: 1, color: "error.main" }}>
+          <Typography variant="body2">{error}</Typography>
+        </Box>
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 1.5,
+        }}
+      >
+        <Link to="/dashboard/TagName/create">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<HiPlus />}
+            sx={{
+              borderRadius: 2,
+              fontWeight: 600,
+              fontSize: 14,
+              px: 2,
+              py: 0.8,
+              boxShadow: 1,
+              minWidth: 0,
+            }}
+          >
+            Create Tag Name
+          </Button>
+        </Link>
+      </Box>
+      <Paper
+        elevation={2}
+        sx={{
+          borderRadius: 2,
+          overflow: "hidden",
+          background: "transparent",
+          color: "#fff",
+        }}
+      >
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ background: "rgba(255,255,255,0.03)" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
+                >
+                  SL
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
+                >
+                  Tag Name
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, color: "#fff", textAlign: "center" }}
+                >
+                  ACTIONS
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={3} align="center" sx={{ py: 3 }}>
+                    <CircularProgress color="inherit" size={22} />
+                  </TableCell>
+                </TableRow>
+              ) : tagNames && tagNames.length > 0 ? (
+                tagNames.map((item, index) => (
+                  <TableRow key={item.uuid} hover sx={{ color: "#fff" }}>
+                    <TableCell sx={{ color: "#fff" }}>{index + 1}</TableCell>
+                    <TableCell sx={{ color: "#fff" }}>{item.name}</TableCell>
+                    <TableCell align="center" sx={{ color: "#fff" }}>
+                      <Tooltip title="Edit" arrow>
+                        <IconButton
+                          component={Link}
+                          to={`/dashboard/TagName/edit/${item.uuid}`}
+                          color="primary"
+                          sx={{ mx: 0.5, p: 0.75 }}
                         >
-                          <div style={{ textAlign: "center" }}>
-                            <BsExclamationCircle className="icon" />
-                            <h3 style={{ paddingTop: "20px" }}>
-                              Are You sure?{" "}
-                            </h3>
-                          </div>
-                        </DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>
-                            Are you sure delete this contact Info
-                          </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button
-                            autoFocus
-                            onClick={handleCancel}
-                            style={{ color: "#E16565" }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button onClick={handleDelete} autoFocus>
-                            <Link
-                              to={`/dashboard/TagName/delete`}
-                              style={{
-                                color: "#E16565",
-                                textDecoration: "none",
-                              }}
-                            >
-                              Yes,delete it!
-                            </Link>
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </td>
-                  </tr>
-                ))}
-            </table>
-          </div>
-          {/* table */}
-        </div>
-        {/* <div>
-          <div className="grid_container">
-            {TagName &&
-              TagName.map((fq) => (
-                <div key={fq.uuid} className="grid_container_div">
-                  <p>
-                    <span style={{ color: "#E16565" }}>Title: </span>{" "}
-                    {fq.question}
-                  </p>
-                  <p>
-                    <span style={{ color: "#E16565" }}> Description: </span>{" "}
-                    {fq.answer}
-                  </p>
-                  <br />
-                  <Link to={`/dashboard/TagName/edit/${fq.uuid}`}>
-                    <button
-                      className="button-62 cetificate_image_deleteBtn"
-                      role="button"
-                    >
-                      Edit
-                    </button>
-                  </Link>
-
-                  <button
-                    className="button-62 cetificate_image_deleteBtn"
-                    role="button"
-                    onClick={() => handleClickOpen(fq.uuid)}
-                  >
-                    Delete
-                  </button>
-                  <Dialog
-                    fullScreen={fullScreen}
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="responsive-dialog-title"
-                  >
-                    <DialogTitle
-                      id="responsive-dialog-title "
-                      className="icon_div"
-                    >
-                      <div style={{ textAlign: "center" }}>
-                        <BsExclamationCircle className="icon" />
-                        <h3 style={{ paddingTop: "20px" }}>Are You sure? </h3>
-                      </div>
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>
-                        Are you sure delete the &quot;Certificate&quot; Image
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        autoFocus
-                        onClick={handleCancel}
-                        style={{ color: "#E16565" }}
-                      >
-                        Cancel
-                      </Button>
-                      <Button onClick={handleDelete} autoFocus>
-                        <Link
-                          to="/dashboard/TagName/delete"
-                          style={{ color: "#E16565", textDecoration: "none" }}
+                          <MdEdit size={18} />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete" arrow>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDelete(item.uuid)}
+                          sx={{ mx: 1 }}
                         >
-                          Yes,delete it!
-                        </Link>
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
-                </div>
-              ))}
-          </div>
-        </div> */}
-      </div>
-    </div>
+                          <MdDelete />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3} align="center" sx={{ py: 2 }}>
+                    <Typography variant="body2" sx={{ color: "#fff" }}>
+                      No Tag Names found.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </Box>
   );
 };
 
