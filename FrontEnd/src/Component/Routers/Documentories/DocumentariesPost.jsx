@@ -86,14 +86,13 @@ export default function DocumentariesPost() {
 
   return (
     <div className="p-3">
-      <div className="mb-10">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-2">
+      <div className="mb-5">
+        <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight mb-2">
           Edit Documentaries Hero
         </h2>
-        <p className="text-gray-400 text-base md:text-lg font-medium mb-1">
+        <p className="text-gray-400 font-medium mb-1">
           Update the main banner section of Documentaries.
         </p>
-        <div className="h-[3px] w-16 bg-blue-600 rounded-full mb-4" />
       </div>
       {/* Modern card style form */}
       <form
@@ -188,7 +187,7 @@ export default function DocumentariesPost() {
         <div className="flex justify-end gap-4">
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-xl shadow transition-all duration-200 text-base"
+            className="bg-[#1976d2] cursor-pointer hover:bg-[#1766b6] text-white font-bold py-2 px-8 rounded-lg shadow transition-all duration-200 text-base"
           >
             Save
           </button>
@@ -199,8 +198,8 @@ export default function DocumentariesPost() {
       </div>
       <div className="flex justify-center mt-10">
         <Link
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition-all duration-200 text-base"
           to="/dashboard/documentaries/featured"
+          className="bg-[#1976d2] cursor-pointer hover:bg-[#1766b6] text-white font-bold py-2 px-8 rounded-lg shadow transition-all duration-200 text-base"
         >
           Update Featured This Week
         </Link>

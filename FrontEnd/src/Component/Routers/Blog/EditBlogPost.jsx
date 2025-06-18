@@ -111,10 +111,7 @@ const EditBlogPost = () => {
             progress: undefined,
             theme: "light",
           });
-
-          setTimeout(() => {
-            navigate(`/dashboard/blogpost`);
-          }, 1500);
+          navigate(-1);
         } else {
           toast.error(response.data.Error || "Internal Server Error");
         }

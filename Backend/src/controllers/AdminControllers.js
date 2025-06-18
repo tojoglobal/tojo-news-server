@@ -94,9 +94,9 @@ import {
 // Blog Post
 const createBlogPost = async (req, res) => {
   try {
-    // Generate the current date and time
     const currentDate = new Date();
     const imageFile = req.file.filename;
+
     const values = [
       uuidv4(),
       req.body.title,
@@ -110,18 +110,41 @@ const createBlogPost = async (req, res) => {
     ];
 
     const [result] = await db.query(createBlogPostQuery, [values]);
-    return res.json({ Status: true, Result: result });
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Result: result,
+        Message: "Blog post created successfully",
+      });
+    } else {
+      return res.status(500).json({
+        Status: false,
+        Error: "Failed to create blog post",
+      });
+    }
   } catch (error) {
-    return res.json({ Status: false, Error: "Query Error" });
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
 const allBlogPost = async (req, res) => {
   try {
-    const [data] = await db.query(allBlogPostQuery); 
-    return res.json({ Status: true, Result: data });
-  } catch (err) {
-    return res.json({ Status: false, Error: "Query Error" });
+    const [data] = await db.query(allBlogPostQuery);
+    return res.status(200).json({
+      Status: true,
+      Result: data,
+    });
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
@@ -130,6 +153,7 @@ const editBlogPost = async (req, res) => {
     const currentDate = new Date();
     const id = req.params.id;
     const newImage = req.file ? req.file.filename : req.body.file;
+
     const values = [
       req.body.title,
       req.body.subTitle,
@@ -142,11 +166,26 @@ const editBlogPost = async (req, res) => {
       id,
     ];
 
-    const [data] = await db.query(editBlogPostQuery, values);
+    const [result] = await db.query(editBlogPostQuery, values);
 
-    return res.json({ Status: true, Result: data });
-  } catch (err) {
-    return res.json({ Status: false, Error: err.message });
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Result: result,
+        Message: "Blog post updated successfully",
+      });
+    } else {
+      return res.status(404).json({
+        Status: false,
+        Error: "Blog post not found or no changes made",
+      });
+    }
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
@@ -154,9 +193,16 @@ const editBlogPostId = async (req, res) => {
   try {
     const id = req.params.id;
     const [data] = await db.query(editBlogPostIdQuery, [id]);
-    return res.json({ Status: true, Result: data });
-  } catch (err) {
-    return res.json({ Status: false, Error: err.message });
+    return res.status(200).json({
+      Status: true,
+      Result: data,
+    });
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
@@ -164,19 +210,31 @@ const getBlogPostById = async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) {
-      return res
-        .status(400)
-        .json({ Status: false, Error: "Invalid ID format" });
+      return res.status(400).json({
+        Status: false,
+        Error: "Invalid ID format",
+      });
     }
+
     const [data] = await db.query(getBlogPostByIdQuery, [id]);
+
     if (data.length === 0) {
-      return res
-        .status(404)
-        .json({ Status: false, Error: "Blog post not found" });
+      return res.status(404).json({
+        Status: false,
+        Error: "Blog post not found",
+      });
     }
-    return res.json({ Status: true, Result: data });
-  } catch (err) {
-    return res.status(500).json({ Status: false, Error: err.message });
+
+    return res.status(200).json({
+      Status: true,
+      Result: data,
+    });
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
@@ -189,46 +247,58 @@ const BlogPostToDelete = async (req, res) => {
     const [rows] = await db.query(selectQuery, [id]);
 
     if (!rows || rows.length === 0) {
-      return res.status(404).json({ Status: false, Error: "Record not found" });
+      return res.status(404).json({
+        Status: false,
+        Error: "Blog post not found",
+      });
     }
 
-    const filename = rows[0].thumble; // Correct property
-    // Determine the folder and file extension
+    const filename = rows[0].thumble;
     const fileExtension = path.extname(filename).toLowerCase();
+
     let folder = "public/Images";
     if (![".jpg", ".jpeg", ".png"].includes(fileExtension)) {
-      return res
-        .status(400)
-        .json({ Status: false, Error: "Invalid file type" });
+      return res.status(400).json({
+        Status: false,
+        Error: "Invalid file type",
+      });
     }
+
     const filepath = path.join(folder, filename);
 
-    // Delete the file asynchronously, but ignore if file not found
     try {
       await fs.promises.unlink(filepath);
-    } catch (err) {
-      if (err.code !== "ENOENT") {
-        // Only error if not "file not found"
-        console.error("Error deleting file:", err);
-        return res
-          .status(500)
-          .json({ Status: false, Error: "File Deletion Error" });
+    } catch (error) {
+      if (error.code !== "ENOENT") {
+        console.error("Error deleting file:", error);
+        return res.status(500).json({
+          Status: false,
+          Error: "File deletion error",
+        });
       }
-      // else: file already gone, that's fine
     }
 
-    // Delete the blog post entry from the database
     const deleteQuery = "DELETE FROM blognews WHERE uuid = ?";
     const [deleteResult] = await db.query(deleteQuery, [id]);
 
-    res.json({
-      Status: true,
-      message: "File deleted and data removed.",
-      Result: deleteResult,
+    if (deleteResult.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Message: "Blog post deleted successfully",
+        Result: deleteResult,
+      });
+    } else {
+      return res.status(404).json({
+        Status: false,
+        Error: "Blog post not found",
+      });
+    }
+  } catch (error) {
+    console.error("Delete BlogPost Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
     });
-  } catch (err) {
-    console.error("Delete BlogPost Error:", err);
-    return res.status(500).json({ Status: false, Error: err.message });
   }
 };
 

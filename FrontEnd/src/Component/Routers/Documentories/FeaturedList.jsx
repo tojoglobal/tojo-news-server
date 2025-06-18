@@ -120,10 +120,10 @@ export default function FeaturedList() {
     <section className="mt-12 mb-10">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
         <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
-          <FaYoutube className="text-[#ff3c3c] text-3xl drop-shadow-lg" />
-          <span className="bg-gradient-to-r from-blue-400 via-blue-600 to-pink-500 bg-clip-text text-transparent">
+          <span className="text-xl md:text-2xl font-bold text-white tracking-tight mb-1">
             Featured News & Continue Watching
           </span>
+          <FaYoutube className="text-[#ff3c3c] text-3xl drop-shadow-lg" />
         </h2>
       </div>
       <p className="text-sm text-gray-400 italic mt-1 mb-6">
@@ -183,7 +183,7 @@ export default function FeaturedList() {
         <div className="flex gap-4 mt-7">
           <button
             type="submit"
-            className="flex-1 cursor-pointer bg-gradient-to-r from-blue-600 to-pink-400 hover:from-blue-700 hover:to-pink-500 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-150 text-base tracking-wide"
+            className="flex-1 bg-[#1976d2] cursor-pointer hover:bg-[#1766b6] text-white font-bold py-2 px-8 rounded-lg shadow transition-all duration-200 text-base"
           >
             {mode === "add" ? "Add Card" : "Update Card"}
           </button>
@@ -206,7 +206,7 @@ export default function FeaturedList() {
         {cards?.map((card) => (
           <div
             key={card.id}
-            className="rounded-md bg-gradient-to-br from-[#222643] via-[#191c33] to-[#23263a] border border-[#273050]/50 shadow-xl hover:shadow-2xl transition-all p-4 flex flex-col items-center group relative"
+            className="border border-[#273050]/50 rounded-md transition-all p-3 flex flex-col items-center group relative"
           >
             {card.youtube_url && (
               <a
@@ -228,14 +228,14 @@ export default function FeaturedList() {
             <div className="flex justify-center gap-2 mt-1">
               <button
                 onClick={() => handleEdit(card)}
-                className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white cursor-pointer px-4 py-1.5 rounded-lg font-semibold shadow transition"
+                className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white cursor-pointer px-3 py-1.5 rounded-lg font-semibold shadow transition"
                 title="Edit"
               >
                 <FaEdit />
               </button>
               <button
                 onClick={() => handleDelete(card.id)}
-                className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white cursor-pointer px-4 py-1.5 rounded-lg font-semibold shadow transition"
+                className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white cursor-pointer px-3 py-1.5 rounded-lg font-semibold shadow transition"
                 title="Delete"
               >
                 <FaTrash />

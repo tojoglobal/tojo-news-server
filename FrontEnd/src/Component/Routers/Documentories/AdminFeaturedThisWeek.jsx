@@ -104,11 +104,11 @@ export default function AdminFeaturedThisWeek() {
   return (
     <section className="w-full p-3">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-10">
-        <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3 tracking-tight">
-          <FaYoutube className="text-[#ff0000] text-3xl drop-shadow-lg" />
-          <span className="bg-gradient-to-r from-blue-400 via-blue-600 to-pink-500 bg-clip-text text-transparent">
+        <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
+          <span className="text-xl md:text-2xl font-bold text-white tracking-tight mb-1">
             Featured This Week
           </span>
+          <FaYoutube className="text-[#ff0000] text-3xl drop-shadow-lg" />
         </h2>
         <span className="text-sm text-gray-400 italic mt-1 md:mt-0">
           Add or manage this week&apos;s top YouTube news!
@@ -156,7 +156,7 @@ export default function AdminFeaturedThisWeek() {
         <div className="flex gap-4 mt-7">
           <button
             type="submit"
-            className="flex-1 cursor-pointer bg-gradient-to-r from-blue-600 to-pink-400 hover:from-blue-700 hover:to-pink-500 text-white font-bold py-2.5 rounded-xl shadow-lg transition-all duration-150 text-base tracking-wide"
+            className="flex-1 bg-[#1976d2] cursor-pointer hover:bg-[#1766b6] text-white font-bold py-2 px-8 rounded-lg shadow transition-all duration-200 text-base"
           >
             {mode === "add" ? "Add Video" : "Update Video"}
           </button>
@@ -175,7 +175,7 @@ export default function AdminFeaturedThisWeek() {
           )}
         </div>
       </form>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-7">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {isLoading ? (
           <div className="col-span-full text-center text-gray-300">
             Loading...
@@ -188,7 +188,7 @@ export default function AdminFeaturedThisWeek() {
           news.map((item) => (
             <div
               key={item.id}
-              className="rounded-2xl bg-gradient-to-br from-[#222643] via-[#191c33] to-[#23263a] border border-[#273050]/50 shadow-xl hover:shadow-2xl transition-all p-4 flex flex-col items-center group relative"
+              className="rounded-lg bg-gradient-to-br from-[#222643] via-[#191c33] to-[#23263a] border border-[#273050]/50 shadow-xl hover:shadow-2xl transition-all p-4 flex flex-col items-center group relative"
             >
               <a
                 href={item.youtube_url}
@@ -201,11 +201,11 @@ export default function AdminFeaturedThisWeek() {
                     item.youtube_url
                   )}/hqdefault.jpg`}
                   alt={item.title}
-                  className="rounded-lg mx-auto mb-3 w-full border border-[#283250]/40 shadow-lg group-hover:scale-105 transition-transform"
+                  className="rounded-md mx-auto mb-3 w-full border border-[#283250]/40 shadow-lg group-hover:scale-105 transition-transform"
                   style={{ aspectRatio: "16/9", objectFit: "cover" }}
                 />
               </a>
-              <h3 className="font-semibold text-lg text-white mb-2 text-center w-full truncate">
+              <h3 className="font-semibold text-white mb-2 capitalize w-full">
                 {item.title}
               </h3>
               <div className="flex justify-center gap-2 mt-1">

@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import Pagination from "../../Pagination/Pagination";
+import { Button } from "@mui/material";
 
 const fetchBlogPosts = async (port) => {
   const response = await axios.get(`${port}/api/admin/blogpost`);
@@ -91,9 +92,22 @@ const BlogPost = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
         <h1 className="text-2xl md:text-3xl font-bold">All Blog Posts</h1>
         <Link to="/dashboard/blogpost/create">
-          <button className="inline-flex cursor-pointer items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition">
-            Create News Post <HiPlus className="text-lg" />
-          </button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<HiPlus />}
+            sx={{
+              borderRadius: 2,
+              fontWeight: 600,
+              fontSize: 14,
+              px: 2,
+              py: 0.8,
+              boxShadow: 1,
+              minWidth: 0,
+            }}
+          >
+            Create News Post
+          </Button>
         </Link>
       </div>
       <hr className="border-gray-700 mb-6" />

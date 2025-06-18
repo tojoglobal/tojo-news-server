@@ -86,8 +86,8 @@ const ShowBlogPost = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#101829] flex flex-col items-center px-2 md:px-0 py-6 text-white transition-colors duration-300">
-      <div className="w-full max-w-3xl bg-[#172133] rounded-xl shadow-lg p-8">
+    <div className="p-3">
+      <div className="w-full max-w-4xl mx-auto bg-[#172133] rounded-xl shadow-lg p-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
           <h1 className="text-3xl font-bold">Blog Info</h1>
           <div className="flex gap-3">
@@ -112,7 +112,7 @@ const ShowBlogPost = () => {
                 <td className="py-2 font-semibold w-40">Blog Image</td>
                 <td className="py-2">
                   <img
-                    className="h-28 w-28 object-cover rounded-lg border border-gray-700"
+                    className="h-40 object-cover rounded-lg border border-gray-700"
                     src={`${state.port}/Images/${blogpost.Image}`}
                     alt={blogpost.Image}
                   />
@@ -156,7 +156,7 @@ const ShowBlogPost = () => {
                         }}
                       ></div>
                       <button
-                        className="mt-3 px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition"
+                        className="mt-3 cursor-pointer px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition"
                         onClick={() => togglePopup(blogpost.uuid)}
                       >
                         Close
