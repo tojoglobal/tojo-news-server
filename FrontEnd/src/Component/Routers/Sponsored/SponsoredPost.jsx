@@ -132,20 +132,19 @@ const SponsoredPost = () => {
 
   return (
     <Box
-      className="container dashboard_All"
       sx={{
-        px: isMobile ? 1 : 3,
-        py: 3,
+        px: isMobile ? 1 : 2,
+        py: 2,
         color: "#fff",
       }}
     >
-      <Typography variant="h3" className="dashboard_name" gutterBottom>
+      <Typography variant="h5" className="font-bold mb-2" gutterBottom>
         All Sponsored Posts
       </Typography>
       <hr style={{ borderColor: "#222", opacity: 0.2 }} />
       {error && (
-        <Box sx={{ my: 2, color: "error.main" }}>
-          <Typography variant="body1">{error.message}</Typography>
+        <Box sx={{ my: 1, color: "error.main" }}>
+          <Typography variant="body2">{error.message}</Typography>
         </Box>
       )}
       <Box
@@ -153,7 +152,7 @@ const SponsoredPost = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          mb: 2,
+          mb: 1.5,
         }}
       >
         <Link to="/dashboard/Sponsored/create">
@@ -164,10 +163,11 @@ const SponsoredPost = () => {
             sx={{
               borderRadius: 2,
               fontWeight: 600,
-              fontSize: 16,
-              px: 3,
-              py: 1.5,
-              boxShadow: 2,
+              fontSize: 14,
+              px: 2,
+              py: 0.8,
+              boxShadow: 1,
+              minWidth: 0,
             }}
           >
             Create Sponsored Post
@@ -175,35 +175,82 @@ const SponsoredPost = () => {
         </Link>
       </Box>
       <Paper
-        elevation={3}
+        elevation={2}
         sx={{
-          borderRadius: 3,
+          borderRadius: 2,
           overflow: "hidden",
           background: "transparent",
           color: "#fff",
         }}
       >
         <TableContainer>
-          <Table>
+          <Table size="small">
             <TableHead>
-              <TableRow sx={{ background: "rgba(255,255,255,0.05)" }}>
-                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+              <TableRow sx={{ background: "rgba(255,255,255,0.03)" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
+                >
                   SL
                 </TableCell>
-                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
+                >
                   TITLE
                 </TableCell>
-                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
+                >
                   START DATE
                 </TableCell>
-                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
+                >
                   END DATE
                 </TableCell>
-                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
+                >
                   IMAGE
                 </TableCell>
                 <TableCell
-                  sx={{ fontWeight: 700, color: "#fff", textAlign: "center" }}
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    textAlign: "center",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
                 >
                   ACTIONS
                 </TableCell>
@@ -212,24 +259,34 @@ const SponsoredPost = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    <CircularProgress color="inherit" />
+                  <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
+                    <CircularProgress color="inherit" size={22} />
                   </TableCell>
                 </TableRow>
               ) : paginatedData.length > 0 ? (
                 paginatedData.map((post, index) => (
                   <TableRow key={post.id} hover sx={{ color: "#fff" }}>
-                    <TableCell sx={{ color: "#fff" }}>
+                    <TableCell
+                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                    >
                       {startIndex + index + 1}
                     </TableCell>
-                    <TableCell sx={{ color: "#fff" }}>{post.title}</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>
+                    <TableCell
+                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                    >
+                      {post.title}
+                    </TableCell>
+                    <TableCell
+                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                    >
                       {formatDate(post.start_date)}
                     </TableCell>
-                    <TableCell sx={{ color: "#fff" }}>
+                    <TableCell
+                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                    >
                       {formatDate(post.end_date)}
                     </TableCell>
-                    <TableCell sx={{ color: "#fff" }}>
+                    <TableCell sx={{ color: "#fff", py: 1, px: 1.5 }}>
                       <img
                         className="Team_member_Image"
                         src={
@@ -239,22 +296,25 @@ const SponsoredPost = () => {
                         }
                         alt={post.title}
                         style={{
-                          width: 60,
-                          height: 40,
+                          width: 50,
+                          height: 28,
                           objectFit: "cover",
-                          borderRadius: 8,
+                          borderRadius: 6,
                         }}
                       />
                     </TableCell>
-                    <TableCell align="center" sx={{ color: "#fff" }}>
+                    <TableCell
+                      align="center"
+                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                    >
                       <Tooltip title="Edit" arrow>
                         <IconButton
                           component={Link}
                           to={`/dashboard/Sponsored/edit/${post.id}`}
                           color="primary"
-                          sx={{ mx: 0.5 }}
+                          sx={{ mx: 0.5, p: 0.75 }}
                         >
-                          <MdEdit />
+                          <MdEdit size={18} />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Show" arrow>
@@ -262,18 +322,18 @@ const SponsoredPost = () => {
                           component={Link}
                           to={`/dashboard/Sponsored/${post.id}`}
                           color="info"
-                          sx={{ mx: 0.5 }}
+                          sx={{ mx: 0.5, p: 0.75 }}
                         >
-                          <MdVisibility />
+                          <MdVisibility size={18} />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete" arrow>
                         <IconButton
                           color="error"
                           onClick={() => handleDelete(post.id)}
-                          sx={{ mx: 0.5 }}
+                          sx={{ mx: 0.5, p: 0.75 }}
                         >
-                          <MdDelete />
+                          <MdDelete size={18} />
                         </IconButton>
                       </Tooltip>
                     </TableCell>
@@ -281,8 +341,8 @@ const SponsoredPost = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    <Typography variant="body1" sx={{ color: "#fff" }}>
+                  <TableCell colSpan={6} align="center" sx={{ py: 2 }}>
+                    <Typography variant="body2" sx={{ color: "#fff" }}>
                       No sponsored posts found.
                     </Typography>
                   </TableCell>

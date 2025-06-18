@@ -14,50 +14,78 @@ const MainDashbord = () => {
   const [totalNews, setTotalNews] = useState(0);
   const [totalTeamMember, setTotalTeamMember] = useState(0);
   const [totalContact, setTotalContact] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    clinetCount();
-    lawyerCount();
-    contactCount();
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        await Promise.all([clinetCount(), lawyerCount(), contactCount()]);
+      } catch (error) {
+        setErrorMessage(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
-  const clinetCount = () => {
-    axios.get(`${state.port}/api/admin/blogpost`).then((result) => {
-      if (result.data.Status) setTotalNews(result.data?.Result.length);
-      else setErrorMessage(result.data.Error);
-    });
+  const clinetCount = async () => {
+    const result = await axios.get(`${state.port}/api/admin/blogpost`);
+    if (result.data.Status) setTotalNews(result.data?.Result.length);
+    else setErrorMessage(result.data.Error);
   };
 
-  const lawyerCount = () => {
-    axios.get(`${state.port}/api/admin/user-count`).then((result) => {
-      if (result.data.Status) setTotalTeamMember(result.data?.totalUsers);
-      else setErrorMessage(result.data.Error);
-    });
+  const lawyerCount = async () => {
+    const result = await axios.get(`${state.port}/api/admin/user-count`);
+    if (result.data.Status) setTotalTeamMember(result.data?.totalUsers);
+    else setErrorMessage(result.data.Error);
   };
 
-  const contactCount = () => {
-    axios.get(`${state.port}/api/admin/contact-count`).then((result) => {
-      if (result.data.Status)
-        setTotalContact(result.data.Result[0].totalContact);
-      else setErrorMessage(result.data.Error);
-    });
+  const contactCount = async () => {
+    const result = await axios.get(`${state.port}/api/admin/contact-count`);
+    if (result.data.Status) setTotalContact(result.data.Result[0].totalContact);
+    else setErrorMessage(result.data.Error);
   };
 
   return (
-    <div className="w-full h-full flex flex-col gap-8">
-      <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 tracking-tight">
-        Welcome to <span className="text-blue-400">Dashboard</span>
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="w-full h-full flex flex-col gap-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-white">
+          Welcome to <span className="text-blue-400">Dashboard</span>
+        </h1>
+        {/* {errorMessage && (
+          <div className="text-red-400 text-sm">{errorMessage}</div>
+        )} */}
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link to="/dashboard/client" className="hover:no-underline">
-          <DashboardCard title="News" count={totalNews} />
+          <DashboardCard
+            title="News"
+            count={loading ? "..." : totalNews}
+            icon="📰"
+          />
         </Link>
         <Link to="/dashboard/teamMember" className="hover:no-underline">
-          <DashboardCard title="Team Member" count={totalTeamMember} />
+          <DashboardCard
+            title="Team Members"
+            count={loading ? "..." : totalTeamMember}
+            icon="👥"
+          />
+        </Link>
+        <Link to="/dashboard/contact" className="hover:no-underline">
+          <DashboardCard
+            title="Contacts"
+            count={loading ? "..." : totalContact}
+            icon="✉️"
+          />
         </Link>
       </div>
-      {/* clinet message & appointment card */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+
+      {/* Recent Activity Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
         <ClinetMessageCard />
         <AppointMentCard />
       </div>

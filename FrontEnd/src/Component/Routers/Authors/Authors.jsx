@@ -88,16 +88,16 @@ const Author = () => {
   return (
     <Box
       sx={{
-        px: isMobile ? 1 : 3,
-        py: 3,
+        px: isMobile ? 1 : 2,
+        py: 2,
         color: "#fff",
       }}
     >
-      <h1 className="text-2xl md:text-4xl mb-3">Authors</h1>
+      <h1 className="text-xl md:text-2xl mb-2 font-bold">Authors</h1>
       <hr style={{ borderColor: "#222", opacity: 0.2 }} />
       {error && (
-        <Box sx={{ my: 2, color: "error.main" }}>
-          <Typography variant="body1">{error.message}</Typography>
+        <Box sx={{ my: 1, color: "error.main" }}>
+          <Typography variant="body2">{error.message}</Typography>
         </Box>
       )}
       <Box
@@ -105,7 +105,7 @@ const Author = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          mb: 2,
+          mb: 1.5,
         }}
       >
         <Link to="/dashboard/author/create">
@@ -116,10 +116,11 @@ const Author = () => {
             sx={{
               borderRadius: 2,
               fontWeight: 600,
-              fontSize: 16,
-              px: 3,
-              py: 1.5,
-              boxShadow: 2,
+              fontSize: 14,
+              px: 2,
+              py: 0.8,
+              boxShadow: 1,
+              minWidth: 0,
             }}
           >
             New Author
@@ -127,22 +128,38 @@ const Author = () => {
         </Link>
       </Box>
       <Paper
-        elevation={3}
+        elevation={2}
         sx={{
-          borderRadius: 3,
+          borderRadius: 2,
           overflow: "hidden",
           background: "transparent",
           color: "#fff",
         }}
       >
         <TableContainer>
-          <Table>
+          <Table size="small">
             <TableHead>
-              <TableRow sx={{ background: "rgba(255,255,255,0.05)" }}>
-                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+              <TableRow sx={{ background: "rgba(255,255,255,0.03)" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
+                >
                   SL
                 </TableCell>
-                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    py: 1,
+                    px: 1.5,
+                    fontSize: 13,
+                  }}
+                >
                   Author NAME
                 </TableCell>
                 <TableCell
@@ -155,8 +172,8 @@ const Author = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={3} align="center">
-                    <CircularProgress color="inherit" />
+                  <TableCell colSpan={3} align="center" sx={{ py: 3 }}>
+                    <CircularProgress color="inherit" size={22} />
                   </TableCell>
                 </TableRow>
               ) : authors && authors.length > 0 ? (
@@ -170,9 +187,9 @@ const Author = () => {
                           component={Link}
                           to={`/dashboard/author/edit/${cl.uuid}`}
                           color="primary"
-                          sx={{ mx: 1 }}
+                          sx={{ mx: 0.5, p: 0.75 }}
                         >
-                          <MdEdit />
+                          <MdEdit size={18} />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete" arrow>
@@ -189,8 +206,8 @@ const Author = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} align="center">
-                    <Typography variant="body1" sx={{ color: "#fff" }}>
+                  <TableCell colSpan={3} align="center" sx={{ py: 2 }}>
+                    <Typography variant="body2" sx={{ color: "#fff" }}>
                       No authors found.
                     </Typography>
                   </TableCell>
