@@ -83,6 +83,9 @@ const BlogPost = () => {
     });
   };
 
+  // Tailwind gray-600 hex: #4b5563
+  const borderBottom = "1.5px solid #4b5563";
+
   return (
     <div className="p-3">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
@@ -98,32 +101,58 @@ const BlogPost = () => {
         <table className="min-w-full text-sm text-left text-white">
           <thead>
             <tr className="bg-[#212b3a]">
-              <th className="px-4 py-3 font-bold">SL</th>
-              <th className="px-4 py-3 font-bold">TITLE</th>
-              <th className="px-4 py-3 font-bold">BLOG THUMBLE</th>
-              <th className="px-4 py-3 font-bold text-center">ACTIONS</th>
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                SL
+              </th>
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                TITLE
+              </th>
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                BLOG THUMBLE
+              </th>
+              <th
+                className="px-4 py-3 font-bold text-center"
+                style={{ borderBottom }}
+              >
+                ACTIONS
+              </th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={4} className="text-center py-8">
+                <td
+                  colSpan={4}
+                  className="text-center py-8"
+                  style={{ borderBottom }}
+                >
                   <span className="loading loading-spinner loading-lg"></span>
                 </td>
               </tr>
             ) : paginatedData.length > 0 ? (
               paginatedData.map((bgPost, index) => (
-                <tr key={bgPost.uuid} className="hover:bg-[#232e45] transition">
-                  <td className="px-4 py-3">{startIndex + index + 1}</td>
-                  <td className="px-4 py-3">{bgPost.title}</td>
-                  <td className="px-4 py-3">
+                <tr
+                  key={bgPost.uuid}
+                  className="hover:bg-[#232e45] transition"
+                  style={{ borderBottom }}
+                >
+                  <td className="px-4 py-3" style={{ borderBottom }}>
+                    {startIndex + index + 1}
+                  </td>
+                  <td className="px-4 py-3" style={{ borderBottom }}>
+                    {bgPost.title}
+                  </td>
+                  <td className="px-4 py-3" style={{ borderBottom }}>
                     <img
                       className="h-14 w-28 object-cover rounded-lg border border-gray-700"
                       src={`${state.port}/Images/${bgPost.thumble}`}
                       alt={bgPost.thumble}
                     />
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td
+                    className="px-4 py-3 text-center"
+                    style={{ borderBottom }}
+                  >
                     <div className="flex gap-2 justify-center">
                       <Link
                         to={`/dashboard/blogpost/edit/${bgPost.uuid}`}
@@ -152,7 +181,11 @@ const BlogPost = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="text-center py-8 text-gray-400">
+                <td
+                  colSpan={4}
+                  className="text-center py-8 text-gray-400"
+                  style={{ borderBottom }}
+                >
                   No blog posts found.
                 </td>
               </tr>

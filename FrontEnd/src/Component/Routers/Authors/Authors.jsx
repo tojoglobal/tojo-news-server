@@ -85,6 +85,9 @@ const Author = () => {
     });
   };
 
+  // gray-600 = #4b5563
+  const borderBottom = "1.5px solid #4b5563";
+
   return (
     <Box
       sx={{
@@ -147,6 +150,7 @@ const Author = () => {
                     py: 1,
                     px: 1.5,
                     fontSize: 13,
+                    borderBottom,
                   }}
                 >
                   SL
@@ -158,12 +162,18 @@ const Author = () => {
                     py: 1,
                     px: 1.5,
                     fontSize: 13,
+                    borderBottom,
                   }}
                 >
                   Author NAME
                 </TableCell>
                 <TableCell
-                  sx={{ fontWeight: 700, color: "#fff", textAlign: "center" }}
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    textAlign: "center",
+                    borderBottom,
+                  }}
                 >
                   ACTIONS
                 </TableCell>
@@ -172,16 +182,34 @@ const Author = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={3} align="center" sx={{ py: 3 }}>
+                  <TableCell
+                    colSpan={3}
+                    align="center"
+                    sx={{ py: 3, borderBottom }}
+                  >
                     <CircularProgress color="inherit" size={22} />
                   </TableCell>
                 </TableRow>
               ) : authors && authors.length > 0 ? (
                 authors.map((cl, index) => (
-                  <TableRow key={cl.uuid} hover sx={{ color: "#fff" }}>
-                    <TableCell sx={{ color: "#fff" }}>{index + 1}</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>{cl.name}</TableCell>
-                    <TableCell align="center" sx={{ color: "#fff" }}>
+                  <TableRow
+                    key={cl.uuid}
+                    hover
+                    sx={{
+                      color: "#fff",
+                      borderBottom,
+                    }}
+                  >
+                    <TableCell sx={{ color: "#fff", borderBottom }}>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff", borderBottom }}>
+                      {cl.name}
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{ color: "#fff", borderBottom }}
+                    >
                       <Tooltip title="Edit" arrow>
                         <IconButton
                           component={Link}
@@ -206,7 +234,11 @@ const Author = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} align="center" sx={{ py: 2 }}>
+                  <TableCell
+                    colSpan={3}
+                    align="center"
+                    sx={{ py: 2, borderBottom }}
+                  >
                     <Typography variant="body2" sx={{ color: "#fff" }}>
                       No authors found.
                     </Typography>

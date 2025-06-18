@@ -130,6 +130,9 @@ const SponsoredPost = () => {
     });
   };
 
+  // gray-600: #4b5563
+  const borderBottom = "1.5px solid #4b5563";
+
   return (
     <Box
       sx={{
@@ -194,6 +197,7 @@ const SponsoredPost = () => {
                     py: 1.4,
                     px: 1.6,
                     fontSize: 15,
+                    borderBottom,
                   }}
                 >
                   SL
@@ -205,6 +209,7 @@ const SponsoredPost = () => {
                     py: 1.4,
                     px: 1.6,
                     fontSize: 15,
+                    borderBottom,
                   }}
                 >
                   TITLE
@@ -216,6 +221,7 @@ const SponsoredPost = () => {
                     py: 1.4,
                     px: 1.6,
                     fontSize: 15,
+                    borderBottom,
                   }}
                 >
                   START DATE
@@ -227,6 +233,7 @@ const SponsoredPost = () => {
                     py: 1.4,
                     px: 1.6,
                     fontSize: 15,
+                    borderBottom,
                   }}
                 >
                   END DATE
@@ -238,6 +245,7 @@ const SponsoredPost = () => {
                     py: 1.4,
                     px: 1.6,
                     fontSize: 15,
+                    borderBottom,
                   }}
                 >
                   IMAGE
@@ -250,6 +258,7 @@ const SponsoredPost = () => {
                     py: 1.4,
                     px: 1.6,
                     fontSize: 15,
+                    borderBottom,
                   }}
                 >
                   ACTIONS
@@ -259,34 +268,68 @@ const SponsoredPost = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
+                  <TableCell
+                    colSpan={6}
+                    align="center"
+                    sx={{ py: 3, borderBottom }}
+                  >
                     <CircularProgress color="inherit" size={22} />
                   </TableCell>
                 </TableRow>
               ) : paginatedData.length > 0 ? (
                 paginatedData.map((post, index) => (
-                  <TableRow key={post.id} hover sx={{ color: "#fff" }}>
+                  <TableRow
+                    key={post.id}
+                    hover
+                    sx={{ color: "#fff", borderBottom }}
+                  >
                     <TableCell
-                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
+                      sx={{
+                        color: "#fff",
+                        py: 1.4,
+                        px: 1.6,
+                        fontSize: 15,
+                        borderBottom,
+                      }}
                     >
                       {startIndex + index + 1}
                     </TableCell>
                     <TableCell
-                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
+                      sx={{
+                        color: "#fff",
+                        py: 1.4,
+                        px: 1.6,
+                        fontSize: 15,
+                        borderBottom,
+                      }}
                     >
                       {post.title}
                     </TableCell>
                     <TableCell
-                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
+                      sx={{
+                        color: "#fff",
+                        py: 1.4,
+                        px: 1.6,
+                        fontSize: 15,
+                        borderBottom,
+                      }}
                     >
                       {formatDate(post.start_date)}
                     </TableCell>
                     <TableCell
-                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
+                      sx={{
+                        color: "#fff",
+                        py: 1.4,
+                        px: 1.6,
+                        fontSize: 15,
+                        borderBottom,
+                      }}
                     >
                       {formatDate(post.end_date)}
                     </TableCell>
-                    <TableCell sx={{ color: "#fff", py: 1.4, px: 1.6 }}>
+                    <TableCell
+                      sx={{ color: "#fff", py: 1.4, px: 1.6, borderBottom }}
+                    >
                       <img
                         className="Team_member_Image"
                         src={
@@ -305,7 +348,13 @@ const SponsoredPost = () => {
                     </TableCell>
                     <TableCell
                       align="center"
-                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
+                      sx={{
+                        color: "#fff",
+                        py: 1.4,
+                        px: 1.6,
+                        fontSize: 15,
+                        borderBottom,
+                      }}
                     >
                       <Tooltip title="Edit" arrow>
                         <IconButton
@@ -341,7 +390,11 @@ const SponsoredPost = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 2 }}>
+                  <TableCell
+                    colSpan={6}
+                    align="center"
+                    sx={{ py: 2, borderBottom }}
+                  >
                     <Typography variant="body2" sx={{ color: "#fff" }}>
                       No sponsored posts found.
                     </Typography>

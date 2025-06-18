@@ -147,6 +147,7 @@ const NewsCategory = () => {
                     py: 1,
                     px: 1.5,
                     fontSize: 13,
+                    borderBottom: "1.5px solid #4b5563", // gray-600
                   }}
                 >
                   SL
@@ -158,12 +159,18 @@ const NewsCategory = () => {
                     py: 1,
                     px: 1.5,
                     fontSize: 13,
+                    borderBottom: "1.5px solid #4b5563", // gray-600
                   }}
                 >
                   CATEGORY NAME
                 </TableCell>
                 <TableCell
-                  sx={{ fontWeight: 700, color: "#fff", textAlign: "center" }}
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    textAlign: "center",
+                    borderBottom: "1.5px solid #4b5563", // gray-600
+                  }}
                 >
                   ACTIONS
                 </TableCell>
@@ -172,16 +179,50 @@ const NewsCategory = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={3} align="center" sx={{ py: 3 }}>
+                  <TableCell
+                    colSpan={3}
+                    align="center"
+                    sx={{
+                      py: 3,
+                      borderBottom: "1.5px solid #4b5563",
+                    }}
+                  >
                     <CircularProgress color="inherit" size={22} />
                   </TableCell>
                 </TableRow>
               ) : categories && categories.length > 0 ? (
                 categories.map((cl, index) => (
-                  <TableRow key={cl.uuid} hover sx={{ color: "#fff" }}>
-                    <TableCell sx={{ color: "#fff" }}>{index + 1}</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>{cl.name}</TableCell>
-                    <TableCell align="center" sx={{ color: "#fff" }}>
+                  <TableRow
+                    key={cl.uuid}
+                    hover
+                    sx={{
+                      color: "#fff",
+                      borderBottom: "1.5px solid #4b5563",
+                    }}
+                  >
+                    <TableCell
+                      sx={{
+                        color: "#fff",
+                        borderBottom: "1.5px solid #4b5563",
+                      }}
+                    >
+                      {index + 1}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: "#fff",
+                        borderBottom: "1.5px solid #4b5563",
+                      }}
+                    >
+                      {cl.name}
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        color: "#fff",
+                        borderBottom: "1.5px solid #4b5563",
+                      }}
+                    >
                       <Tooltip title="Edit" arrow>
                         <IconButton
                           component={Link}
@@ -206,7 +247,14 @@ const NewsCategory = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} align="center" sx={{ py: 2 }}>
+                  <TableCell
+                    colSpan={3}
+                    align="center"
+                    sx={{
+                      py: 2,
+                      borderBottom: "1.5px solid #4b5563",
+                    }}
+                  >
                     <Typography variant="body2" sx={{ color: "#fff" }}>
                       No categories found.
                     </Typography>

@@ -118,17 +118,17 @@ export default function FeaturedList() {
 
   return (
     <section className="mt-12 mb-10">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
         <h2 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
           <FaYoutube className="text-[#ff3c3c] text-3xl drop-shadow-lg" />
           <span className="bg-gradient-to-r from-blue-400 via-blue-600 to-pink-500 bg-clip-text text-transparent">
             Featured News & Continue Watching
           </span>
         </h2>
-        <span className="text-sm text-gray-400 italic mt-1 md:mt-0">
-          Showcase featured & continue watching videos with style!
-        </span>
       </div>
+      <p className="text-sm text-gray-400 italic mt-1 mb-6">
+        Showcase featured & continue watching videos with style!
+      </p>
       <form
         onSubmit={handleSubmit}
         className="max-w-2xl mx-auto bg-[#181c2f] border border-[#283250]/40 rounded-2xl shadow-lg p-6 mb-12"
@@ -183,7 +183,7 @@ export default function FeaturedList() {
         <div className="flex gap-4 mt-7">
           <button
             type="submit"
-            className="flex-1 cursor-pointer bg-gradient-to-r from-blue-600 to-pink-400 hover:from-blue-700 hover:to-pink-500 text-white font-bold py-2.5 rounded-xl shadow-lg transition-all duration-150 text-base tracking-wide"
+            className="flex-1 cursor-pointer bg-gradient-to-r from-blue-600 to-pink-400 hover:from-blue-700 hover:to-pink-500 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-150 text-base tracking-wide"
           >
             {mode === "add" ? "Add Card" : "Update Card"}
           </button>
