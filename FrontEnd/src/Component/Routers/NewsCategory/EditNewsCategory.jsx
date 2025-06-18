@@ -23,6 +23,7 @@ const EditNewsCategory = () => {
     axios
       .get(`${state.port}/api/admin/newsCategory/${id}`)
       .then((result) => {
+        console.log(result);
         if (result.data.Status) {
           setNewsCategory({
             ...NewsCategory,
