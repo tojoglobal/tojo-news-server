@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
+import { useContext } from "react";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { Link } from "react-router-dom";
 import {
+  useTheme,
+  useMediaQuery,
   Button,
   IconButton,
   Tooltip,
@@ -16,50 +17,59 @@ import {
   Typography,
   Box,
   CircularProgress,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import { HiPlus } from "react-icons/hi";
 import { MdEdit, MdDelete } from "react-icons/md";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 import "sweetalert2/dist/sweetalert2.min.css";
+import axios from "axios";
 
-const TagNameServerRouter = () => {
+const fetchTagNames = async (port) => {
+  const res = await axios.get(`${port}/api/admin/TagName`);
+  if (!res.data.Status)
+    throw new Error(res.data.Error || "Failed to fetch tag names");
+  return res.data.Result;
+};
+
+const deleteTagName = async ({ port, uuid }) => {
+  const res = await axios.delete(`${port}/api/admin/TagName/delete/${uuid}`);
+  if (!res.data.Status)
+    throw new Error(res.data.Error || "Failed to delete tag name");
+  return res.data;
+};
+
+const TagNameList = () => {
   const { state } = useContext(AppContext);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [tagNames, setTagNames] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState();
+  const queryClient = useQueryClient();
 
-  // Fetch Tag Names
-  useEffect(() => {
-    let ignore = false;
-    async function fetchTagNames() {
-      setLoading(true);
-      setError(undefined);
-      try {
-        const res = await axios.get(`${state.port}/api/admin/TagName`);
-        if (!res.data.Status)
-          throw new Error(res.data.Error || "Failed to fetch Tag Names");
-        if (!ignore) setTagNames(res.data.Result);
-      } catch (err) {
-        if (!ignore) setError(err.message);
-      }
-      if (!ignore) setLoading(false);
-    }
-    fetchTagNames();
-    return () => {
-      ignore = true;
-    };
-  }, [state.port]);
+  const {
+    data: tagNames,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["TagNames"],
+    queryFn: () => fetchTagNames(state.port),
+  });
 
-  // Delete Tag Name
-  const handleDelete = async (uuid) => {
-    console.log("got",uuid);
-    const confirm = await Swal.fire({
+  const mutation = useMutation({
+    mutationFn: (uuid) => deleteTagName({ port: state.port, uuid }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["TagNames"]);
+      toast.success("Tag deleted successfully");
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  const handleDelete = (uuid) => {
+    Swal.fire({
       title: "Are you sure?",
-      text: "Do you want to delete this Tag Name?",
+      text: "Do you want to delete this tag?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, delete it!",
@@ -67,50 +77,20 @@ const TagNameServerRouter = () => {
       cancelButtonText: "Cancel",
       background: "#101829",
       color: "#fff",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        mutation.mutate(uuid);
+      }
     });
-    if (!confirm.isConfirmed) return;
-
-    try {
-      const res = await axios.delete(
-        `${state.port}/api/admin/TagName/delete/${uuid}`
-      );
-      console.log(res);
-      if (!res.data.Status)
-        throw new Error(res.data.Error || "Failed to delete Tag Name");
-      setTagNames((prev) => prev.filter((item) => item.uuid !== uuid));
-      await Swal.fire({
-        icon: "success",
-        title: "Deleted!",
-        text: "Tag Name deleted successfully.",
-        timer: 1300,
-        showConfirmButton: false,
-        background: "#23263a",
-        color: "#fff",
-      });
-    } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: err?.message || "Deletion failed",
-        background: "#23263a",
-        color: "#fff",
-      });
-    }
   };
 
   return (
-    <Box
-      sx={{
-        px: isMobile ? 1 : 2,
-        py: 2,
-        color: "#fff",
-      }}
-    >
-      <h1 className="text-2xl md:text-3xl mb-2 font-bold">All Tag Names</h1>
+    <Box sx={{ px: isMobile ? 1 : 2, py: 2, color: "#fff" }}>
+      <h1 className="text-2xl md:text-3xl mb-2 font-bold">Tags</h1>
       <hr style={{ borderColor: "#222", opacity: 0.2 }} />
       {error && (
         <Box sx={{ my: 1, color: "error.main" }}>
-          <Typography variant="body2">{error}</Typography>
+          <Typography variant="body2">{error.message}</Typography>
         </Box>
       )}
       <Box
@@ -136,7 +116,7 @@ const TagNameServerRouter = () => {
               minWidth: 0,
             }}
           >
-            Create Tag Name
+            New Tag
           </Button>
         </Link>
       </Box>
@@ -183,7 +163,7 @@ const TagNameServerRouter = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {loading ? (
+              {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={3} align="center" sx={{ py: 3 }}>
                     <CircularProgress color="inherit" size={22} />
@@ -221,7 +201,7 @@ const TagNameServerRouter = () => {
                 <TableRow>
                   <TableCell colSpan={3} align="center" sx={{ py: 2 }}>
                     <Typography variant="body2" sx={{ color: "#fff" }}>
-                      No Tag Names found.
+                      No tags found.
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -234,4 +214,4 @@ const TagNameServerRouter = () => {
   );
 };
 
-export default TagNameServerRouter;
+export default TagNameList;
