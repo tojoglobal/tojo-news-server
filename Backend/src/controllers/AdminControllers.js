@@ -686,16 +686,13 @@ const showAuthorId = async (req, res) => {
 
 // News Catagory Admin Control
 const createNewsCategory = (req, res) => {
-  const values = [
-    uuidv4(),
-    req.body.categoryName,
-    // req.body.OnBehalf,
-  ];
-  db.query(createNewsCategoryQuery, [values], (err, result) => {
+  const values = [uuidv4(), req.body.categoryName];
+  db.query(createNewsCategoryQuery, values, (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });
   });
 };
+
 const getNewsCategory = async (req, res) => {
   try {
     const [result] = await db.query(getNewsCategoryQuery);
@@ -712,7 +709,7 @@ const deleteOneNewsCategory = (req, res) => {
   });
 };
 const showNewsCategoryId = (req, res) => {
-  const id = [req.params.id];
+  const id = req.params.id; // <--- FIXED
   db.query(showNewsCategoryIdQuery, [id], (err, result) => {
     if (err) return res.json({ Status: false, Error: err });
     return res.json({ Status: true, Result: result });

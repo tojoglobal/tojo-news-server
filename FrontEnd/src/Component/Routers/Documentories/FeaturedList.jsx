@@ -120,10 +120,7 @@ export default function FeaturedList() {
         <FaYoutube className="text-[#ff0000]" /> Featured News & Continue
         Watching
       </h2>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-gradient-to-br from-[#23263a] to-[#283250] rounded-xl shadow-md p-6 mb-10 border border-[#283250]/60"
-      >
+      <form onSubmit={handleSubmit}>
         <div className="mb-5">
           <label className="block text-gray-200 font-semibold mb-2">
             YouTube URL <span className="text-red-400">*</span>
@@ -171,7 +168,7 @@ export default function FeaturedList() {
         <div className="flex gap-4 mt-6">
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition"
+            className="bg-blue-600 cursor-pointer mb-3 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition"
           >
             {mode === "add" ? "Add Card" : "Update Card"}
           </button>
@@ -190,12 +187,9 @@ export default function FeaturedList() {
           )}
         </div>
       </form>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-5">
         {cards.map((card) => (
-          <div
-            key={card.id}
-            className="bg-gradient-to-br from-[#23263a] to-[#283250] rounded-2xl shadow-lg p-5 flex flex-col items-center text-center border border-[#2c324b]/60"
-          >
+          <div key={card.id}>
             {card.youtube_url && (
               <a
                 href={card.youtube_url}
@@ -208,7 +202,7 @@ export default function FeaturedList() {
                     card.youtube_url
                   )}/hqdefault.jpg`}
                   alt="YouTube thumbnail"
-                  className="rounded-lg mx-auto mb-3 w-full max-w-[220px] border border-[#283250]/40 shadow"
+                  className="rounded-lg mx-auto mb-3 w-full border border-[#283250]/40 shadow"
                 />
               </a>
             )}

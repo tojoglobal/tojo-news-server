@@ -99,14 +99,11 @@ export default function AdminFeaturedThisWeek() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-2 py-8">
+    <div className="w-full px-2 py-8">
       <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 tracking-tight">
         <FaYoutube className="inline mr-2 text-[#ff0000]" /> Featured This Week
       </h2>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-gradient-to-br from-[#22263a] to-[#22283f] rounded-xl shadow-md p-6 mb-10 border border-[#283250]/60"
-      >
+      <form onSubmit={handleSubmit}>
         <div className="mb-5">
           <label className="block text-gray-200 font-semibold mb-2">
             Title <span className="text-red-400">*</span>
@@ -141,7 +138,7 @@ export default function AdminFeaturedThisWeek() {
         <div className="flex gap-4 mt-6">
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition"
+            className="bg-blue-600 cursor-pointer mb-3 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition"
           >
             {mode === "add" ? "Add" : "Update"}
           </button>
@@ -160,8 +157,7 @@ export default function AdminFeaturedThisWeek() {
           )}
         </div>
       </form>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-5">
         {isLoading ? (
           <div className="col-span-full text-center text-gray-300">
             Loading...
@@ -172,10 +168,7 @@ export default function AdminFeaturedThisWeek() {
           </div>
         ) : (
           news.map((item) => (
-            <div
-              className="bg-gradient-to-br from-[#23263a] to-[#283250] rounded-2xl shadow-lg p-5 flex flex-col items-center text-center border border-[#2c324b]/60"
-              key={item.id}
-            >
+            <div key={item.id}>
               <a
                 href={item.youtube_url}
                 target="_blank"
@@ -187,7 +180,7 @@ export default function AdminFeaturedThisWeek() {
                     item.youtube_url
                   )}/hqdefault.jpg`}
                   alt={item.title}
-                  className="rounded-lg mx-auto mb-3 w-full max-w-[220px] border border-[#283250]/40 shadow"
+                  className="rounded-lg mx-auto mb-3 w-full border border-[#283250]/40 shadow"
                 />
               </a>
               <h3 className="font-semibold text-lg text-white mb-2">

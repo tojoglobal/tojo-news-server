@@ -77,15 +77,11 @@ export default function DocumentariesPost() {
   if (loading) return <div className="text-white p-8">Loading...</div>;
 
   return (
-    <div className="max-w-4xl mx-auto w-full px-4 py-8">
+    <div className="px-4 py-8">
       <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
         Edit Documentaries Hero Section
       </h2>
-      <form
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-        className="bg-gradient-to-br from-[#22263a] to-[#23283f] rounded-xl shadow-lg p-6 mb-14 border border-[#283250]/60"
-      >
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Upload Image Field */}
           <div>
@@ -165,9 +161,9 @@ export default function DocumentariesPost() {
         </div>
       </form>
       <FeaturedList />
-      <div className="flex justify-end mt-8">
+      <div className="flex justify-center mt-8">
         <Link
-          className="inline-block bg-blue-400 hover:bg-blue-500 text-white font-bold px-6 py-2 rounded-lg shadow transition"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition"
           to="/dashboard/documentaries/featured"
         >
           Update Featured This Week
