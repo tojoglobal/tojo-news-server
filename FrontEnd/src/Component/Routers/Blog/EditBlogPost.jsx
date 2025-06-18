@@ -1,30 +1,20 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router";
-
 import { FaCloudUploadAlt } from "react-icons/fa";
-
 import { Editor } from "@tinymce/tinymce-react";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
-import { useContext } from "react";
 import toast from "react-hot-toast";
 
 const EditBlogPost = () => {
   const { state } = useContext(AppContext);
-  // Router
   const { id } = useParams();
   const navigate = useNavigate();
-
-  // state
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [BlogPost, setBlogPost] = useState({});
   const [file, setFile] = useState(null);
+  const [BlogPost, setBlogPost] = useState({});
   const [Author, setAuthor] = useState([]);
   const [NewsCategory, setNewsCategory] = useState([]);
-
-  //Data Fetching
 
   // Fetch blog post data by ID
   useEffect(() => {
@@ -38,10 +28,10 @@ const EditBlogPost = () => {
           toast.error(result.data.Error);
         }
       })
-      .catch((err) => console.log(err));
-  }, [id]);
+      .catch((err) => toast.error(err?.message || "Failed to fetch blog post"));
+  }, [id, state.port]);
 
-  // fetch data
+  // Fetch authors and news categories
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,30 +43,30 @@ const EditBlogPost = () => {
         if (authorResponse.data.Status) {
           setAuthor(authorResponse.data.Result);
         } else {
-          setErrorMessage(authorResponse.data.Error);
+          toast.error(authorResponse.data.Error || "Failed to fetch authors");
         }
 
         if (newsCategoryResponse.data.Status) {
           setNewsCategory(newsCategoryResponse.data.Result);
         } else {
-          setErrorMessage(newsCategoryResponse.data.Error);
+          toast.error(
+            newsCategoryResponse.data.Error || "Failed to fetch categories"
+          );
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
-        setErrorMessage(`${error}`);
+        toast.error(error?.message || "Error fetching data");
       }
     };
 
     fetchData();
-  }, []);
+  }, [state.port]);
 
-  // image file handle
+  // Image file handle
   const handleChange = (e) => {
     setFile(URL.createObjectURL(e.target.files[0]));
     formik.setFieldValue("file", e.target.files[0]);
   };
 
-  // use fromik method
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -89,10 +79,8 @@ const EditBlogPost = () => {
       artical: BlogPost.articalpost || "",
     },
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       const formData = new FormData();
       formData.append("title", values.title);
-      formData.append("permalink", values.permalink);
       formData.append("subTitle", values.subTitle);
       formData.append("AuthorOne", values.AuthorOne);
       if (values.AuthorTwo) {
@@ -101,6 +89,7 @@ const EditBlogPost = () => {
       formData.append("newsCategory", values.newsCategory);
       formData.append("file", values.file);
       formData.append("artical", values.artical);
+
       try {
         const response = await axios.put(
           `${state.port}/api/admin/blogpost/edit/${id}`,
@@ -112,8 +101,7 @@ const EditBlogPost = () => {
           }
         );
         if (response.data.Status) {
-          setErrorMessage(null);
-          toast.success(`Edit successfully`, {
+          toast.success(`Blog post edited successfully`, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -124,19 +112,28 @@ const EditBlogPost = () => {
             theme: "light",
           });
 
-          const delay = 2000; // 2 seconds delay
-          const timer = setTimeout(() => {
+          setTimeout(() => {
             navigate(`/dashboard/blogpost`);
-          }, delay);
-          // Clear the timer if the component unmounts before the delay is complete
-          return () => clearTimeout(timer);
+          }, 1500);
         } else {
-          console.error("Server returned an error:", response.data.Error);
-          setErrorMessage("Internal Server Error");
+          toast.error(response.data.Error || "Internal Server Error");
         }
       } catch (error) {
-        console.error("Axios request failed:", error);
-        setErrorMessage("Axios request failed");
+        toast.error(
+          error?.response?.data?.Error ||
+            error?.message ||
+            "Axios request failed",
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          }
+        );
       }
 
       resetForm();
@@ -144,190 +141,214 @@ const EditBlogPost = () => {
   });
 
   return (
-    <div className="container dashboard_All">
-      <h5>/dashboard/blogpost/edit/</h5>
-      <h1 className="dashboard_name">Edit blogpost </h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {/* form start */}
-      <div className="from_div">
+    <div className="bg-[#101829] flex flex-col items-center px-2 md:px-0 py-6 text-white transition-colors duration-300">
+      <div className="w-full max-w-5xl bg-[#172133] rounded-xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold mb-4">Edit Blog Post</h1>
+        <hr className="border-gray-700 mb-6" />
         <form
           onSubmit={formik.handleSubmit}
-          className="p-4"
+          className="space-y-6"
           encType="multipart/form-data"
         >
-          <div className="row">
-            <div className="col-md-12 inputfield">
-              <label htmlFor="title">Title</label>
-              <input
-                id="title"
-                className="text_input_field"
-                type="text"
-                name="title"
-                onChange={formik.handleChange}
-                placeholder="Write Title..."
-                value={formik.values.title}
-              />
-            </div>
-
-            <div className="col-md-12 inputfield">
-              <label htmlFor="subTitle">Sub Body</label>
-              <input
-                id="subTitle"
-                className="text_input_field"
-                type="text"
-                name="subTitle"
-                onChange={formik.handleChange}
-                placeholder="Write Sub Title..."
-                value={formik.values.subTitle}
-              />
-            </div>
-
-            <div className="col-md-6 inputfield">
-              <label htmlFor="AuthorOne">Author 1</label>
-
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium mb-2">
+              Title
+            </label>
+            <input
+              id="title"
+              className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              type="text"
+              name="title"
+              onChange={formik.handleChange}
+              placeholder="Write Title..."
+              value={formik.values.title}
+              required
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="subTitle"
+              className="block text-sm font-medium mb-2"
+            >
+              Sub Body
+            </label>
+            <input
+              id="subTitle"
+              className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              type="text"
+              name="subTitle"
+              onChange={formik.handleChange}
+              placeholder="Write Sub Title..."
+              value={formik.values.subTitle}
+              required
+              autoComplete="off"
+            />
+          </div>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <label
+                htmlFor="AuthorOne"
+                className="block text-sm font-medium mb-2"
+              >
+                Author 1
+              </label>
               <select
                 name="AuthorOne"
                 id="AuthorOne"
-                className="text_input_field"
-                aria-label="Default select example"
+                className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none transition"
                 value={formik.values.AuthorOne}
                 onChange={(e) =>
                   formik.setFieldValue("AuthorOne", e.target.value)
                 }
+                required
               >
-                {Author.length > 0 &&
-                  Author.map((CaNa) => (
-                    <option value={CaNa.ID} key={CaNa.uuid}>
-                      {CaNa.name}
-                    </option>
-                  ))}
+                <option value="">Choose Author 1</option>
+                {Author.map((author) => (
+                  <option value={author.ID} key={author.uuid}>
+                    {author.name}
+                  </option>
+                ))}
               </select>
             </div>
-
-            <div className="col-md-6 inputfield">
-              <label htmlFor="AuthorTwo">Author 2 (optional)</label>
-
+            <div className="flex-1">
+              <label
+                htmlFor="AuthorTwo"
+                className="block text-sm font-medium mb-2"
+              >
+                Author 2 (optional)
+              </label>
               <select
                 name="AuthorTwo"
                 id="AuthorTwo"
-                className="text_input_field"
-                aria-label="Default select example"
+                className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none transition"
                 value={formik.values.AuthorTwo}
                 onChange={(e) =>
                   formik.setFieldValue("AuthorTwo", e.target.value)
                 }
               >
                 <option value="">Choose Author 2</option>
-                {Author.length > 0 &&
-                  Author.map((CaNa) => (
-                    <option value={CaNa.ID} key={CaNa.uuid}>
-                      {CaNa.name}
-                    </option>
-                  ))}
+                {Author.map((author) => (
+                  <option value={author.ID} key={author.uuid}>
+                    {author.name}
+                  </option>
+                ))}
               </select>
             </div>
-
-            <div className="col-md-12 inputfield">
-              <label htmlFor="newsCategory">News Category</label>
-
-              <select
-                name="newsCategory"
-                id="newsCategory"
-                className="text_input_field"
-                aria-label="Default select example"
-                value={formik.values.newsCategory}
-                onChange={(e) =>
-                  formik.setFieldValue("newsCategory", e.target.value)
-                }
-              >
-                {NewsCategory.length > 0 &&
-                  NewsCategory.map((CaNa) => (
-                    <option value={CaNa.ID} key={CaNa.uuid}>
-                      {CaNa.name}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            <div className="col-md-6 inputfield ">
-              <h5>Upload News Thumbnail</h5>
-              <div className="thumble_inputField_style">
-                <label htmlFor="file">
-                  Upload Thumbnail <FaCloudUploadAlt />
+          </div>
+          <div>
+            <label
+              htmlFor="newsCategory"
+              className="block text-sm font-medium mb-2"
+            >
+              News Category
+            </label>
+            <select
+              name="newsCategory"
+              id="newsCategory"
+              className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none transition"
+              value={formik.values.newsCategory}
+              onChange={(e) =>
+                formik.setFieldValue("newsCategory", e.target.value)
+              }
+              required
+            >
+              <option value="">Choose News Category</option>
+              {NewsCategory.map((category) => (
+                <option value={category.ID} key={category.uuid}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">
+                Upload News Thumbnail
+              </label>
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="file"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg cursor-pointer text-white font-semibold transition"
+                >
+                  <FaCloudUploadAlt className="text-xl" />
+                  <span>Upload Thumbnail</span>
+                  <input
+                    id="file"
+                    type="file"
+                    name="file"
+                    className="hidden"
+                    onChange={handleChange}
+                    accept=".jpg, .png"
+                  />
                 </label>
-                <input
-                  id="file"
-                  type="file"
-                  name="file"
-                  onChange={handleChange}
-                  accept=".jpg, .png"
-                />
               </div>
             </div>
-            <div className="col-md-6 inputfield">
-              <h5>Preview Thumbnail</h5>
-
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">
+                Preview Thumbnail
+              </label>
               <img
                 src={file ? file : `${state.port}/Images/${BlogPost.thumble}`}
                 alt="Tojo_global_Thumbnail_Image"
-                className="blog_Image"
+                className="h-44 w-full object-cover rounded-lg border border-gray-700"
                 loading="lazy"
               />
             </div>
-
-            <div className="col-md-12 inputfield">
-              <h5>Write Artical</h5>
-              <Editor
-                id="artical"
-                textareaName="artical"
-                onEditorChange={(content) => {
-                  formik.setFieldValue("artical", content);
-                }}
-                initialValue={formik.values.artical}
-                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
-                init={{
-                  height: 450,
-                  menubar: false,
-                  plugins: [
-                    "advlist",
-                    "autolink",
-                    "lists",
-                    "link",
-                    "image",
-                    "charmap",
-                    "preview",
-                    "anchor",
-                    "searchreplace",
-                    "visualblocks",
-                    "code",
-                    "fullscreen",
-                    "insertdatetime",
-                    "media",
-                    "table",
-                    "code",
-                    "help",
-                    "wordcount",
-                  ],
-                  toolbar:
-                    "undo redo |fullscreen blocks|" +
-                    "bold italic forecolor fontsize |code link image preview| alignleft aligncenter " +
-                    "alignright alignjustify | bullist numlist outdent indent | table | " +
-                    "removeformat | help",
-                  content_style:
-                    "body { font-family:Helvetica,Arial,sans-serif; font-size: 1rem;  color: #3f3e3e; }",
-                }}
-              />
-            </div>
-            <div className="col-md-12 inputFiledMiddel">
-              <button
-                type="submit"
-                className="button-62 cetificate_image_AddBtn "
-                role="button"
-              >
-                Edit BLOG POST
-              </button>
-            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Write Article
+            </label>
+            <Editor
+              id="artical"
+              textareaName="artical"
+              onEditorChange={(content) => {
+                formik.setFieldValue("artical", content);
+              }}
+              initialValue={formik.values.artical}
+              apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
+              init={{
+                height: 450,
+                menubar: false,
+                plugins: [
+                  "advlist",
+                  "autolink",
+                  "lists",
+                  "link",
+                  "image",
+                  "charmap",
+                  "preview",
+                  "anchor",
+                  "searchreplace",
+                  "visualblocks",
+                  "code",
+                  "fullscreen",
+                  "insertdatetime",
+                  "media",
+                  "table",
+                  "code",
+                  "help",
+                  "wordcount",
+                ],
+                toolbar:
+                  "undo redo |fullscreen blocks|" +
+                  "bold italic forecolor fontsize |code link image preview| alignleft aligncenter " +
+                  "alignright alignjustify | bullist numlist outdent indent | table | " +
+                  "removeformat | help",
+                content_style:
+                  "body { font-family:Helvetica,Arial,sans-serif; font-size: 1rem;  color: #3f3e3e; }",
+              }}
+            />
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="inline-flex cursor-pointer items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition"
+              role="button"
+            >
+              Edit BLOG POST
+            </button>
           </div>
         </form>
       </div>

@@ -1,48 +1,18 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useParams, Link } from "react-router-dom";
 import DOMPurify from "dompurify";
-import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
-import { useContext } from "react";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import toast from "react-hot-toast";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const ShowBlogPost = () => {
   const { state } = useContext(AppContext);
-  // Router
   const { id } = useParams();
-  // state
-  const [errorMessage, setErrorMessage] = useState(null);
   const [blogpost, setBlogpost] = useState({});
+  const [activeId, setActiveId] = useState(null);
 
-  //Data Fetching
-  useEffect(() => {
-    axios
-      .get(`${state.port}/api/admin/blogpost/${id}`)
-      .then((result) => {
-        if (result.data.Status) {
-          setBlogpost({
-            ...blogpost,
-            title: result.data.Result[0].title,
-            subTitle: result.data.Result[0].subtitle,
-            AuthorOne: result.data.Result[0].author1_id,
-            AuthorTwo: result.data.Result[0].author2_id,
-            newsCategory: result.data.Result[0].category_id,
-            Image: result.data.Result[0].thumble,
-            artical: result.data.Result[0].articalpost,
-            dateAndTime: result.data.Result[0].dateAndTime,
-          });
-        } else {
-          toast.error(result.data.Error);
-          setErrorMessage(result.data.Error);
-        }
-      })
-      .catch((err) => console.log(err));
-  }, [id]);
-
-  // Fetch authors and blog post data
+  // Fetch authors, blogpost, and news category details
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -83,34 +53,31 @@ const ShowBlogPost = () => {
             Image: blogPostData.thumble,
             artical: blogPostData.articalpost,
             dateAndTime: blogPostData.dateAndTime,
+            uuid: blogPostData.uuid,
           });
         } else {
-          alert("Failed to fetch data");
+          toast.error("Failed to fetch blog post details");
         }
       } catch (err) {
-        console.error("Error fetching data:", err);
+        toast.error("Error fetching data");
       }
     };
 
     fetchData();
-  }, [id]);
+  }, [id, state.port]);
 
-  // id toggle
-  const [activeId, setActiveId] = useState(null);
+  // Toggle for showing/hiding blog text
   const togglePopup = (id) => {
     setActiveId((prevId) => (prevId === id ? null : id));
   };
 
-  // formate date and time
+  // Format date and time
   const formatDateTime = (dateTime) => {
     const date = new Date(dateTime);
-
     const options = { month: "long", day: "2-digit", year: "numeric" };
-
     const formattedDate = date
       .toLocaleDateString("en-US", options)
       .toUpperCase();
-
     const hours = date.getHours();
     const minutes = date.getMinutes().toString().padStart(2, "0");
     const ampm = hours >= 12 ? "PM" : "AM";
@@ -119,106 +86,83 @@ const ShowBlogPost = () => {
   };
 
   return (
-    <div className="container dashboard_All">
-      <h1 className="dashboard_name">Blog Info </h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-
-      <div className="from_div">
-        <div className="btn-text-left mt-3">
-          <h5>
-            <Link to="/dashboard/blogpost" className="route_link">
-              {" "}
-              <IoMdArrowRoundBack className="back_icon" /> Back
+    <div className="min-h-[calc(100vh-64px)] bg-[#101829] flex flex-col items-center px-2 md:px-0 py-6 text-white transition-colors duration-300">
+      <div className="w-full max-w-3xl bg-[#172133] rounded-xl shadow-lg p-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+          <h1 className="text-3xl font-bold">Blog Info</h1>
+          <div className="flex gap-3">
+            <Link
+              to="/dashboard/blogpost"
+              className="inline-flex items-center gap-1 px-4 py-1.5 rounded bg-gray-700 hover:bg-gray-600 transition text-white"
+            >
+              <IoMdArrowRoundBack className="text-xl" /> Back
             </Link>
-          </h5>
+            <Link to={`/dashboard/blogpost/edit/${id}`}>
+              <button className="inline-flex cursor-pointer items-center gap-1 px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-700 transition text-white font-semibold">
+                Edit
+              </button>
+            </Link>
+          </div>
         </div>
-        <div className="btn-text-right">
-          <Link to={`/dashboard/blogpost/edit/${id}`}>
-            <button className="button-62" type="button">
-              Edit
-            </button>
-          </Link>
-        </div>
-        <br />
-        {/* ++++++========part 3 =======++++++++ */}
-        <div key={blogpost.uuid} className="grid_container_div">
-          <table className="table">
+        <hr className="border-gray-700 mb-6" />
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left text-white">
             <tbody>
               <tr>
-                <td>
-                  <span>Blog Image</span>
-                </td>
-                <td>
-                  {" "}
+                <td className="py-2 font-semibold w-40">Blog Image</td>
+                <td className="py-2">
                   <img
-                    className="blog_Image"
+                    className="h-28 w-28 object-cover rounded-lg border border-gray-700"
                     src={`${state.port}/Images/${blogpost.Image}`}
                     alt={blogpost.Image}
-                  />{" "}
+                  />
                 </td>
               </tr>
               <tr>
-                <td>
-                  <span>Date & Time </span>
-                </td>
-                <td>
+                <td className="py-2 font-semibold">Date & Time</td>
+                <td className="py-2">
                   <time>{formatDateTime(blogpost.dateAndTime)}</time>
                 </td>
               </tr>
               <tr>
-                <td>
-                  <span>Author Name</span>
-                </td>
-                <td>
+                <td className="py-2 font-semibold">Author Name</td>
+                <td className="py-2">
                   {blogpost.AuthorOne}
                   {blogpost.AuthorTwo ? ` & ${blogpost.AuthorTwo}` : ""}
                 </td>
               </tr>
-
               <tr>
-                <td>
-                  <span>Blog Category</span>
-                </td>
-                <td>{blogpost.newsCategory}</td>
+                <td className="py-2 font-semibold">Blog Category</td>
+                <td className="py-2">{blogpost.newsCategory}</td>
               </tr>
               <tr>
-                <td>
-                  <span>Job Title </span>
-                </td>
-                <td>{blogpost.title}</td>
+                <td className="py-2 font-semibold">Blog Title</td>
+                <td className="py-2">{blogpost.title}</td>
               </tr>
-
               <tr>
-                <td>
-                  <span>Blog Text</span>
-                </td>
-                <td>
-                  <div>
-                    <span>
+                <td className="py-2 font-semibold">Blog Text</td>
+                <td className="py-2">
+                  <button
+                    className="px-3 cursor-pointer py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition"
+                    onClick={() => togglePopup(blogpost.uuid)}
+                  >
+                    {activeId === blogpost.uuid ? "Hide blog" : "Show blog"}
+                  </button>
+                  {activeId === blogpost.uuid && (
+                    <div className="mt-3 bg-[#222e3e] rounded p-4 shadow-inner max-h-60 overflow-y-auto">
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(blogpost.artical),
+                        }}
+                      ></div>
                       <button
-                        className="txt_btn_style"
+                        className="mt-3 px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition"
                         onClick={() => togglePopup(blogpost.uuid)}
                       >
-                        {activeId === blogpost.uuid ? "Hide blog" : "Show blog"}
+                        Close
                       </button>
-                    </span>
-                    {activeId === blogpost.uuid && (
-                      <div className="popup">
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: DOMPurify.sanitize(blogpost.artical),
-                          }}
-                        ></div>
-                        <button
-                          className="txt_btn_style"
-                          onClick={() => togglePopup(blogpost.uuid)}
-                        >
-                          Close
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </td>
               </tr>
             </tbody>

@@ -1,247 +1,175 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { HiPlus } from "react-icons/hi";
-import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
+import axios from "axios";
 import { Link } from "react-router-dom";
-import {
-  Dialog,
-  useTheme,
-  useMediaQuery,
-  DialogContentText,
-  DialogTitle,
-  Button,
-  DialogActions,
-  DialogContent,
-} from "@mui/material";
-import { BsExclamationCircle } from "react-icons/bs";
-import { MdOutlineArrowDownward } from "react-icons/md";
-import Pagination from "../../Pagination/Pagination";
+import { MdEdit, MdDelete, MdRemoveRedEye } from "react-icons/md";
+import Swal from "sweetalert2";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import Pagination from "../../Pagination/Pagination";
+
+const fetchBlogPosts = async (port) => {
+  const response = await axios.get(`${port}/api/admin/blogpost`);
+  if (!response.data.Status)
+    throw new Error(response.data.Error || "Failed to fetch blog posts");
+  return response.data.Result;
+};
+
+const deleteBlogPost = async ({ port, uuid }) => {
+  const response = await axios.delete(
+    `${port}/api/admin/blogpost/delete/${uuid}`
+  );
+  if (!response.data.Status)
+    throw new Error(response.data.Error || "Failed to delete blog post");
+  return response.data;
+};
 
 const BlogPost = () => {
   const { state } = useContext(AppContext);
-  // path
-  const isHomePageRoute = location.pathname;
-  const navigate = useNavigate();
-
-  // state
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [blogpost, setBlogpost] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [dataDeleteId, setDataDeleteId] = useState(null);
-  const [BlogPostToDelete, setBlogPostToDelete] = useState();
-
   const [currentPage, setCurrentPage] = useState(1);
-  const [paginatedData, setPaginatedData] = useState([]);
   const itemsPerPage = 10;
+  const queryClient = useQueryClient();
 
-  // fetch data
+  // React Query: fetch blog posts
+  const {
+    data: blogpost = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["blogpost"],
+    queryFn: () => fetchBlogPosts(state.port),
+  });
+
+  // Show toast for query error (once)
   useEffect(() => {
-    axios
-      .get(`${state.port}/api/admin/blogpost`)
-      .then((result) => {
-        if (result.data.Status) {
-          setBlogpost(result.data.Result);
-          setPaginatedData(result.data.Result.slice(0, itemsPerPage));
-        } else {
-          setErrorMessage(result.data.Error);
-        }
-      })
-      .catch((err) => console.log(err));
-  }, []);
+    if (error) {
+      toast.error(error.message || "Failed to fetch blog posts");
+    }
+  }, [error]);
 
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    setPaginatedData(blogpost.slice(startIndex, endIndex));
-  }, [currentPage, blogpost]);
+  // Mutation: delete blog post by uuid
+  const mutation = useMutation({
+    mutationFn: (uuid) => deleteBlogPost({ port: state.port, uuid }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blogpost"]);
+      toast.success("Blog post deleted successfully");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to delete blog post");
+    },
+  });
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  // Pagination logic for current page
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedData = blogpost.slice(startIndex, startIndex + itemsPerPage);
 
-  // matrial dialog box
-  const themes = useTheme();
-  const fullScreen = useMediaQuery(themes.breakpoints.down("md"));
-
-  // diolog box open and cloge function
-  const handleClickOpen = (id) => {
-    setOpen(true);
-    setDataDeleteId(id);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  // data delete and cancel function
-  const handleCancel = () => {
-    toast.error(`Cancel`, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
+  // Delete confirmation with SweetAlert2
+  const handleDelete = (uuid) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this blog post?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#E16565",
+      cancelButtonText: "Cancel",
+      background: "#101829",
+      color: "#fff",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        mutation.mutate(uuid);
+      }
     });
-    setOpen(false);
-    // setDataDeleteCancel(true)
-  };
-
-  const handleDelete = () => {
-    axios
-      .delete(`${state.port}/api/admin/blogpost/delete/` + dataDeleteId)
-      .then((result) => {
-        if (result.data.Status) {
-          navigate("/dashboard/blogpost");
-          setBlogPostToDelete(`deleted successfully`);
-          toast.success(`deleted successfully`, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        } else {
-          setBlogPostToDelete(result.data.Error);
-        }
-      })
-      .catch((err) => console.error(err));
-
-    setOpen(false);
   };
 
   return (
-    <div className="conatiner dashboard_All">
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All blog</h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div>
-        <div>
+    <div className="min-h-[calc(100vh-64px)] bg-[#101829] flex flex-col px-2 md:px-0 py-6 text-white transition-colors duration-300">
+      <div className="w-full max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+          <h1 className="text-3xl font-bold">All Blog Posts</h1>
           <Link to="/dashboard/blogpost/create">
-            <button className="button-62" role="button">
-              Create News Post{" "}
-              <span>
-                {" "}
-                <HiPlus />
-              </span>
+            <button className="inline-flex cursor-pointer items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition">
+              Create News Post <HiPlus className="text-lg" />
             </button>
           </Link>
-          <p className="success-message">{BlogPostToDelete}</p>
         </div>
-        {/* table start */}
-        <div>
-          <div>
-            <table id="customers" className="">
-              <tr>
-                <th>SL</th>
-                <th>TITLE</th>
-                <th>BLOG TUMBLER</th>
-                <th>ACTIONS</th>
+        <hr className="border-gray-700 mb-6" />
+        <div className="overflow-x-auto rounded-xl bg-[#172133]">
+          <table className="min-w-full text-sm text-left text-white">
+            <thead>
+              <tr className="bg-[#212b3a]">
+                <th className="px-4 py-3 font-bold">SL</th>
+                <th className="px-4 py-3 font-bold">TITLE</th>
+                <th className="px-4 py-3 font-bold">BLOG THUMBLE</th>
+                <th className="px-4 py-3 font-bold text-center">ACTIONS</th>
               </tr>
-
-              {paginatedData.length > 0 &&
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={4} className="text-center py-8">
+                    <span className="loading loading-spinner loading-lg"></span>
+                  </td>
+                </tr>
+              ) : paginatedData.length > 0 ? (
                 paginatedData.map((bgPost, index) => (
-                  <tr key={bgPost.uuid}>
-                    <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                    <td>{bgPost.title}</td>
-                    <td>
+                  <tr
+                    key={bgPost.uuid}
+                    className="hover:bg-[#232e45] transition"
+                  >
+                    <td className="px-4 py-3">{startIndex + index + 1}</td>
+                    <td className="px-4 py-3">{bgPost.title}</td>
+                    <td className="px-4 py-3">
                       <img
-                        className="Team_member_Image"
+                        className="h-14 w-14 object-cover rounded-lg border border-gray-700"
                         src={`${state.port}/Images/${bgPost.thumble}`}
                         alt={bgPost.thumble}
                       />
                     </td>
-                    <td>
-                      <div className="dropdown">
-                        <button className="dropbtn">
-                          Select <MdOutlineArrowDownward />
-                        </button>
-                        <div className="dropdown-content">
-                          <Link
-                            to={`/dashboard/blogpost/edit/${bgPost.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> Edit</span>
-                          </Link>
-                          {/* </span> */}
-
-                          <Link
-                            to={`/dashboard/blogpost/${bgPost.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> SHOW</span>
-                          </Link>
-
-                          <span
-                            onClick={() => handleClickOpen(bgPost.uuid)}
-                            className="actionBtn"
-                          >
-                            {" "}
-                            DELETE
-                          </span>
-                        </div>
-                      </div>
-                      <Dialog
-                        fullScreen={fullScreen}
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="responsive-dialog-title"
-                      >
-                        <DialogTitle
-                          id="responsive-dialog-title "
-                          className="icon_div"
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex gap-1 justify-center">
+                        <Link
+                          to={`/dashboard/blogpost/edit/${bgPost.uuid}`}
+                          className="inline-flex items-center gap-1 px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white transition"
+                          title="Edit"
                         >
-                          <div style={{ textAlign: "center" }}>
-                            <BsExclamationCircle className="icon" />
-                            <h3 style={{ paddingTop: "20px" }}>
-                              Are You sure?{" "}
-                            </h3>
-                          </div>
-                        </DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>
-                            Are you sure delete this contact Info
-                          </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button
-                            autoFocus
-                            onClick={handleCancel}
-                            style={{ color: "#E16565" }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button onClick={handleDelete} autoFocus>
-                            <Link
-                              to={`/dashboard/blogpost/delete`}
-                              style={{
-                                color: "#E16565",
-                                textDecoration: "none",
-                              }}
-                            >
-                              Yes,delete it!
-                            </Link>
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
+                          <MdEdit className="text-lg" /> Edit
+                        </Link>
+                        <Link
+                          to={`/dashboard/blogpost/${bgPost.uuid}`}
+                          className="inline-flex items-center gap-1 px-3 py-1 rounded bg-green-600 hover:bg-green-700 text-white transition"
+                          title="Show"
+                        >
+                          <MdRemoveRedEye className="text-lg" /> Show
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(bgPost.uuid)}
+                          className="inline-flex cursor-pointer items-center gap-1 px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white transition"
+                          title="Delete"
+                        >
+                          <MdDelete className="text-lg" /> Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
-                ))}
-            </table>
-          </div>
-          {/* table */}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="text-center py-8 text-gray-400">
+                    No blog posts found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-6">
           <Pagination
             totalItems={blogpost.length}
             itemsPerPage={itemsPerPage}
             currentPage={currentPage}
-            onPageChange={handlePageChange}
+            onPageChange={setCurrentPage}
           />
         </div>
       </div>

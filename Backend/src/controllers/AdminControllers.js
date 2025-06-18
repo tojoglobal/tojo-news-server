@@ -183,14 +183,17 @@ const getBlogPostById = async (req, res) => {
 const BlogPostToDelete = async (req, res) => {
   try {
     const id = req.params.id;
+
     // Get the filename before deleting
-    const deleteFileQuery = "SELECT thumble FROM blognews WHERE uuid = ?";
-    const [result] = await db.query(deleteFileQuery, [id]);
-    if (result.length === 0) {
+    const selectQuery = "SELECT thumble FROM blognews WHERE uuid = ?";
+    const [rows] = await db.query(selectQuery, [id]);
+
+    if (!rows || rows.length === 0) {
       return res.status(404).json({ Status: false, Error: "Record not found" });
     }
-    const filename = rows[0].result;
-    // Determine the folder based on the file extension
+
+    const filename = rows[0].thumble; // Correct property
+    // Determine the folder and file extension
     const fileExtension = path.extname(filename).toLowerCase();
     let folder = "public/Images";
     if (![".jpg", ".jpeg", ".png"].includes(fileExtension)) {
@@ -199,19 +202,32 @@ const BlogPostToDelete = async (req, res) => {
         .json({ Status: false, Error: "Invalid file type" });
     }
     const filepath = path.join(folder, filename);
-    // Delete the file asynchronously
-    await fs.promises.unlink(filepath).catch((err) => {
-      console.error("Error deleting file:", err);
-      throw new Error("File Deletion Error");
-    });
+
+    // Delete the file asynchronously, but ignore if file not found
+    try {
+      await fs.promises.unlink(filepath);
+    } catch (err) {
+      if (err.code !== "ENOENT") {
+        // Only error if not "file not found"
+        console.error("Error deleting file:", err);
+        return res
+          .status(500)
+          .json({ Status: false, Error: "File Deletion Error" });
+      }
+      // else: file already gone, that's fine
+    }
+
     // Delete the blog post entry from the database
-    const [fileDeleteResult] = await db.query(BlogPostToDeleteQuery, [id]);
+    const deleteQuery = "DELETE FROM blognews WHERE uuid = ?";
+    const [deleteResult] = await db.query(deleteQuery, [id]);
+
     res.json({
       Status: true,
       message: "File deleted and data removed.",
-      Result: fileDeleteResult,
+      Result: deleteResult,
     });
   } catch (err) {
+    console.error("Delete BlogPost Error:", err);
     return res.status(500).json({ Status: false, Error: err.message });
   }
 };
