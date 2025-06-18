@@ -47,7 +47,7 @@ const Dashboard = () => {
           collapsed ? "w-20" : "w-64"
         } bg-gray-800 border-r border-gray-700 shadow-lg`}
       >
-        <div className="flex items-center justify-center h-16 px-4 border-b border-gray-700">
+        <div className="flex items-center justify-center h-15 px-4 border-b border-gray-700">
           <Logo collapsed={collapsed} />
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -67,7 +67,7 @@ const Dashboard = () => {
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-700">
+        <div className="flex items-center justify-between h-15 px-4 border-b border-gray-700">
           <Logo collapsed={false} />
           <button
             onClick={() => setMobileOpen(false)}
@@ -83,7 +83,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-gray-800 border-b border-gray-700 flex items-center justify-between h-16 px-4 shadow-md">
+        <header className="bg-gray-800 border-b border-gray-700 flex items-center justify-between h-15 px-4 shadow-md">
           <div className="flex items-center">
             <button
               onClick={toggleCollapsed}

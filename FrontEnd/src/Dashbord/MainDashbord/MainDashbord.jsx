@@ -52,7 +52,7 @@ const MainDashbord = () => {
   return (
     <div className="w-full h-full flex flex-col gap-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-white">
+        <h1 className="text-2xl md:text-3xl font-bold text-white mt-1">
           Welcome to <span className="text-blue-400">Dashboard</span>
         </h1>
         {/* {errorMessage && (

@@ -5,17 +5,7 @@ import toast from "react-hot-toast";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
-import {
-  Box,
-  Typography,
-  Grid,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Button,
-} from "@mui/material";
+import { Editor } from "@tinymce/tinymce-react";
 
 const CreateSponsoredPost = () => {
   const { state } = useContext(AppContext);
@@ -107,260 +97,182 @@ const CreateSponsoredPost = () => {
   });
 
   return (
-    <Box
-      className="container dashboard_All"
-      sx={{
-        width: "100%",
-        maxWidth: "100vw",
-        px: { xs: 1, sm: 3, md: 6, lg: 10 },
-        py: 3,
-      }}
-    >
-      <Typography
-        variant="h3"
-        className="dashboard_name"
-        gutterBottom
-        sx={{ color: "#fff", fontWeight: 700 }}
-      >
-        Create Sponsored Post
-      </Typography>
-      <hr style={{ borderColor: "#222", opacity: 0.12 }} />
-      {errorMessage && (
-        <Box sx={{ my: 2 }}>
-          <Typography variant="body1" sx={{ color: "#ff6565" }}>
-            {errorMessage}
-          </Typography>
-        </Box>
-      )}
-      <form
-        onSubmit={formik.handleSubmit}
-        style={{ width: "100%" }}
-        encType="multipart/form-data"
-        autoComplete="off"
-      >
-        <Grid
-          container
-          spacing={3}
-          sx={{
-            width: "100%",
-            margin: 0,
-            color: "#fff",
-            background: "none",
-          }}
+    <div className="bg-[#101829] flex flex-col items-center px-2 md:px-0 py-6 text-white transition-colors duration-300 min-h-screen">
+      <div className="w-full max-w-4xl bg-[#172133] rounded-xl shadow-lg p-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-4">
+          Create Sponsored Post
+        </h1>
+        <hr className="border-gray-700 mb-6" />
+        {errorMessage && (
+          <div className="text-red-400 font-semibold mb-4">{errorMessage}</div>
+        )}
+        <form
+          onSubmit={formik.handleSubmit}
+          className="space-y-6"
+          encType="multipart/form-data"
+          autoComplete="off"
         >
-          <Grid item xs={12} md={8}>
-            <TextField
-              fullWidth
-              label="Title"
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium mb-2">
+              Title
+            </label>
+            <input
               id="title"
+              className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              type="text"
               name="title"
               onChange={formik.handleChange}
+              placeholder="Write Title..."
               value={formik.values.title}
               required
-              autoFocus
-              InputProps={{ style: { color: "#fff" } }}
-              InputLabelProps={{ style: { color: "#aaa" } }}
-              sx={{
-                mb: 3,
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#444" },
-                  "&:hover fieldset": { borderColor: "#888" },
-                  "&.Mui-focused fieldset": { borderColor: "#1976d2" },
-                },
-              }}
+              autoComplete="off"
             />
-            <TextField
-              fullWidth
-              label="Description"
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Description
+            </label>
+            <Editor
+              apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
               id="description"
-              name="description"
-              onChange={formik.handleChange}
+              textareaName="description"
+              initialValue=""
               value={formik.values.description}
-              multiline
-              minRows={4}
-              required
-              InputProps={{ style: { color: "#fff" } }}
-              InputLabelProps={{ style: { color: "#aaa" } }}
-              sx={{
-                mb: 3,
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#444" },
-                  "&:hover fieldset": { borderColor: "#888" },
-                  "&.Mui-focused fieldset": { borderColor: "#1976d2" },
-                },
+              onEditorChange={(content) => {
+                formik.setFieldValue("description", content);
+              }}
+              init={{
+                height: 250,
+                menubar: false,
+                plugins: [
+                  "advlist",
+                  "autolink",
+                  "lists",
+                  "link",
+                  "image",
+                  "charmap",
+                  "preview",
+                  "anchor",
+                  "searchreplace",
+                  "visualblocks",
+                  "code",
+                  "fullscreen",
+                  "insertdatetime",
+                  "media",
+                  "table",
+                  "code",
+                  "help",
+                  "wordcount",
+                ],
+                toolbar:
+                  "undo redo |fullscreen blocks|" +
+                  "bold italic forecolor fontsize |code link image preview| alignleft aligncenter " +
+                  "alignright alignjustify | bullist numlist outdent indent | table | " +
+                  "removeformat | help",
+                content_style:
+                  "body { font-family:Helvetica,Arial,sans-serif; font-size: 1rem;  color: #3f3e3e; }",
               }}
             />
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Start Date"
-                  id="start_date"
-                  name="start_date"
-                  type="date"
-                  onChange={formik.handleChange}
-                  value={formik.values.start_date}
-                  InputLabelProps={{ shrink: true, style: { color: "#aaa" } }}
-                  inputProps={{ min: today, style: { color: "#fff" } }}
-                  required
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#444" },
-                      "&:hover fieldset": { borderColor: "#888" },
-                      "&.Mui-focused fieldset": { borderColor: "#1976d2" },
-                    },
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="End Date"
-                  id="end_date"
-                  name="end_date"
-                  type="date"
-                  onChange={formik.handleChange}
-                  value={formik.values.end_date}
-                  InputLabelProps={{ shrink: true, style: { color: "#aaa" } }}
-                  inputProps={{
-                    min: formik.values.start_date
-                      ? (() => {
-                          const minEnd = new Date(formik.values.start_date);
-                          minEnd.setDate(minEnd.getDate() + 1);
-                          return minEnd.toISOString().split("T")[0];
-                        })()
-                      : today,
-                    style: { color: "#fff" },
-                  }}
-                  required
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#444" },
-                      "&:hover fieldset": { borderColor: "#888" },
-                      "&.Mui-focused fieldset": { borderColor: "#1976d2" },
-                    },
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <FormControl fullWidth sx={{ mt: 3 }}>
-              <InputLabel id="is_recent" sx={{ color: "#aaa" }}>
-                Mark as Recent Article
-              </InputLabel>
-              <Select
-                labelId="is_recent"
-                id="is_recent"
-                name="is_recent"
-                value={formik.values.is_recent ? "true" : "false"}
-                label="Mark as Recent Article"
-                onChange={formik.handleChange}
-                sx={{
-                  color: "#fff",
-                  ".MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#444",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#1976d2",
-                  },
-                }}
-              >
-                <MenuItem value="false">No</MenuItem>
-                <MenuItem value="true">Yes</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Box sx={{ pb: 1, fontWeight: 700, color: "#aaa" }}>
-              Upload Image
-            </Box>
-            <Button
-              variant="outlined"
-              component="label"
-              startIcon={<FaCloudUploadAlt />}
-              sx={{
-                color: "#aaa",
-                borderColor: "#444",
-                "&:hover": { borderColor: "#888", color: "#1976d2" },
-                mb: 2,
-                width: "100%",
-                justifyContent: "flex-start",
-                fontWeight: 600,
-                fontSize: 15,
-              }}
-            >
-              Upload Image
+          </div>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">
+                Start Date
+              </label>
               <input
-                id="file"
-                type="file"
-                name="file"
-                hidden
-                onChange={handleChange}
-                accept=".jpg, .png"
+                id="start_date"
+                type="date"
+                name="start_date"
+                onChange={formik.handleChange}
+                value={formik.values.start_date}
+                min={today}
                 required
+                className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
-            </Button>
-            <Box sx={{ pb: 1, fontWeight: 700, color: "#aaa" }}>
-              Preview Image
-            </Box>
-            <Box
-              sx={{
-                width: "100%",
-                minHeight: 120,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                border: "1px solid #222",
-                borderRadius: 2,
-                background: "#181a23",
-                p: 1,
-              }}
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">End Date</label>
+              <input
+                id="end_date"
+                type="date"
+                name="end_date"
+                onChange={formik.handleChange}
+                value={formik.values.end_date}
+                min={formik.values.start_date || today}
+                required
+                className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Mark as Recent Article
+            </label>
+            <select
+              name="is_recent"
+              id="is_recent"
+              className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none transition"
+              value={formik.values.is_recent ? "true" : "false"}
+              onChange={formik.handleChange}
             >
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+          </div>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">
+                Upload Sponsored Image
+              </label>
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="file"
+                  className="flex items-center gap-2 px-4 py-2 bg-[#1976d2] hover:bg-[#1766b6] rounded-lg cursor-pointer text-white font-semibold transition"
+                >
+                  <FaCloudUploadAlt className="text-xl" />
+                  <span>Upload Image</span>
+                  <input
+                    id="file"
+                    type="file"
+                    name="file"
+                    className="hidden"
+                    onChange={handleChange}
+                    accept=".jpg, .png"
+                    required
+                  />
+                </label>
+              </div>
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-2">
+                Preview Image
+              </label>
               {file ? (
                 <img
                   src={file}
-                  alt="Sponsored Post Preview"
-                  style={{
-                    width: "100%",
-                    maxWidth: 240,
-                    height: "auto",
-                    objectFit: "cover",
-                    borderRadius: 8,
-                  }}
+                  alt="Sponsored Preview"
+                  className="h-44 w-full object-cover rounded-lg border border-gray-700"
                   loading="lazy"
                 />
               ) : (
-                <Typography
-                  variant="body2"
-                  sx={{ color: "#555", fontWeight: 400 }}
-                >
+                <div className="h-44 w-full flex items-center justify-center bg-[#222e3e] text-gray-500 rounded-lg border border-gray-700">
                   No image selected
-                </Typography>
+                </div>
               )}
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <Button
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <button
               type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{
-                borderRadius: 2,
-                fontWeight: 700,
-                fontSize: 17,
-                py: 1.3,
-                mt: 3,
-                background: "#22263a",
-                boxShadow: "none",
-                "&:hover": { background: "#1976d2" },
-              }}
+              className="w-full bg-[#1976d2] cursor-pointer hover:bg-[#1766b6] text-white font-bold py-2.5 px-8 rounded-lg shadow transition-all duration-200 text-base"
+              role="button"
             >
-              Create Sponsored
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-    </Box>
+              Create SPONSORED POST
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 

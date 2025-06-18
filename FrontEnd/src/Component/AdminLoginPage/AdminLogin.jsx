@@ -135,7 +135,7 @@ const AdminLogin = () => {
               type="button"
               aria-label="Toggle Password"
               tabIndex={-1}
-              className="absolute cursor-pointer top-[73%] right-2 -translate-y-1/2 text-gray-500 hover:text-[#6a8cff] focus:outline-none"
+              className="absolute cursor-pointer top-[71%] right-2 -translate-y-1/2 text-gray-500 hover:text-[#6a8cff] focus:outline-none"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FaEye /> : <FaEyeSlash />}

@@ -1,246 +1,129 @@
 import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
-import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import DOMPurify from "dompurify";
-import {
-  Box,
-  Typography,
-  Grid,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  CircularProgress,
-} from "@mui/material";
-import { FaEdit } from "react-icons/fa";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import toast from "react-hot-toast";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const ShowEventsPost = () => {
   const { state } = useContext(AppContext);
   const { id } = useParams();
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [event, setEvent] = useState({});
+  const [activeId, setActiveId] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get(`${state.port}/api/admin/events/${id}`)
-      .then((result) => {
-        if (result.data.Status) {
-          setEvent(result.data.Result[0]);
-          setErrorMessage(null);
+    const fetchEvent = async () => {
+      try {
+        const res = await axios.get(`${state.port}/api/admin/events/${id}`);
+        if (res.data.Status && res.data.Result.length) {
+          setEvent(res.data.Result[0]);
         } else {
-          setEvent(null);
-          setErrorMessage(result.data.Error);
+          toast.error(res.data.Error || "Failed to fetch event details");
         }
-        setLoading(false);
-      })
-      .catch((err) => {
-        setEvent(null);
-        setErrorMessage(err.message);
-        setLoading(false);
-      });
+      } catch (err) {
+        toast.error("Error fetching event data");
+      }
+    };
+    fetchEvent();
   }, [id, state.port]);
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  // Toggle for showing/hiding event description
+  const togglePopup = (id) => {
+    setActiveId((prevId) => (prevId === id ? null : id));
+  };
+
+  // Format date
+  const formatDate = (dateTime) => {
+    const date = new Date(dateTime);
+    const options = { month: "long", day: "2-digit", year: "numeric" };
+    return date.toLocaleDateString("en-US", options).toUpperCase();
   };
 
   return (
-    <Box
-      className="container dashboard_All"
-      sx={{
-        color: "#fff",
-        width: "100%",
-        maxWidth: "100vw",
-        px: { xs: 1, sm: 3, md: 6, lg: 10 },
-        py: 3,
-      }}
-    >
-      <Typography
-        variant="h3"
-        className="dashboard_name"
-        gutterBottom
-        sx={{ color: "#fff", fontWeight: 700 }}
-      >
-        Event Info
-      </Typography>
-      <hr style={{ borderColor: "#222", opacity: 0.12 }} />
-      {errorMessage && (
-        <Typography variant="body1" sx={{ color: "#ff6565", my: 2 }}>
-          {errorMessage}
-        </Typography>
-      )}
-
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 3,
-        }}
-      >
-        <Grid item>
-          <Button
-            component={Link}
-            to="/dashboard/events"
-            variant="outlined"
-            startIcon={<IoMdArrowRoundBack />}
-            sx={{
-              color: "#fff",
-              borderColor: "#22263a",
-              fontWeight: 600,
-              "&:hover": { background: "#22263a", borderColor: "#1976d2" },
-            }}
-          >
-            Back
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            component={Link}
-            to={`/dashboard/events/edit/${id}`}
-            variant="contained"
-            color="primary"
-            startIcon={<FaEdit />}
-            sx={{
-              borderRadius: 2,
-              fontWeight: 600,
-              px: 3,
-              py: 1,
-              background: "#22263a",
-              boxShadow: "none",
-              color: "#fff",
-              "&:hover": { background: "#1976d2", color: "#fff" },
-            }}
-          >
-            Edit
-          </Button>
-        </Grid>
-      </Grid>
-
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", py: 7 }}>
-          <CircularProgress color="inherit" />
-        </Box>
-      ) : event ? (
-        <Table sx={{ width: "100%", background: "none" }}>
-          <TableBody>
-            <TableRow>
-              <TableCell
-                sx={{
-                  color: "#7aa8e6",
-                  fontWeight: 700,
-                  width: { xs: 100, sm: 160 },
-                  background: "transparent",
-                  borderBottom: "1px solid #23263a",
-                }}
-              >
-                Image
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "#fff",
-                  background: "transparent",
-                  borderBottom: "1px solid #23263a",
-                }}
-              >
-                <img
-                  className="blog_Image"
-                  src={
-                    event.image_url
-                      ? `${state.port}/Images/${event.image_url}`
-                      : "https://i.postimg.cc/KzNdw0LX/Group.png"
-                  }
-                  alt={event.title}
-                  style={{
-                    width: "100%",
-                    maxWidth: 260,
-                    height: "auto",
-                    borderRadius: 10,
-                    boxShadow: "0 2px 24px #2c3444",
-                  }}
-                />
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell
-                sx={{
-                  color: "#7aa8e6",
-                  fontWeight: 700,
-                  borderBottom: "1px solid #23263a",
-                }}
-              >
-                Title
-              </TableCell>
-              <TableCell
-                sx={{ color: "#fff", borderBottom: "1px solid #23263a" }}
-              >
-                {event.title}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell
-                sx={{
-                  color: "#7aa8e6",
-                  fontWeight: 700,
-                  borderBottom: "1px solid #23263a",
-                }}
-              >
-                Description
-              </TableCell>
-              <TableCell
-                sx={{ color: "#fff", borderBottom: "1px solid #23263a" }}
-              >
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(event.description),
-                  }}
-                ></div>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell
-                sx={{
-                  color: "#7aa8e6",
-                  fontWeight: 700,
-                  borderBottom: "1px solid #23263a",
-                }}
-              >
-                Location
-              </TableCell>
-              <TableCell
-                sx={{ color: "#fff", borderBottom: "1px solid #23263a" }}
-              >
-                {event.location}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{ color: "#7aa8e6", fontWeight: 700 }}>
-                Date
-              </TableCell>
-              <TableCell sx={{ color: "#fff" }}>
-                {formatDate(event.date)}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      ) : (
-        <Typography variant="body1" sx={{ color: "#fff" }}>
-          No event found.
-        </Typography>
-      )}
-    </Box>
+    <div className="p-3">
+      <div className="w-full max-w-3xl mx-auto bg-[#172133] rounded-xl shadow-lg p-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+          <h1 className="text-3xl font-bold">Event Info</h1>
+          <div className="flex gap-3">
+            <Link
+              to="/dashboard/events"
+              className="inline-flex items-center gap-1 px-4 py-1.5 rounded bg-gray-700 hover:bg-gray-600 transition text-white"
+            >
+              <IoMdArrowRoundBack className="text-xl" /> Back
+            </Link>
+            <Link to={`/dashboard/events/edit/${id}`}>
+              <button className="inline-flex cursor-pointer items-center gap-1 px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-700 transition text-white font-semibold">
+                Edit
+              </button>
+            </Link>
+          </div>
+        </div>
+        <hr className="border-gray-700 mb-6" />
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left text-white">
+            <tbody>
+              <tr>
+                <td className="py-2 font-semibold w-40">Event Image</td>
+                <td className="py-2">
+                  <img
+                    className="h-40 object-cover rounded-lg border border-gray-700"
+                    src={
+                      event.image_url
+                        ? `${state.port}/Images/${event.image_url}`
+                        : "https://i.postimg.cc/KzNdw0LX/Group.png"
+                    }
+                    alt={event.title}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className="py-2 font-semibold">Date</td>
+                <td className="py-2">
+                  <time>{formatDate(event.date)}</time>
+                </td>
+              </tr>
+              <tr>
+                <td className="py-2 font-semibold">Location</td>
+                <td className="py-2">{event.location}</td>
+              </tr>
+              <tr>
+                <td className="py-2 font-semibold">Title</td>
+                <td className="py-2">{event.title}</td>
+              </tr>
+              <tr>
+                <td className="py-2 font-semibold">Description</td>
+                <td className="py-2">
+                  <button
+                    className="px-3 cursor-pointer py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition"
+                    onClick={() => togglePopup(event.uuid)}
+                  >
+                    {activeId === event.uuid
+                      ? "Hide description"
+                      : "Show description"}
+                  </button>
+                  {activeId === event.uuid && (
+                    <div className="mt-3 bg-[#222e3e] rounded p-4 shadow-inner max-h-60 overflow-y-auto">
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(event.description),
+                        }}
+                      ></div>
+                      <button
+                        className="mt-3 cursor-pointer px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition"
+                        onClick={() => togglePopup(event.uuid)}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 };
 

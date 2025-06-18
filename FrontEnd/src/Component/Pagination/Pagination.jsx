@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import PropTypes from "prop-types";
-/**
- * Modern, glassy, responsive dark pagination for dashboard.
- */
+
 const Pagination = ({
   totalItems,
   itemsPerPage,
@@ -46,7 +44,7 @@ const Pagination = ({
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`rounded-full p-2 shadow-lg shadow-blue-900/10 bg-[#22283d]/80 border border-[#324266]/40 text-gray-300 hover:bg-blue-700 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed`}
+        className={`rounded-full cursor-pointer p-2 shadow-lg shadow-blue-900/10 bg-[#22283d]/80 border border-[#324266]/40 text-gray-300 hover:bg-blue-700 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed`}
         aria-label="Previous Page"
         style={{
           backdropFilter: "blur(20px)",
@@ -59,7 +57,7 @@ const Pagination = ({
           key={page}
           onClick={() => handlePageChange(page)}
           disabled={page === currentPage}
-          className={`rounded-full px-3 py-1 font-semibold mx-0.5 shadow-md 
+          className={`rounded-full cursor-pointer px-3 py-1 font-semibold mx-0.5 shadow-md 
             ${
               page === currentPage
                 ? "bg-blue-500 text-white shadow-blue-500/30"
@@ -83,7 +81,7 @@ const Pagination = ({
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`rounded-full p-2 shadow-lg shadow-blue-900/10 bg-[#22283d]/80 border border-[#324266]/40 text-gray-300 hover:bg-blue-700 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed`}
+        className={`rounded-full cursor-pointer p-2 shadow-lg shadow-blue-900/10 bg-[#22283d]/80 border border-[#324266]/40 text-gray-300 hover:bg-blue-700 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed`}
         aria-label="Next Page"
         style={{
           backdropFilter: "blur(20px)",

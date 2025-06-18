@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import { Editor } from "@tinymce/tinymce-react"; // Import Editor
 
 const CreateEventsPost = () => {
   const { state } = useContext(AppContext);
@@ -112,22 +113,51 @@ const CreateEventsPost = () => {
                 className="w-full p-3 rounded-lg bg-[#181c2f] border border-[#23263a] text-white focus:ring-2 focus:ring-blue-500 outline-none transition"
               />
             </div>
+            {/* Description with TinyMCE */}
             <div className="mb-5">
-              <label
-                htmlFor="description"
-                className="font-semibold text-gray-300 block mb-1"
-              >
+              <label className="block text-sm font-medium mb-2">
                 Description
               </label>
-              <textarea
+              <Editor
+                apiKey="heppko8q7wimjwb1q87ctvcpcpmwm5nckxpo4s28mnn2dgkb"
                 id="description"
-                name="description"
-                onChange={formik.handleChange}
-                placeholder="Event Description..."
+                textareaName="description"
+                initialValue=""
                 value={formik.values.description}
-                required
-                rows="4"
-                className="w-full p-3 rounded-lg bg-[#181c2f] border border-[#23263a] text-white focus:ring-2 focus:ring-blue-500 outline-none transition resize-y min-h-[90px]"
+                onEditorChange={(content) => {
+                  formik.setFieldValue("description", content);
+                }}
+                init={{
+                  height: 250,
+                  menubar: false,
+                  plugins: [
+                    "advlist",
+                    "autolink",
+                    "lists",
+                    "link",
+                    "image",
+                    "charmap",
+                    "preview",
+                    "anchor",
+                    "searchreplace",
+                    "visualblocks",
+                    "code",
+                    "fullscreen",
+                    "insertdatetime",
+                    "media",
+                    "table",
+                    "code",
+                    "help",
+                    "wordcount",
+                  ],
+                  toolbar:
+                    "undo redo |fullscreen blocks|" +
+                    "bold italic forecolor fontsize |code link image preview| alignleft aligncenter " +
+                    "alignright alignjustify | bullist numlist outdent indent | table | " +
+                    "removeformat | help",
+                  content_style:
+                    "body { font-family:Helvetica,Arial,sans-serif; font-size: 1rem;  color: #3f3e3e; }",
+                }}
               />
             </div>
             <div className="flex gap-4">
@@ -177,7 +207,7 @@ const CreateEventsPost = () => {
               </div>
               <label
                 htmlFor="file"
-                className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#23263a] bg-[#22263a] text-gray-300 font-medium cursor-pointer hover:bg-blue-800 transition"
+                className="flex items-center gap-2 px-6 py-2 rounded-lg border border-[#23263a] bg-[#22263a] text-gray-300 font-medium cursor-pointer hover:bg-[#1976d2] transition"
               >
                 <FaCloudUploadAlt className="text-xl" />
                 Upload Image
@@ -216,7 +246,7 @@ const CreateEventsPost = () => {
         <div className="mt-8">
           <button
             type="submit"
-            className="w-full py-3 rounded-xl font-bold text-lg bg-[#22263a] text-white shadow-lg hover:bg-blue-700 transition"
+            className="w-full bg-[#1976d2] cursor-pointer hover:bg-[#1766b6] text-white font-bold py-2.5 px-8 rounded-lg shadow transition-all duration-200 text-base"
           >
             CREATE EVENT
           </button>
