@@ -89,6 +89,7 @@ import {
   SponsoredPostToDelete,
   editSponsoredPost,
   getUserCount,
+  getHomeHighlightBlog,
 } from "../controllers/AdminControllers.js";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
@@ -133,6 +134,7 @@ AdminRouter.put("/blogpost/edit/:id", upload.single("file"), editBlogPost);
 AdminRouter.get("/blogpost/:id", editBlogPostId);
 AdminRouter.get("/blogpostbyid/:id", getBlogPostById);
 AdminRouter.delete("/blogpost/delete/:id", BlogPostToDelete);
+AdminRouter.get("/highlight-blog", getHomeHighlightBlog);
 
 // Sponsored Post
 AdminRouter.post(

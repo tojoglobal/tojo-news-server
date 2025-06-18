@@ -6,6 +6,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { Editor } from "@tinymce/tinymce-react";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import toast from "react-hot-toast";
+import { FaCheckCircle } from "react-icons/fa";
 
 const EditBlogPost = () => {
   const { state } = useContext(AppContext);
@@ -77,6 +78,10 @@ const EditBlogPost = () => {
       newsCategory: BlogPost.category_id || "",
       file: BlogPost.thumble || "",
       artical: BlogPost.articalpost || "",
+      home_highlight:
+        BlogPost.home_highlight === 1 || BlogPost.home_highlight === "1"
+          ? "1"
+          : "0",
     },
     onSubmit: async (values, { resetForm }) => {
       const formData = new FormData();
@@ -89,6 +94,7 @@ const EditBlogPost = () => {
       formData.append("newsCategory", values.newsCategory);
       formData.append("file", values.file);
       formData.append("artical", values.artical);
+      formData.append("home_highlight", values.home_highlight);
 
       try {
         const response = await axios.put(
@@ -257,6 +263,37 @@ const EditBlogPost = () => {
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Highlight on Home
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={
+                  formik.values.home_highlight === true ||
+                  formik.values.home_highlight === "1"
+                }
+                onChange={(e) =>
+                  formik.setFieldValue(
+                    "home_highlight",
+                    e.target.checked ? "1" : "0"
+                  )
+                }
+                className="mr-2 cursor-pointer"
+              />
+              <span className="text-xs text-gray-400">
+                Only one blog can be highlighted at a time
+              </span>
+              {BlogPost.home_highlight === 1 ||
+              BlogPost.home_highlight === "1" ? (
+                <span className="flex items-center gap-1 text-green-400 font-semibold ml-3">
+                  <FaCheckCircle className="text-lg" />
+                  Highlighted
+                </span>
+              ) : null}
+            </div>
           </div>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">

@@ -42,7 +42,6 @@ const BlogPost = () => {
     queryFn: () => fetchBlogPosts(state.port),
   });
 
-  // Show toast for query error (once)
   useEffect(() => {
     if (error) {
       toast.error(error.message || "Failed to fetch blog posts");
@@ -84,7 +83,6 @@ const BlogPost = () => {
     });
   };
 
-  // Tailwind gray-600 hex: #4b5563
   const borderBottom = "1.5px solid #4b5563";
 
   return (
@@ -124,6 +122,9 @@ const BlogPost = () => {
               <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
                 BLOG THUMBLE
               </th>
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                HIGHLIGHTED
+              </th>
               <th
                 className="px-4 py-3 font-bold text-center"
                 style={{ borderBottom }}
@@ -136,7 +137,7 @@ const BlogPost = () => {
             {isLoading ? (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="text-center py-8"
                   style={{ borderBottom }}
                 >
@@ -162,6 +163,17 @@ const BlogPost = () => {
                       src={`${state.port}/Images/${bgPost.thumble}`}
                       alt={bgPost.thumble}
                     />
+                  </td>
+                  <td className="px-4 py-3" style={{ borderBottom }}>
+                    {bgPost.home_highlight === 1 ? (
+                      <span className="bg-green-600 text-white px-3 py-1 rounded font-semibold text-xs shadow">
+                        Home Highlighted
+                      </span>
+                    ) : (
+                      <span className="bg-gray-700 text-white px-3 py-1 rounded text-xs">
+                        -
+                      </span>
+                    )}
                   </td>
                   <td
                     className="px-4 py-3 text-center"
@@ -196,7 +208,7 @@ const BlogPost = () => {
             ) : (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="text-center py-8 text-gray-400"
                   style={{ borderBottom }}
                 >

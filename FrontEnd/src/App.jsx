@@ -85,6 +85,7 @@ import ShowEventsPost from "./Component/Routers/Events/ShowEventsPost";
 import EditEventsPost from "./Component/Routers/Events/EditEventsPost";
 import DocumentariesPost from "./Component/Routers/Documentories/DocumentariesPost";
 import AdminFeaturedThisWeek from "./Component/Routers/Documentories/AdminFeaturedThisWeek";
+import Settings from "./Dashbord/Settings";
 
 function App() {
   return (
@@ -139,7 +140,10 @@ function App() {
 
             {/* Documentaries Post */}
             <Route path="documentaries" element={<DocumentariesPost />} />
-            <Route path="documentaries/featured" element={<AdminFeaturedThisWeek />} />
+            <Route
+              path="documentaries/featured"
+              element={<AdminFeaturedThisWeek />}
+            />
 
             {/* Sponsored Post */}
             <Route path="Sponsored" element={<SponsoredPost />} />
@@ -196,6 +200,7 @@ function App() {
             {/* patner  */}
             <Route path="member" element={<AllMemberFirm />} />
             <Route path="member/create" element={<CreateMemberFirm />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -96,6 +96,12 @@ const createBlogPost = async (req, res) => {
   try {
     const currentDate = new Date();
     const imageFile = req.file.filename;
+    const homeHighlight = req.body.home_highlight === "1" ? 1 : 0;
+
+    if (homeHighlight) {
+      // unset all others
+      await db.query("UPDATE blognews SET home_highlight = 0");
+    }
 
     const values = [
       uuidv4(),
@@ -107,6 +113,7 @@ const createBlogPost = async (req, res) => {
       imageFile,
       req.body.artical,
       currentDate,
+      homeHighlight,
     ];
 
     const [result] = await db.query(createBlogPostQuery, [values]);
@@ -153,6 +160,11 @@ const editBlogPost = async (req, res) => {
     const currentDate = new Date();
     const id = req.params.id;
     const newImage = req.file ? req.file.filename : req.body.file;
+    const homeHighlight = req.body.home_highlight === "1" ? 1 : 0;
+
+    if (homeHighlight) {
+      await db.query("UPDATE blognews SET home_highlight = 0");
+    }
 
     const values = [
       req.body.title,
@@ -163,6 +175,7 @@ const editBlogPost = async (req, res) => {
       newImage,
       req.body.artical,
       currentDate,
+      homeHighlight,
       id,
     ];
 
@@ -180,6 +193,25 @@ const editBlogPost = async (req, res) => {
         Error: "Blog post not found or no changes made",
       });
     }
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
+  }
+};
+
+const getHomeHighlightBlog = async (req, res) => {
+  try {
+    const [data] = await db.query(
+      "SELECT * FROM blognews WHERE home_highlight = 1 LIMIT 1"
+    );
+
+    return res.status(200).json({
+      Status: true,
+      Result: data,
+    });
   } catch (error) {
     console.error("SQL Error:", error);
     return res.status(500).json({
@@ -1563,6 +1595,7 @@ const SponsoredPostToDelete = async (req, res) => {
 
 export {
   getUserCount,
+  getHomeHighlightBlog,
   createSponsoredPost,
   allSponsoredPost,
   editSponsoredPost,

@@ -69,6 +69,7 @@ const CreateBlogPost = () => {
       formData.append("newsCategory", values.newsCategory);
       formData.append("file", values.file);
       formData.append("artical", values.artical);
+      formData.append("home_highlight", values.home_highlight);
 
       try {
         const response = await axios.post(
@@ -237,6 +238,28 @@ const CreateBlogPost = () => {
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Highlight on Home
+            </label>
+            <input
+              type="checkbox"
+              checked={
+                formik.values.home_highlight === true ||
+                formik.values.home_highlight === "1"
+              }
+              onChange={(e) =>
+                formik.setFieldValue(
+                  "home_highlight",
+                  e.target.checked ? "1" : "0"
+                )
+              }
+              className="mr-2"
+            />
+            <span className="text-xs text-gray-400">
+              Only one blog can be highlighted at a time
+            </span>
           </div>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">

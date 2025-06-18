@@ -28,7 +28,7 @@ const editAuthorQuery = `UPDATE authors SET name = ? WHERE uuid = ?`;
 const deleteOneAuthorQuery = `DELETE FROM authors WHERE uuid = ?`;
 
 // Blog  Area
-const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle , author1_id , author2_id , category_id , thumble , articalpost , dateAndTime ) VALUES ( ? )`;
+const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle, author1_id, author2_id, category_id, thumble, articalpost, dateAndTime, home_highlight) VALUES ( ? )`;
 
 // Sponsored area
 export const createSponsoredPostQuery = `
@@ -60,7 +60,7 @@ export const getSponsoredPostByIdQuery = `
 `;
 
 const allBlogPostQuery = `SELECT * FROM blognews ORDER BY blognews.ID DESC`;
-const editBlogPostQuery = `UPDATE blognews SET title = ?,subtitle = ?, author1_id = ? , author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ? Where uuid = ?`;
+const editBlogPostQuery = `UPDATE blognews SET title = ?, subtitle = ?, author1_id = ?, author2_id = ?, category_id = ?, thumble = ?, articalpost = ?, dateAndTime = ?, home_highlight = ? WHERE uuid = ?`;
 const editBlogPostIdQuery = `SELECT * FROM blognews WHERE uuid = ?`;
 const getBlogPostByIdQuery = `SELECT * FROM blognews WHERE ID = ?`;
 
