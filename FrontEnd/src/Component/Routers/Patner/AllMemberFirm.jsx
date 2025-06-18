@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { HiPlus } from "react-icons/hi";
 import {
   Dialog,
@@ -11,7 +11,6 @@ import {
   DialogActions,
   DialogContent,
 } from "@mui/material";
-// import { useTheme } from "@mui/material/styles";
 import { BsExclamationCircle } from "react-icons/bs";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -19,9 +18,6 @@ import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const AllMemberFirm = () => {
   const { state } = useContext(AppContext);
-  const isHomePageRoute = location.pathname;
-  const navigate = useNavigate();
-  // all state
   const [open, setOpen] = useState(false);
   const [firmMemberToDelete, setFirmMemberToDelete] = useState();
   const [member, setMember] = useState([]);
@@ -39,32 +35,25 @@ const AllMemberFirm = () => {
         if (result.data.Status) {
           setMember(result.data.Result);
         } else {
-          alert(result.data.Error);
+          console.log(result.data.Error);
         }
       })
-      .catch((err) => console.log(err));
-  }, []);
+      .catch((err) => console.log(String(err)));
+  }, [state.port]);
 
   // diolog box open and cloge function
   const handleClickOpen = (id) => {
     setOpen(true);
     setDataDeleteId(id);
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
   // data delete and cancel function
   const handleCancel = () => {
     toast.error(`Cancel`, {
       position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
+      duration: 3000,
+      style: { background: "#23263a", color: "#fff" },
     });
     setOpen(false);
   };
@@ -75,106 +64,110 @@ const AllMemberFirm = () => {
         .delete(`${state.port}/api/admin/member/delete/${dataDeleteId}`)
         .then((result) => {
           if (result.data.Status) {
-            toast.success(`${dataDeleteId} deleted successfully`, {
+            toast.success(`Deleted successfully`, {
               position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
+              duration: 3000,
+              style: { background: "#23263a", color: "#fff" },
             });
-            setFirmMemberToDelete("deleted successfully");
-            navigate("/dashboard/member");
+            setFirmMemberToDelete("Deleted successfully");
+            setMember((prev) => prev.filter((m) => m.uuid !== dataDeleteId));
           } else {
             setFirmMemberToDelete(result.data.Error);
+            console.log(result.data.Error);
           }
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.log(String(err)));
     }
     setOpen(false);
   };
 
   return (
-    <div className="conatiner dashboard_All">
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All Member</h1>
-      <hr />
-      <div className="dashboard_certificate_list">
-        <div>
-          <Link to="/dashboard/member/create">
-            <button className="button-62" role="button">
-              Create Member{" "}
-              <span>
-                <HiPlus />
+    <div className="p-3">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">All Members</h1>
+        <Link to="/dashboard/member/create">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<HiPlus />}
+            sx={{
+              borderRadius: 2,
+              fontWeight: 600,
+              fontSize: 14,
+              px: 2,
+              py: 0.8,
+              boxShadow: 1,
+              minWidth: 0,
+            }}
+          >
+            Create Member
+          </Button>
+        </Link>
+      </div>
+      <hr className="border-gray-700 mb-6" />
+      <p className="text-green-500 font-semibold mb-3">{firmMemberToDelete}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {member.length > 0 ? (
+          member.map((im) => (
+            <div
+              key={im.uuid}
+              className="flex flex-col items-center bg-[#181f33] rounded-xl p-5 shadow-md relative"
+            >
+              <img
+                className="w-32 h-32 object-cover rounded-full border-4 border-blue-400"
+                src={`${state.port}/Images/${im.img}`}
+                alt={im.imageTitle}
+              />
+              <span className="mt-4 mb-2 font-semibold text-lg text-[#01b5e8]">
+                {im.imageTitle}
               </span>
-            </button>
-          </Link>
-          <p className="success-message">{firmMemberToDelete}</p>
-        </div>
-        {/* ++++++========part 2 =======++++++++ */}
-        <div className="certificate_list">
-          <ol>
-            {member.map((im) => (
-              <li key={im.uuid}>
-                <img
-                  className="cetificate_image"
-                  src={`${state.port}/Images/${im.img}`}
-                  alt={im.imageTitle}
-                />
-                <span style={{ marginLeft: "30px", color: "#01b5e8" }}>
-                  {im.imageTitle}
-                </span>
-                <button
-                  className="button-62 cetificate_image_deleteBtn"
-                  role="button"
-                  onClick={() => handleClickOpen(im.uuid)}
-                >
-                  Delete
-                </button>
-                <Dialog
-                  fullScreen={fullScreen}
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="responsive-dialog-title"
-                >
-                  <DialogTitle
-                    id="responsive-dialog-title "
-                    className="icon_div"
+              <button
+                className="inline-flex cursor-pointer items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2 rounded-lg shadow transition mt-2"
+                onClick={() => handleClickOpen(im.uuid)}
+              >
+                Delete
+              </button>
+              <Dialog
+                fullScreen={fullScreen}
+                open={open && dataDeleteId === im.uuid}
+                onClose={handleClose}
+                aria-labelledby="responsive-dialog-title"
+              >
+                <DialogTitle id="responsive-dialog-title" className="icon_div">
+                  <div style={{ textAlign: "center" }}>
+                    <BsExclamationCircle className="icon" />
+                    <h3 style={{ paddingTop: "20px" }}>Are you sure?</h3>
+                  </div>
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Are you sure you want to delete this member?
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    autoFocus
+                    onClick={handleCancel}
+                    style={{ color: "#E16565" }}
                   >
-                    <div style={{ textAlign: "center" }}>
-                      <BsExclamationCircle className="icon" />
-                      <h3 style={{ paddingTop: "20px" }}>Are You sure? </h3>
-                    </div>
-                  </DialogTitle>
-                  <DialogContent>
-                    <DialogContentText>
-                      Are you sure delete the &quot;Certificate&quot; Image
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button
-                      autoFocus
-                      onClick={handleCancel}
-                      style={{ color: "#E16565" }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button onClick={handleDelete} autoFocus>
-                      <Link
-                        to="/dashboard/member/delete"
-                        style={{ color: "#E16565", textDecoration: "none" }}
-                      >
-                        Yes,delete it!
-                      </Link>
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </li>
-            ))}
-          </ol>
-        </div>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleDelete}
+                    autoFocus
+                    style={{ color: "#E16565" }}
+                  >
+                    Yes, delete it!
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-400 col-span-full py-16">
+            No members found.
+          </div>
+        )}
       </div>
     </div>
   );

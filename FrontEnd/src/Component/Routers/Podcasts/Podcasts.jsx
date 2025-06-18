@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi";
-import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import {
@@ -19,17 +18,11 @@ import { MdOutlineArrowDownward } from "react-icons/md";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const Podcasts = () => {
-  // path
-  const isHomePageRoute = location.pathname;
-  const navigate = useNavigate();
   const { state } = useContext(AppContext);
-
-  // state
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [Podcasts, setPodcasts] = useState([]);
+  const [podcasts, setPodcasts] = useState([]);
   const [open, setOpen] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState(null);
-  const [BlogPostToDelete, setBlogPostToDelete] = useState();
+  const [deleteMessage, setDeleteMessage] = useState("");
 
   // fetch data
   useEffect(() => {
@@ -39,38 +32,30 @@ const Podcasts = () => {
         if (result.data.Status) {
           setPodcasts(result.data.Result);
         } else {
-          setErrorMessage(result.data.Error);
+          console.log(result.data.Error);
         }
       })
-      .catch((err) => console.log(err));
-  }, []);
+      .catch((err) => console.log(String(err)));
+  }, [state.port]);
 
   // matrial dialog box
   const themes = useTheme();
   const fullScreen = useMediaQuery(themes.breakpoints.down("md"));
 
-  // diolog box open and cloge function
+  // dialog open/close
   const handleClickOpen = (id) => {
     setOpen(true);
     setDataDeleteId(id);
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  // data delete and cancel function
+  const handleClose = () => setOpen(false);
+
   const handleCancel = () => {
     toast.error(`Cancel`, {
       position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
+      duration: 3000,
+      style: { background: "#23263a", color: "#fff" },
     });
     setOpen(false);
-    // setDataDeleteCancel(true)
   };
 
   const handleDelete = () => {
@@ -78,150 +63,163 @@ const Podcasts = () => {
       .delete(`${state.port}/api/admin/Podcasts/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
-          navigate("/dashboard/Podcasts");
-          setBlogPostToDelete(`deleted successfully`);
-          toast.success(`deleted successfully`, {
+          setPodcasts((prev) =>
+            prev.filter((pod) => pod.uuid !== dataDeleteId)
+          );
+          setDeleteMessage(`Deleted successfully`);
+          toast.success(`Deleted successfully`, {
             position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
+            duration: 3000,
+            style: { background: "#23263a", color: "#fff" },
           });
         } else {
-          setBlogPostToDelete(result.data.Error);
+          setDeleteMessage(result.data.Error);
+          console.log(result.data.Error);
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.log(String(err)));
 
     setOpen(false);
   };
 
   return (
-    <div className="conatiner dashboard_All">
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All Podcast </h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div>
-        <div>
+    <div className="bg-[#101829] min-h-screen flex flex-col items-center px-2 md:px-0 py-6 text-white transition-colors duration-300">
+      <div className="w-full max-w-4xl bg-[#172133] rounded-xl shadow-lg p-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+          <h1 className="text-2xl md:text-3xl font-bold">All Podcasts</h1>
           <Link to="/dashboard/Podcasts/create">
-            <button className="button-62" role="button">
-              New Podcast{" "}
-              <span>
-                {" "}
-                <HiPlus />
-              </span>
-            </button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<HiPlus />}
+              sx={{
+                borderRadius: 2,
+                fontWeight: 600,
+                fontSize: 14,
+                px: 2,
+                py: 0.8,
+                boxShadow: 1,
+                minWidth: 0,
+              }}
+            >
+              New Podcast
+            </Button>
           </Link>
-          <p className="success-message">{BlogPostToDelete}</p>
         </div>
-        {/* ++++++========part 3 =======++++++++ */}
-        <div>
-          <div>
-            <table id="customers">
-              <tr>
-                <th>SL</th>
-                <th>Hosted NAME</th>
-                <th>Hosted INFO</th>
-                <th>IMG</th>
-                <th>ACTIONS</th>
+        <hr className="border-gray-700 mb-6" />
+        {deleteMessage && (
+          <div className="text-green-500 font-semibold mb-4">
+            {deleteMessage}
+          </div>
+        )}
+        <div className="overflow-x-auto rounded-xl bg-[#181f33]">
+          <table className="min-w-full text-sm text-left text-white">
+            <thead>
+              <tr className="bg-[#212b3a]">
+                <th className="px-4 py-3 font-bold">SL</th>
+                <th className="px-4 py-3 font-bold">Hosted NAME</th>
+                <th className="px-4 py-3 font-bold">Hosted INFO</th>
+                <th className="px-4 py-3 font-bold">IMG</th>
+                <th className="px-4 py-3 font-bold">ACTIONS</th>
               </tr>
-
-              {Podcasts.length > 0 &&
-                Podcasts.map((tm, index) => (
-                  <tr key={tm.uuid}>
-                    <td>{index + 1}</td>
-                    <td>{tm.name}</td>
-                    <td>{tm.hostedInfo}</td>
-                    <td>
+            </thead>
+            <tbody>
+              {podcasts.length > 0 ? (
+                podcasts.map((tm, index) => (
+                  <tr key={tm.uuid} className="hover:bg-[#232e45] transition">
+                    <td className="px-4 py-3">{index + 1}</td>
+                    <td className="px-4 py-3">{tm.name}</td>
+                    <td className="px-4 py-3">{tm.hostedInfo}</td>
+                    <td className="px-4 py-3">
                       <img
-                        className="Team_member_Image"
+                        className="w-16 h-16 object-cover rounded-lg border border-gray-700"
                         src={`${state.port}/Images/${tm.image}`}
                         alt={tm.image}
                       />
                     </td>
-                    <td>
-                      <div className="dropdown">
-                        <button className="dropbtn">
-                          Select <MdOutlineArrowDownward />
-                        </button>
-                        <div className="dropdown-content">
-                          <Link
-                            to={`/dashboard/Podcasts/edit/${tm.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> Edit</span>
-                          </Link>
-                          {/* </span> */}
-
-                          <Link
-                            to={`/dashboard/Podcasts/${tm.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> SHOW</span>
-                          </Link>
-
-                          <span
-                            onClick={() => handleClickOpen(tm.uuid)}
-                            className="actionBtn"
-                          >
-                            {" "}
-                            DELETE
-                          </span>
-                        </div>
-                      </div>
-                      <Dialog
-                        fullScreen={fullScreen}
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="responsive-dialog-title"
-                      >
-                        <DialogTitle
-                          id="responsive-dialog-title "
-                          className="icon_div"
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2">
+                        <Link
+                          to={`/dashboard/Podcasts/edit/${tm.uuid}`}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white transition"
                         >
-                          <div style={{ textAlign: "center" }}>
-                            <BsExclamationCircle className="icon" />
-                            <h3 style={{ paddingTop: "20px" }}>
-                              Are You sure?{" "}
-                            </h3>
-                          </div>
-                        </DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>
-                            Are you sure delete this contact Info
-                          </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button
-                            autoFocus
-                            onClick={handleCancel}
-                            style={{ color: "#E16565" }}
+                          Edit
+                        </Link>
+                        <Link
+                          to={`/dashboard/Podcasts/${tm.uuid}`}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-green-600 hover:bg-green-700 text-white transition"
+                        >
+                          Show
+                        </Link>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          sx={{
+                            px: 1.5,
+                            py: 0.5,
+                            fontWeight: 600,
+                            fontSize: 13,
+                            minWidth: 0,
+                            borderColor: "#E16565",
+                            color: "#E16565",
+                          }}
+                          onClick={() => handleClickOpen(tm.uuid)}
+                          endIcon={<MdOutlineArrowDownward />}
+                        >
+                          Delete
+                        </Button>
+                        <Dialog
+                          fullScreen={fullScreen}
+                          open={open && dataDeleteId === tm.uuid}
+                          onClose={handleClose}
+                          aria-labelledby="responsive-dialog-title"
+                        >
+                          <DialogTitle
+                            id="responsive-dialog-title"
+                            className="icon_div"
                           >
-                            Cancel
-                          </Button>
-                          <Button onClick={handleDelete} autoFocus>
-                            <Link
-                              to={`/dashboard/Podcasts/delete`}
-                              style={{
-                                color: "#E16565",
-                                textDecoration: "none",
-                              }}
+                            <div style={{ textAlign: "center" }}>
+                              <BsExclamationCircle className="icon" />
+                              <h3 style={{ paddingTop: "20px" }}>
+                                Are you sure?
+                              </h3>
+                            </div>
+                          </DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>
+                              Are you sure you want to delete this podcast?
+                            </DialogContentText>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button
+                              autoFocus
+                              onClick={handleCancel}
+                              style={{ color: "#E16565" }}
                             >
-                              Yes,delete it!
-                            </Link>
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleDelete}
+                              autoFocus
+                              style={{ color: "#E16565" }}
+                            >
+                              Yes, delete it!
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                      </div>
                     </td>
                   </tr>
-                ))}
-            </table>
-          </div>
-          {/* table */}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center py-8 text-gray-400">
+                    No podcasts found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

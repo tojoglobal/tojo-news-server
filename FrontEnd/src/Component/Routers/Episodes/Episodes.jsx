@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { HiPlus } from "react-icons/hi";
-import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import {
@@ -17,24 +16,16 @@ import {
 import { BsExclamationCircle } from "react-icons/bs";
 import { MdOutlineArrowDownward } from "react-icons/md";
 import Pagination from "../../Pagination/Pagination";
-import { useContext } from "react";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const Episodes = () => {
-  // path
-  const isHomePageRoute = location.pathname;
-  const navigate = useNavigate();
   const { state } = useContext(AppContext);
-
-  // state
   const [errorMessage, setErrorMessage] = useState(null);
-  const [Episodes, setEpisodes] = useState([]);
+  const [episodes, setEpisodes] = useState([]);
   const [open, setOpen] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState(null);
-  const [EpisodesToDelete, setEpisodesToDelete] = useState();
-
+  const [episodesToDelete, setEpisodesToDelete] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [paginatedData, setPaginatedData] = useState([]);
   const itemsPerPage = 10;
 
   // fetch data
@@ -44,37 +35,31 @@ const Episodes = () => {
       .then((result) => {
         if (result.data.Status) {
           setEpisodes(result.data.Result);
-          setPaginatedData(result.data.Result.slice(0, itemsPerPage));
         } else {
           setErrorMessage(result.data.Error);
         }
       })
-      .catch((err) => console.log(err));
-  }, []);
+      .catch((err) => setErrorMessage(String(err)));
+  }, [state.port]);
 
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    setPaginatedData(Episodes.slice(startIndex, endIndex));
-  }, [currentPage, Episodes]);
+  const paginatedData = episodes.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // matrial dialog box
   const themes = useTheme();
   const fullScreen = useMediaQuery(themes.breakpoints.down("md"));
 
-  // diolog box open and cloge function
   const handleClickOpen = (id) => {
     setOpen(true);
     setDataDeleteId(id);
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  // data delete and cancel function
+  const handleClose = () => setOpen(false);
+
   const handleCancel = () => {
     toast.error(`Cancel`, {
       position: "top-right",
@@ -87,7 +72,6 @@ const Episodes = () => {
       theme: "light",
     });
     setOpen(false);
-    // setDataDeleteCancel(true)
   };
 
   const handleDelete = () => {
@@ -95,112 +79,124 @@ const Episodes = () => {
       .delete(`${state.port}/api/admin/Episodes/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
-          navigate("/dashboard/Episodes");
-          setEpisodesToDelete(`deleted successfully`);
-          toast.success(`deleted successfully`, {
+          setEpisodes((list) =>
+            list.filter((item) => item.uuid !== dataDeleteId)
+          );
+          setEpisodesToDelete(`Deleted successfully`);
+          toast.success(`Deleted successfully`, {
             position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
+            duration: 3000,
+            style: { background: "#23263a", color: "#fff" },
           });
         } else {
           setEpisodesToDelete(result.data.Error);
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => setEpisodesToDelete(String(err)));
 
     setOpen(false);
   };
 
   return (
-    <div className="conatiner dashboard_All">
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All Episodes </h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div>
-        <div>
-          <Link to="/dashboard/Episodes/create">
-            <button className="button-62" role="button">
-              Create Episodes
-              <span>
-                {" "}
-                <HiPlus />
-              </span>
-            </button>
-          </Link>
-          <p className="success-message">{EpisodesToDelete}</p>
-        </div>
-        {/* table start */}
-        <div>
-          <div>
-            <table id="customers" className="">
-              <tr>
-                <th>SL</th>
-                <th>TITLE</th>
-                <th>ACTIONS</th>
-              </tr>
-
-              {paginatedData.length > 0 &&
-                paginatedData.map((bgPost, index) => (
-                  <tr key={bgPost.uuid}>
-                    <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                    <td>{bgPost.title}</td>
-
-                    <td>
-                      <div className="dropdown">
-                        <button className="dropbtn">
-                          Select <MdOutlineArrowDownward />
-                        </button>
-                        <div className="dropdown-content">
-                          <Link
-                            to={`/dashboard/Episodes/edit/${bgPost.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> Edit</span>
-                          </Link>
-                          {/* </span> */}
-
-                          <Link
-                            to={`/dashboard/Episodes/${bgPost.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> SHOW</span>
-                          </Link>
-
-                          <span
-                            onClick={() => handleClickOpen(bgPost.uuid)}
-                            className="actionBtn"
-                          >
-                            {" "}
-                            DELETE
-                          </span>
-                        </div>
+    <div className="p-3">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">All Episodes</h1>
+        <Link to="/dashboard/Episodes/create">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<HiPlus />}
+            sx={{
+              borderRadius: 2,
+              fontWeight: 600,
+              fontSize: 14,
+              px: 2,
+              py: 0.8,
+              boxShadow: 1,
+              minWidth: 0,
+            }}
+          >
+            Create Episode
+          </Button>
+        </Link>
+      </div>
+      <hr className="border-gray-700 mb-6" />
+      {errorMessage && (
+        <div className="text-red-400 font-semibold mb-4">{errorMessage}</div>
+      )}
+      {episodesToDelete && (
+        <p className="text-green-500 font-semibold mb-3">{episodesToDelete}</p>
+      )}
+      <div className="overflow-x-auto rounded-xl bg-[#181f33]">
+        <table className="min-w-full text-sm text-left text-white">
+          <thead>
+            <tr className="bg-[#212b3a]">
+              <th className="px-4 py-3 font-bold">SL</th>
+              <th className="px-4 py-3 font-bold">TITLE</th>
+              <th className="px-4 py-3 font-bold">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.length > 0 ? (
+              paginatedData.map((bgPost, index) => (
+                <tr key={bgPost.uuid} className="hover:bg-[#232e45] transition">
+                  <td className="px-4 py-3">
+                    {(currentPage - 1) * itemsPerPage + index + 1}
+                  </td>
+                  <td className="px-4 py-3">{bgPost.title}</td>
+                  <td className="px-4 py-3">
+                    <div className="relative inline-block text-left">
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        endIcon={<MdOutlineArrowDownward />}
+                        sx={{
+                          color: "#b2c8f9",
+                          borderColor: "#324266",
+                          fontWeight: 600,
+                          fontSize: 13,
+                          px: 1.5,
+                          py: 0.5,
+                          minWidth: 0,
+                        }}
+                        onClick={() => handleClickOpen(bgPost.uuid)}
+                      >
+                        Actions
+                      </Button>
+                      <div className="mt-2 flex gap-2">
+                        <Link
+                          to={`/dashboard/Episodes/edit/${bgPost.uuid}`}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white transition"
+                        >
+                          Edit
+                        </Link>
+                        <Link
+                          to={`/dashboard/Episodes/${bgPost.uuid}`}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-green-600 hover:bg-green-700 text-white transition"
+                        >
+                          Show
+                        </Link>
                       </div>
                       <Dialog
                         fullScreen={fullScreen}
-                        open={open}
+                        open={open && dataDeleteId === bgPost.uuid}
                         onClose={handleClose}
                         aria-labelledby="responsive-dialog-title"
                       >
                         <DialogTitle
-                          id="responsive-dialog-title "
+                          id="responsive-dialog-title"
                           className="icon_div"
                         >
                           <div style={{ textAlign: "center" }}>
                             <BsExclamationCircle className="icon" />
                             <h3 style={{ paddingTop: "20px" }}>
-                              Are You sure?{" "}
+                              Are you sure?
                             </h3>
                           </div>
                         </DialogTitle>
                         <DialogContent>
                           <DialogContentText>
-                            Are you sure delete this contact Info
+                            Are you sure you want to delete this episode?
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -211,33 +207,35 @@ const Episodes = () => {
                           >
                             Cancel
                           </Button>
-                          <Button onClick={handleDelete} autoFocus>
-                            <Link
-                              to={`/dashboard/Episodes/delete`}
-                              style={{
-                                color: "#E16565",
-                                textDecoration: "none",
-                              }}
-                            >
-                              Yes,delete it!
-                            </Link>
+                          <Button
+                            onClick={handleDelete}
+                            autoFocus
+                            style={{ color: "#E16565" }}
+                          >
+                            Yes, delete it!
                           </Button>
                         </DialogActions>
                       </Dialog>
-                    </td>
-                  </tr>
-                ))}
-            </table>
-          </div>
-          {/* table */}
-          <Pagination
-            totalItems={Episodes.length}
-            itemsPerPage={itemsPerPage}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-        </div>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3} className="text-center py-8 text-gray-400">
+                  No episodes found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
+      <Pagination
+        totalItems={episodes.length}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

@@ -1,12 +1,11 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineArrowDownward } from "react-icons/md";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { HiPlus } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { Country, State } from "country-state-city";
-import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 import {
   Dialog,
@@ -21,8 +20,6 @@ import {
 import { BsExclamationCircle } from "react-icons/bs";
 
 const ClientList = () => {
-  const { state } = useContext(AppContext);
-  // path
   const isHomePageRoute = location.pathname;
   const navigate = useNavigate();
 

@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { MdOutlineArrowDownward } from "react-icons/md";
-import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { HiPlus } from "react-icons/hi";
 import { Link } from "react-router-dom";
@@ -18,18 +17,12 @@ import {
 import { BsExclamationCircle } from "react-icons/bs";
 
 const ContactList = () => {
-  // path
-  const isHomePageRoute = location.pathname;
-  const navigate = useNavigate();
-
-  // state
   const [errorMessage, setErrorMessage] = useState(null);
   const [contactList, setContactList] = useState([]);
   const [open, setOpen] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState(null);
   const [faqToDelete, setFaqToDelete] = useState();
 
-  // fetch data
   useEffect(() => {
     axios
       .get("https://api.tojoglobal.com/api/admin/contactlist")
@@ -43,21 +36,16 @@ const ContactList = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  // matrial dialog box
   const themes = useTheme();
   const fullScreen = useMediaQuery(themes.breakpoints.down("md"));
 
-  // diolog box open and cloge function
   const handleClickOpen = (id) => {
     setOpen(true);
     setDataDeleteId(id);
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  // data delete and cancel function
+  const handleClose = () => setOpen(false);
+
   const handleCancel = () => {
-    // console.log(id);
     toast.error(`Cancel`, {
       position: "top-right",
       autoClose: 5000,
@@ -69,7 +57,6 @@ const ContactList = () => {
       theme: "light",
     });
     setOpen(false);
-    // setDataDeleteCancel(true)
   };
 
   const handleDelete = () => {
@@ -80,7 +67,9 @@ const ContactList = () => {
       )
       .then((result) => {
         if (result.data.Status) {
-          navigate("/dashboard/contact");
+          setContactList((list) =>
+            list.filter((item) => item.uuid !== dataDeleteId)
+          );
           setFaqToDelete(`deleted successfully`);
           toast.success(`deleted successfully`, {
             position: "top-right",
@@ -101,96 +90,117 @@ const ContactList = () => {
     setOpen(false);
   };
 
+  const borderBottom = "1.5px solid #4b5563";
+
   return (
-    <div className="conatiner dashboard_All">
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">Contact List</h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div>
-        <div>
-          <Link to="/dashboard/contact/create">
-            <button className="button-62" role="button">
-              New Contact
-              <span>
-                {" "}
-                <HiPlus />
-              </span>
-            </button>
-          </Link>
-          <p className="success-message">{faqToDelete}</p>
-        </div>
-        {/* ++++++========part 3 =======++++++++ */}
-        <div>
-          <div>
-            <table id="customers" className="">
-              <tr>
-                <th>SL</th>
-                <th>CONTACT NAME</th>
-                <th>CATEGORY</th>
-                <th>MOBILE</th>
-                <th>EMAIL</th>
-                <th>ACTIONS</th>
-              </tr>
+    <div className="p-3">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-white">
+          Contact List
+        </h1>
+        <Link to="/dashboard/contact/create">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<HiPlus />}
+            sx={{
+              borderRadius: 2,
+              fontWeight: 600,
+              fontSize: 14,
+              px: 2,
+              py: 0.8,
+              boxShadow: 1,
+              minWidth: 0,
+            }}
+          >
+            New Contact
+          </Button>
+        </Link>
+      </div>
+      <hr className="border-gray-700 mb-6" />
+      {errorMessage && (
+        <div className="text-red-400 font-semibold mb-4">{errorMessage}</div>
+      )}
+      {faqToDelete && (
+        <p className="text-green-500 font-semibold mb-3">{faqToDelete}</p>
+      )}
 
-              {contactList.length > 0 &&
-                contactList.map((cl, index) => (
-                  <tr key={cl.uuid}>
-                    <td>{index + 1}</td>
-                    <td>{cl.contactName}</td>
-                    <td>{cl.category}</td>
-                    <td>{cl.mobileNo}</td>
-                    <td>{cl.eamil}</td>
-                    <td>
-                      <div className="dropdown">
-                        <button className="dropbtn">
-                          Select <MdOutlineArrowDownward />
-                        </button>
-                        <div className="dropdown-content">
-                          <Link
-                            to={`/dashboard/contact/edit/${cl.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> Edit</span>
-                          </Link>
-                          {/* </span> */}
-
-                          <Link
-                            to={`/dashboard/contact/${cl.uuid}`}
-                            className="routeLink"
-                          >
-                            <span className="actionBtn"> SHOW</span>
-                          </Link>
-
-                          <span
-                            onClick={() => handleClickOpen(cl.uuid)}
-                            className="actionBtn"
-                          >
-                            {" "}
-                            DELETE
-                          </span>
-                        </div>
-                      </div>
+      <div className="overflow-x-auto rounded-xl bg-[#181f33]">
+        <table className="min-w-full text-sm text-left text-white">
+          <thead>
+            <tr className="bg-[#212b3a]">
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                SL
+              </th>
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                CONTACT NAME
+              </th>
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                CATEGORY
+              </th>
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                MOBILE
+              </th>
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                EMAIL
+              </th>
+              <th className="px-4 py-3 font-bold" style={{ borderBottom }}>
+                ACTIONS
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {contactList.length > 0 ? (
+              contactList.map((cl, index) => (
+                <tr
+                  key={cl.uuid}
+                  className="hover:bg-[#232e45] transition"
+                  style={{ borderBottom }}
+                >
+                  <td className="px-4 py-3">{index + 1}</td>
+                  <td className="px-4 py-3">{cl.contactName}</td>
+                  <td className="px-4 py-3">{cl.category}</td>
+                  <td className="px-4 py-3">{cl.mobileNo}</td>
+                  <td className="px-4 py-3">{cl.eamil}</td>
+                  <td className="px-4 py-3">
+                    <div className="relative inline-block text-left">
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        endIcon={<MdOutlineArrowDownward />}
+                        sx={{
+                          color: "#b2c8f9",
+                          borderColor: "#324266",
+                          fontWeight: 600,
+                          fontSize: 13,
+                          px: 1.5,
+                          py: 0.5,
+                          minWidth: 0,
+                        }}
+                        onClick={() => handleClickOpen(cl.uuid)}
+                      >
+                        Actions
+                      </Button>
                       <Dialog
                         fullScreen={fullScreen}
-                        open={open}
+                        open={open && dataDeleteId === cl.uuid}
                         onClose={handleClose}
                         aria-labelledby="responsive-dialog-title"
                       >
                         <DialogTitle
-                          id="responsive-dialog-title "
+                          id="responsive-dialog-title"
                           className="icon_div"
                         >
                           <div style={{ textAlign: "center" }}>
                             <BsExclamationCircle className="icon" />
                             <h3 style={{ paddingTop: "20px" }}>
-                              Are You sure?{" "}
+                              Are You sure?
                             </h3>
                           </div>
                         </DialogTitle>
                         <DialogContent>
                           <DialogContentText>
-                            Are you sure delete this contact Info
+                            Are you sure you want to delete this contact info?
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -201,26 +211,46 @@ const ContactList = () => {
                           >
                             Cancel
                           </Button>
-                          <Button onClick={handleDelete} autoFocus>
-                            <Link
-                              to={`/dashboard/contact/delete`}
-                              style={{
-                                color: "#E16565",
-                                textDecoration: "none",
-                              }}
-                            >
-                              Yes,delete it!
-                            </Link>
+                          <Button
+                            onClick={handleDelete}
+                            autoFocus
+                            style={{ color: "#E16565" }}
+                          >
+                            Yes, delete it!
                           </Button>
                         </DialogActions>
                       </Dialog>
-                    </td>
-                  </tr>
-                ))}
-            </table>
-          </div>
-          {/* table */}
-        </div>
+                      <div className="mt-2 flex gap-2">
+                        <Link
+                          to={`/dashboard/contact/edit/${cl.uuid}`}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white transition"
+                        >
+                          Edit
+                        </Link>
+                        <Link
+                          to={`/dashboard/contact/${cl.uuid}`}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-green-600 hover:bg-green-700 text-white transition"
+                        >
+                          Show
+                        </Link>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="text-center py-8 text-gray-400"
+                  style={{ borderBottom }}
+                >
+                  No contact info found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -1,9 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { MdOutlineArrowDownward } from "react-icons/md";
-import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
 import {
   Dialog,
   useTheme,
@@ -20,18 +18,18 @@ import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const Message = () => {
   const { state } = useContext(AppContext);
-  const isHomePageRoute = location.pathname;
-  const navigate = useNavigate();
-
-  const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState([]);
   const [open, setOpen] = useState(false);
   const [dataDeleteId, setDataDeleteId] = useState(null);
-  const [setFaqToDelete] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [paginatedData, setPaginatedData] = useState([]);
   const itemsPerPage = 10;
+
+  // For pagination
+  const paginatedData = message.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   useEffect(() => {
     axios
@@ -39,19 +37,12 @@ const Message = () => {
       .then((result) => {
         if (result.data.Status) {
           setMessage(result.data.Result);
-          setPaginatedData(result.data.Result.slice(0, itemsPerPage));
         } else {
-          setErrorMessage(result.data.Error);
+          toast.error(result.data.Error);
         }
       })
-      .catch((err) => console.log(err));
-  }, []);
-
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    setPaginatedData(message.slice(startIndex, endIndex));
-  }, [currentPage, message]);
+      // .catch((err) => toast.error(String(err)));
+  }, [state.port]);
 
   const themes = useTheme();
   const fullScreen = useMediaQuery(themes.breakpoints.down("md"));
@@ -60,9 +51,7 @@ const Message = () => {
     setOpen(true);
     setDataDeleteId(id);
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
   const handleCancel = () => {
     toast.error(`Cancel`, {
@@ -79,131 +68,126 @@ const Message = () => {
   };
 
   const handleDelete = () => {
-    console.log(dataDeleteId);
     axios
       .delete(`${state.port}/api/admin/newsletteremail/delete/` + dataDeleteId)
       .then((result) => {
         if (result.data.Status) {
-          navigate("/dashboard/message");
-          setFaqToDelete(`deleted successfully`);
-          toast.success(`deleted successfully`, {
+          setMessage((prev) => prev.filter((ms) => ms.uuid !== dataDeleteId));
+          toast.success(`Deleted successfully`, {
             position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
+            duration: 3000,
+            style: { background: "#23263a", color: "#fff" },
           });
-          setMessage(message.filter((ms) => ms.uuid !== dataDeleteId));
         } else {
-          setFaqToDelete(result.data.Error);
+          toast.error(result.data.Error || "Delete failed");
         }
+        setOpen(false);
       })
-      .catch((err) => console.error(err));
-
-    setOpen(false);
-  };
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+      .catch((err) => {
+        toast.error(String(err));
+        setOpen(false);
+      });
   };
 
   return (
-    <div className="conatiner dashboard_All">
-      <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All Client Email</h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div>
-        <div>
-          <table id="customers">
-            <tr>
-              <th>SL</th>
-              <th>EMAIL</th>
-              <th>ACTIONS</th>
+    <div className="p-3">
+      <h1 className="text-2xl md:text-3xl font-bold mb-4">All Client Email</h1>
+      <hr className="border-gray-700 mb-6" />
+      <div className="overflow-x-auto rounded-xl bg-[#181f33]">
+        <table className="min-w-full text-sm text-left text-white">
+          <thead>
+            <tr className="bg-[#212b3a]">
+              <th className="px-4 py-3 font-bold">SL</th>
+              <th className="px-4 py-3 font-bold">EMAIL</th>
+              <th className="px-4 py-3 font-bold">ACTIONS</th>
             </tr>
-
-            {paginatedData.length > 0 &&
+          </thead>
+          <tbody>
+            {paginatedData.length > 0 ? (
               paginatedData.map((ms, index) => (
-                <tr key={ms.uuid}>
-                  <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                  <td>{ms.email}</td>
-                  <td>
-                    <div className="dropdown">
-                      <button className="dropbtn">
-                        Select <MdOutlineArrowDownward />
-                      </button>
-                      <div className="dropdown-content">
-                        {/* <Link
-                          to={`/dashboard/message/${ms.uuid}`}
-                          className="routeLink"
-                        >
-                          <span className="actionBtn"> SHOW</span>
-                        </Link> */}
-                        <span
-                          onClick={() => handleClickOpen(ms.uuid)}
-                          className="actionBtn"
-                        >
-                          {" "}
-                          DELETE
-                        </span>
-                      </div>
-                    </div>
-                    <Dialog
-                      fullScreen={fullScreen}
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="responsive-dialog-title"
-                    >
-                      <DialogTitle
-                        id="responsive-dialog-title "
-                        className="icon_div"
+                <tr key={ms.uuid} className="hover:bg-[#232e45] transition">
+                  <td className="px-4 py-3">
+                    {(currentPage - 1) * itemsPerPage + index + 1}
+                  </td>
+                  <td className="px-4 py-3">{ms.email}</td>
+                  <td className="px-4 py-3">
+                    <div className="relative inline-block text-left">
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        endIcon={<MdOutlineArrowDownward />}
+                        sx={{
+                          color: "#b2c8f9",
+                          borderColor: "#324266",
+                          fontWeight: 600,
+                          fontSize: 13,
+                          px: 1.5,
+                          py: 0.5,
+                          minWidth: 0,
+                        }}
+                        onClick={() => handleClickOpen(ms.uuid)}
                       >
-                        <div style={{ textAlign: "center" }}>
-                          <BsExclamationCircle className="icon" />
-                          <h3 style={{ paddingTop: "20px" }}>Are You sure? </h3>
-                        </div>
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText>
-                          Are you sure delete this Messages
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button
-                          autoFocus
-                          onClick={handleCancel}
-                          style={{ color: "#E16565" }}
+                        Actions
+                      </Button>
+                      <Dialog
+                        fullScreen={fullScreen}
+                        open={open && dataDeleteId === ms.uuid}
+                        onClose={handleClose}
+                        aria-labelledby="responsive-dialog-title"
+                      >
+                        <DialogTitle
+                          id="responsive-dialog-title"
+                          className="icon_div"
                         >
-                          Cancel
-                        </Button>
-                        <Button onClick={handleDelete} autoFocus>
-                          <Link
-                            to={`/dashboard/faq/delete`}
-                            style={{
-                              color: "#E16565",
-                              textDecoration: "none",
-                            }}
+                          <div style={{ textAlign: "center" }}>
+                            <BsExclamationCircle className="icon" />
+                            <h3 style={{ paddingTop: "20px" }}>
+                              Are You sure?
+                            </h3>
+                          </div>
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Are you sure you want to delete this email?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            autoFocus
+                            onClick={handleCancel}
+                            style={{ color: "#E16565" }}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={handleDelete}
+                            autoFocus
+                            style={{ color: "#E16565" }}
                           >
                             Yes, delete it!
-                          </Link>
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </div>
                   </td>
                 </tr>
-              ))}
-          </table>
-        </div>
-        <Pagination
-          totalItems={message.length}
-          itemsPerPage={itemsPerPage}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3} className="text-center py-8 text-gray-400">
+                  No email found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
+      <Pagination
+        totalItems={message.length}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 };
