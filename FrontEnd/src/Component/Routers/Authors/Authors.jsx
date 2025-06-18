@@ -87,16 +87,13 @@ const Author = () => {
 
   return (
     <Box
-      className="container dashboard_All"
       sx={{
         px: isMobile ? 1 : 3,
         py: 3,
         color: "#fff",
       }}
     >
-      <Typography variant="h3" className="dashboard_name" gutterBottom>
-        Author
-      </Typography>
+      <h1 className="text-2xl md:text-4xl mb-3">Authors</h1>
       <hr style={{ borderColor: "#222", opacity: 0.2 }} />
       {error && (
         <Box sx={{ my: 2, color: "error.main" }}>

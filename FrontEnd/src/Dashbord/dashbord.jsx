@@ -1,25 +1,23 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useApiLink } from "../Hook/useApiLink";
-import { useMediaQuery } from "react-responsive";
+import { FiMenu, FiX, FiLogOut } from "react-icons/fi";
+import axios from "axios";
 import Logo from "./SmallComponent/logo";
 import MenuList from "./DashbordComponent/SideMenu/MenuList";
-import Logout from "./SmallComponent/logout";
-import axios from "axios";
 import toast from "react-hot-toast";
-import { AiOutlineMenuFold, AiOutlineMenuUnfold } from "react-icons/ai";
+import { useApiLink } from "../Hook/useApiLink";
+import { useMediaQuery } from "react-responsive";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { state } = useApiLink();
-  const isMobile = useMediaQuery({ maxWidth: 1024 });
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    setSidebarCollapsed(isMobile);
-    setSidebarOpen(false);
+    if (isMobile) setCollapsed(true);
   }, [isMobile]);
 
   const handleLogout = () => {
@@ -33,92 +31,80 @@ const Dashboard = () => {
     });
   };
 
+  const toggleCollapsed = () => {
+    if (isMobile) {
+      setMobileOpen((prev) => !prev);
+    } else {
+      setCollapsed((prev) => !prev);
+    }
+  };
+
   return (
-    <div className="w-full min-h-screen flex bg-gradient-to-br from-[#0a074b] via-[#171b3d] to-[#1c1f2e] text-white font-sans relative">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden">
+      {/* Desktop Sidebar */}
       <aside
-        className={`
-          fixed top-0 left-0 z-40 h-screen flex flex-col transition-all
-          duration-300
-          bg-[#181c2f]/[.97] border-r border-[#23263a]
-          shadow-xl
-          ${
-            isMobile
-              ? sidebarOpen
-                ? "w-60"
-                : "w-0"
-              : sidebarCollapsed
-              ? "w-20"
-              : "w-64"
-          }
-          ${isMobile ? "md:hidden" : "md:flex"}
-          overflow-hidden
-        `}
+        className={`hidden md:flex flex-col h-full transition-all duration-300 ease-in-out ${
+          collapsed ? "w-20" : "w-64"
+        } bg-gray-800 border-r border-gray-700 shadow-lg`}
       >
-        <div className="flex flex-col h-full">
-          <div className="flex items-center justify-center py-6 px-2 border-b border-[#23263a] min-h-[64px]">
-            <Logo collapsed={isMobile ? false : sidebarCollapsed} />
-          </div>
-          <div className="flex-1 min-h-0 overflow-y-auto custom-scroll">
-            <MenuList
-              darkTheme={true}
-              collapsed={isMobile ? false : sidebarCollapsed}
-            />
-          </div>
+        <div className="flex items-center justify-center h-16 px-4 border-b border-gray-700">
+          <Logo collapsed={collapsed} />
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <MenuList collapsed={collapsed} />
         </div>
       </aside>
 
-      {/* Mobile overlay backdrop */}
-      {isMobile && sidebarOpen && (
+      {/* Mobile Sidebar Overlay */}
+      {mobileOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/40"
-          onClick={() => setSidebarOpen(false)}
-        ></div>
+          className="fixed inset-0 z-40 bg-black bg-opacity-70 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
       )}
 
-      {/* Main */}
-      <div
-        className={`
-          flex flex-col flex-1 min-h-screen transition-all duration-300
-          ${isMobile ? "pl-0" : sidebarCollapsed ? "pl-20" : "pl-64"}
-        `}
+      {/* Mobile Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
+        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-700">
+          <Logo collapsed={false} />
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="p-1 rounded-md text-gray-300 hover:text-white focus:outline-none"
+          >
+            <FiX className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="h-full overflow-y-auto">
+          <MenuList collapsed={false} />
+        </div>
+      </aside>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header
-          className="
-            sticky top-0 z-20 w-full flex items-center justify-between
-            px-2 md:px-8 h-16 bg-[#181c2f]/[.98] border-b border-[#23263a]
-            shadow-sm
-          "
-        >
-          <div className="flex items-center gap-2">
-            {/* Sidebar Toggle */}
+        <header className="bg-gray-800 border-b border-gray-700 flex items-center justify-between h-16 px-4 shadow-md">
+          <div className="flex items-center">
             <button
-              onClick={() => {
-                if (isMobile) setSidebarOpen((p) => !p);
-                else setSidebarCollapsed((p) => !p);
-              }}
-              className="p-2 rounded-lg hover:bg-[#22263a] focus:outline-none bg-transparent transition"
-              aria-label="Toggle sidebar"
-              tabIndex={0}
+              onClick={toggleCollapsed}
+              className="p-2 cursor-pointer rounded-md text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none"
             >
-              {isMobile ? (
-                <AiOutlineMenuFold className="text-2xl" />
-              ) : sidebarCollapsed ? (
-                <AiOutlineMenuUnfold className="text-2xl" />
-              ) : (
-                <AiOutlineMenuFold className="text-2xl" />
-              )}
+              <FiMenu className="w-5 h-5" />
             </button>
-            <span className="ml-2 font-bold text-lg text-[#7aa8e6] tracking-wide hidden md:block">
-              Admin Panel
-            </span>
+            <h1 className="ml-4 text-lg font-semibold text-white">Dashboard</h1>
           </div>
-          <Logout handleLogout={handleLogout} />
+          <button
+            onClick={handleLogout}
+            className="flex cursor-pointer items-center px-3 py-2 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-gray-700 rounded-md transition-colors duration-200"
+          >
+            <FiLogOut className="mr-2" />
+            Logout
+          </button>
         </header>
-
-        {/* Main Content */}
-        <main className="flex-1 min-h-0 bg-gradient-to-br from-[#171b3d] via-[#181c2f]/[.94] to-[#101829] transition-colors duration-300 p-2 md:p-7 overflow-y-auto">
+        {/* Content Area */}
+        <main className="flex-1 overflow-y-auto bg-gray-900 p-3 md:p-4">
           <Outlet />
         </main>
       </div>

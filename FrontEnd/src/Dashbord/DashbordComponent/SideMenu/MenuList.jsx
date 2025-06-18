@@ -1,29 +1,25 @@
-import { Menu } from "antd";
-import { SettingOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
-import { MdContacts } from "react-icons/md";
-import { RxDashboard } from "react-icons/rx";
 import {
-  FaList,
-  FaHandsHelping,
-  FaCalendarAlt,
-  FaBullhorn,
-  FaFilm,
-} from "react-icons/fa";
-import { AiFillTags } from "react-icons/ai";
-import {
-  FaDesktop,
-  FaHashtag,
-  FaRegNewspaper,
-  FaPodcast,
-} from "react-icons/fa6";
-import { SlEnvolopeLetter } from "react-icons/sl";
-import { IoMicOutline } from "react-icons/io5";
+  FiHome,
+  FiTag,
+  FiUsers,
+  FiFileText,
+  FiList,
+  FiFilm,
+  FiVolume2,
+  FiCalendar,
+  FiHash,
+  FiMail,
+  FiMic,
+  FiHelpCircle,
+  FiRadio,
+  FiMonitor,
+  FiSettings,
+} from "react-icons/fi";
 
-const MenuList = ({ darkTheme, collapsed }) => {
+const MenuList = ({ collapsed }) => {
   const location = useLocation();
 
-  // Highlight active menu item
   const selectedKeys = (() => {
     const path = location.pathname.toLowerCase();
     if (path.includes("/dashboard/tagname")) return ["TagName"];
@@ -46,99 +42,118 @@ const MenuList = ({ darkTheme, collapsed }) => {
   const menuItems = [
     {
       key: "home",
-      icon: <RxDashboard className="text-lg" />,
-      label: <Link to="/dashboard">Dashboard</Link>,
+      icon: <FiHome className="w-5 h-5" />,
+      label: "Dashboard",
+      path: "/dashboard",
     },
     {
       key: "TagName",
-      icon: <AiFillTags className="text-lg" />,
-      label: <Link to="/dashboard/TagName">Tag Name</Link>,
+      icon: <FiTag className="w-5 h-5" />,
+      label: "Tag Name",
+      path: "/dashboard/TagName",
     },
     {
       key: "contactCategory",
-      icon: <MdContacts className="text-lg" />,
-      label: <Link to="/dashboard/author">Author</Link>,
+      icon: <FiUsers className="w-5 h-5" />,
+      label: "Author",
+      path: "/dashboard/author",
     },
     {
       key: "blog",
-      icon: <FaRegNewspaper className="text-lg" />,
-      label: <Link to="/dashboard/blogpost">News</Link>,
+      icon: <FiFileText className="w-5 h-5" />,
+      label: "News",
+      path: "/dashboard/blogpost",
     },
     {
       key: "clientCategory",
-      icon: <FaList className="text-lg" />,
-      label: <Link to="/dashboard/newscategory">News Category</Link>,
+      icon: <FiList className="w-5 h-5" />,
+      label: "News Category",
+      path: "/dashboard/newscategory",
     },
     {
       key: "documentaries",
-      icon: <FaFilm className="text-lg" />,
-      label: <Link to="/dashboard/documentaries">Documentaries</Link>,
+      icon: <FiFilm className="w-5 h-5" />,
+      label: "Documentaries",
+      path: "/dashboard/documentaries",
     },
     {
       key: "sponsored",
-      icon: <FaBullhorn className="text-lg" />,
-      label: <Link to="/dashboard/sponsored">Sponsored</Link>,
+      icon: <FiVolume2 className="w-5 h-5" />,
+      label: "Sponsored",
+      path: "/dashboard/sponsored",
     },
     {
       key: "events",
-      icon: <FaCalendarAlt className="text-lg" />,
-      label: <Link to="/dashboard/events">Events</Link>,
+      icon: <FiCalendar className="w-5 h-5" />,
+      label: "Events",
+      path: "/dashboard/events",
     },
     {
       key: "contactList",
-      icon: <FaHashtag className="text-lg" />,
-      label: <Link to="/dashboard/contact">News Tag</Link>,
+      icon: <FiHash className="w-5 h-5" />,
+      label: "News Tag",
+      path: "/dashboard/contact",
     },
     {
       key: "lawyers",
-      icon: <SlEnvolopeLetter className="text-lg" />,
-      label: <Link to="/dashboard/message">Client Mail</Link>,
+      icon: <FiMail className="w-5 h-5" />,
+      label: "Client Mail",
+      path: "/dashboard/message",
     },
     {
       key: "episodes",
-      icon: <IoMicOutline className="text-lg" />,
-      label: <Link to="/dashboard/Episodes">Episodes</Link>,
+      icon: <FiMic className="w-5 h-5" />,
+      label: "Episodes",
+      path: "/dashboard/Episodes",
     },
     {
       key: "memberFirm",
-      icon: <FaHandsHelping className="text-lg" />,
-      label: <Link to="/dashboard/member">Patner</Link>,
+      icon: <FiHelpCircle className="w-5 h-5" />,
+      label: "Patner",
+      path: "/dashboard/member",
     },
     {
       key: "podcast",
-      icon: <FaPodcast className="text-lg" />,
-      label: <Link to="/dashboard/podcasts">Podcast</Link>,
+      icon: <FiRadio className="w-5 h-5" />,
+      label: "Podcast",
+      path: "/dashboard/podcasts",
     },
     {
       key: "jobpost",
-      icon: <FaDesktop className="text-lg" />,
-      label: <Link to="/dashboard/job">Job Offer</Link>,
+      icon: <FiMonitor className="w-5 h-5" />,
+      label: "Job Offer",
+      path: "/dashboard/job",
     },
     {
       key: "setting",
-      icon: <SettingOutlined className="text-lg" />,
+      icon: <FiSettings className="w-5 h-5" />,
       label: "Setting",
+      path: "/dashboard/settings",
     },
   ];
 
   return (
-    <div className={`h-screen flex flex-col`}>
-      <div className="flex-1 overflow-y-auto">
-        <Menu
-          theme={darkTheme ? "dark" : "light"}
-          mode="inline"
-          selectedKeys={selectedKeys}
-          inlineCollapsed={collapsed}
-          items={menuItems}
-          style={{
-            borderRight: 0,
-            flex: 1,
-            padding: "8px 0",
-            background: "transparent",
-          }}
-        />
-      </div>
-    </div>
+    <nav className="px-2 py-4">
+      <ul className="space-y-1">
+        {menuItems.map((item) => (
+          <li key={item.key}>
+            <Link
+              to={item.path}
+              className={`flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                selectedKeys.includes(item.key)
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-300 hover:bg-gray-700 hover:text-white"
+              }`}
+            >
+              <span className={`${collapsed ? "mx-auto" : "mr-3"}`}>
+                {item.icon}
+              </span>
+              {!collapsed && <span className="truncate">{item.label}</span>}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 };
 

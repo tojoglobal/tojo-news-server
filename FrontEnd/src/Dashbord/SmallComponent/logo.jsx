@@ -1,9 +1,10 @@
 const Logo = ({ collapsed }) => (
-  <div className="p-2 flex items-center justify-center">
-    {collapsed ? (
-      <div className="text-xl font-bold">TN</div>
-    ) : (
-      <div className="text-xl font-bold">TOJO News</div>
+  <div className="flex items-center">
+    <div className="w-8 h-8 rounded-md bg-blue-600 flex items-center justify-center text-white font-bold">
+      TN
+    </div>
+    {!collapsed && (
+      <span className="ml-3 text-lg font-semibold text-white">TOJO News</span>
     )}
   </div>
 );
