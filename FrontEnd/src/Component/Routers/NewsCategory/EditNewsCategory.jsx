@@ -11,8 +11,6 @@ const EditNewsCategory = () => {
   const { state } = useContext(AppContext);
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const [errorMessage, setErrorMessage] = useState(null);
   const [categoryName, setCategoryName] = useState("");
 
   useEffect(() => {
@@ -21,11 +19,9 @@ const EditNewsCategory = () => {
       .then((result) => {
         if (result.data.Status) {
           setCategoryName(result.data.Result[0].name);
-        } else {
-          setErrorMessage(result.data.Error);
         }
       })
-      .catch((err) => setErrorMessage(err.message));
+      .catch((err) => toast.error(err.message));
   }, [id, state.port]);
 
   const formik = useFormik({
@@ -40,12 +36,11 @@ const EditNewsCategory = () => {
           values
         );
         if (response.data.Status) {
-          setErrorMessage(null);
           toast.success(`Category updated successfully`);
-          setTimeout(() => navigate("/dashboard/newscategory"), 1200);
+          navigate(-1);
         }
       } catch (error) {
-        setErrorMessage(`${error}`);
+        console.log(error.message);
       }
       resetForm();
     },
@@ -67,11 +62,6 @@ const EditNewsCategory = () => {
         </span>
       </h2>
       <hr className="border-gray-700 mb-6" />
-      {errorMessage && (
-        <div className="text-red-400 bg-red-900/30 px-4 py-2 rounded mb-5">
-          {errorMessage}
-        </div>
-      )}
       <form
         onSubmit={formik.handleSubmit}
         encType="multipart/form-data"
@@ -100,7 +90,7 @@ const EditNewsCategory = () => {
         <div>
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-pink-500 hover:from-blue-700 hover:to-pink-600 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-200 text-base"
+            className="w-full cursor-pointer bg-gradient-to-r from-blue-600 to-pink-500 hover:from-blue-700 hover:to-pink-600 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-200 text-base"
           >
             Update Category
           </button>

@@ -227,7 +227,7 @@ AdminRouter.delete("/clientlist/delete/:id", deleteOneClientList);
 AdminRouter.put("/clientlist/edit/:id", editClientList);
 
 // News Category Route
-AdminRouter.post("/newsCategory/create", createNewsCategory);
+AdminRouter.post("/news-Category/create", createNewsCategory);
 AdminRouter.get("/newsCategory", getNewsCategory);
 AdminRouter.get("/newsCategory/:id", showNewsCategoryId);
 AdminRouter.delete("/newsCategory/delete/:id", deleteOneNewsCategory);

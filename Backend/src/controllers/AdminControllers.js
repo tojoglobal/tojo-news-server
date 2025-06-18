@@ -645,22 +645,95 @@ const editContactlist = (req, res) => {
 };
 
 // Author
+// const createAuthor = async (req, res) => {
+//   try {
+//     const values = [uuidv4(), req.body.authorName];
+//     const [result] = await db.query(createAuthorQuery, [values]);
+//     return res.json({ Status: true, Result: result });
+//   } catch (error) {
+//     return res.json({ Status: false, Error: err });
+//   }
+// };
+
+// const getAuthor = async (req, res) => {
+//   try {
+//     const [result] = await db.query(getAuthorQuery);
+//     return res.json({ Status: true, Result: result });
+//   } catch (error) {
+//     return res.json({ Status: false, Error: err });
+//   }
+// };
+
+// const deleteOneAuthor = async (req, res) => {
+//   try {
+//     const uuid = req.params.id;
+//     const [result] = await db.query(deleteOneAuthorQuery, [uuid]);
+//     return res.json({ Status: true, Result: result });
+//   } catch (error) {
+//     return res.json({ Status: false, Error: "Query Error" });
+//   }
+// };
+
+// const editAuthor = async (req, res) => {
+//   try {
+//     const id = [req.params.id];
+//     const values = [req.body.authorName];
+//     const [result] = await db.query(editAuthorQuery, [...values, id]);
+//     return res.json({ Status: true, Result: result });
+//   } catch (error) {
+//     return res.json({ Status: false, Error: err });
+//   }
+// };
+
+// const showAuthorId = async (req, res) => {
+//   try {
+//     const id = [req.params.id];
+//     const [result] = await db.query(showAuthorIdQuery, [id]);
+//     return res.json({ Status: true, Result: result });
+//   } catch (error) {
+//     return res.json({ Status: false, Error: err });
+//   }
+// };
+
 const createAuthor = async (req, res) => {
   try {
     const values = [uuidv4(), req.body.authorName];
     const [result] = await db.query(createAuthorQuery, [values]);
-    return res.json({ Status: true, Result: result });
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Result: result,
+        Message: "Author created successfully",
+      });
+    } else {
+      return res.status(500).json({
+        Status: false,
+        Error: "Failed to create author",
+      });
+    }
   } catch (error) {
-    return res.json({ Status: false, Error: err });
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
 const getAuthor = async (req, res) => {
   try {
     const [result] = await db.query(getAuthorQuery);
-    return res.json({ Status: true, Result: result });
+    return res.status(200).json({
+      Status: true,
+      Result: result,
+    });
   } catch (error) {
-    return res.json({ Status: false, Error: err });
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
@@ -668,77 +741,203 @@ const deleteOneAuthor = async (req, res) => {
   try {
     const uuid = req.params.id;
     const [result] = await db.query(deleteOneAuthorQuery, [uuid]);
-    return res.json({ Status: true, Result: result });
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Message: "Author deleted successfully",
+      });
+    } else {
+      return res.status(404).json({
+        Status: false,
+        Error: "Author not found",
+      });
+    }
   } catch (error) {
-    return res.json({ Status: false, Error: "Query Error" });
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
 const editAuthor = async (req, res) => {
   try {
-    const id = [req.params.id];
-    const values = [req.body.authorName];
-    const [result] = await db.query(editAuthorQuery, [...values, id]);
-    return res.json({ Status: true, Result: result });
+    const id = req.params.id;
+    const values = [req.body.authorName, id];
+    const [result] = await db.query(editAuthorQuery, values);
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Message: "Author updated successfully",
+        Result: result,
+      });
+    } else {
+      return res.status(404).json({
+        Status: false,
+        Error: "Author not found or no change made",
+      });
+    }
   } catch (error) {
-    return res.json({ Status: false, Error: err });
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
 const showAuthorId = async (req, res) => {
   try {
-    const id = [req.params.id];
+    const id = req.params.id;
     const [result] = await db.query(showAuthorIdQuery, [id]);
-    return res.json({ Status: true, Result: result });
+
+    return res.status(200).json({
+      Status: true,
+      Result: result,
+    });
   } catch (error) {
-    return res.json({ Status: false, Error: err });
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
 // News Catagory Admin Control
-const createNewsCategory = (req, res) => {
-  const values = [uuidv4(), req.body.categoryName];
-  db.query(createNewsCategoryQuery, values, (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
-    return res.json({ Status: true, Result: result });
-  });
+// const createNewsCategory = (req, res) => {
+//   const uuid = uuidv4();
+//   const name = req.body.categoryName;
+//   console.log(name);
+//   const sql = "INSERT INTO categories (uuid, name) VALUES (?, ?)";
+//   db.query(sql, [uuid, name], (err, result) => {
+//     if (err) {
+//       // Show a user-friendly error for duplicate or SQL issues
+//       return res.json({
+//         Status: false,
+//         Error: err.sqlMessage || err.message || err,
+//       });
+//     }
+//     // Return success, so frontend can show toast and refetch
+//     return res.status(200).json({
+//       Status: true,
+//       Result: result,
+//       Message: "Category created successfully",
+//     });
+//   });
+// };
+
+const createNewsCategory = async (req, res) => {
+  const uuid = uuidv4();
+  const name = req.body.categoryName;
+  console.log("Received category:", name);
+
+  const sql = "INSERT INTO categories (uuid, name) VALUES (?, ?)";
+
+  try {
+    const [result] = await db.query(sql, [uuid, name]);
+
+    // Optional: check if insert happened
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Result: result,
+        Message: "Category created successfully",
+      });
+    } else {
+      return res.status(500).json({
+        Status: false,
+        Error: "Failed to insert category",
+      });
+    }
+  } catch (err) {
+    console.error("SQL Error:", err);
+    return res.status(500).json({
+      Status: false,
+      Error: err.sqlMessage || err.message || "Unknown SQL error",
+    });
+  }
 };
 
 const getNewsCategory = async (req, res) => {
   try {
     const [result] = await db.query(getNewsCategoryQuery);
-    return res.json({ Status: true, date: result.length, Result: result });
+    return res.json({ Status: true, data: result.length, Result: result });
   } catch (error) {
     return res.json({ Status: false, Error: error.message });
   }
 };
-const deleteOneNewsCategory = (req, res) => {
-  const uuid = req.params.id;
-  db.query(deleteOneNewsCategoryQuery, [uuid], (err, result) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" + err });
+const deleteOneNewsCategory = async (req, res) => {
+  try {
+    // Check for any blognews using this category
+    const [usedRows] = await db.query(
+      "SELECT 1 FROM blognews WHERE category_id = (SELECT ID FROM categories WHERE uuid = ?)",
+      [req.params.id]
+    );
+    if (usedRows.length > 0) {
+      return res.json({
+        Status: false,
+        Error:
+          "Category is used in blog posts. Remove or reassign those posts before deleting this category.",
+      });
+    }
+    // Proceed with delete
+    const result = await db.query("DELETE FROM categories WHERE uuid = ?", [
+      req.params.id,
+    ]);
     return res.json({ Status: true, Result: result });
-  });
+  } catch (err) {
+    return res.json({ Status: false, Error: err.message });
+  }
 };
-const showNewsCategoryId = (req, res) => {
-  const id = req.params.id; // <--- FIXED
-  db.query(showNewsCategoryIdQuery, [id], (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
-    return res.json({ Status: true, Result: result });
-  });
-};
-const editNewsCategory = (req, res) => {
-  const id = [req.params.id];
-  const values = [
-    req.body.categoryName,
-    // req.body.categoryNote,
-    // req.body.OnBehalf,
-  ];
-  db.query(editNewsCategoryQuery, [...values, id], (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
-    return res.json({ Status: true, Result: result });
-  });
-};
+const showNewsCategoryId = async (req, res) => {
+  const id = req.params.id;
 
+  try {
+    const [result] = await db.query(showNewsCategoryIdQuery, [id]);
+
+    return res.status(200).json({
+      Status: true,
+      Result: result,
+    });
+  } catch (err) {
+    console.error("SQL Error:", err);
+    return res.status(500).json({
+      Status: false,
+      Error: err.sqlMessage || err.message || "Unknown SQL error",
+    });
+  }
+};
+const editNewsCategory = async (req, res) => {
+  const id = req.params.id;
+  const values = [req.body.categoryName, id];
+
+  try {
+    const [result] = await db.query(editNewsCategoryQuery, values);
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Result: result,
+        Message: "Category updated successfully",
+      });
+    } else {
+      return res.status(404).json({
+        Status: false,
+        Error: "Category not found or no change made",
+      });
+    }
+  } catch (err) {
+    console.error("SQL Error:", err);
+    return res.status(500).json({
+      Status: false,
+      Error: err.sqlMessage || err.message || "Unknown SQL error",
+    });
+  }
+};
 // Client List router
 const createClientList = (req, res) => {
   const values = [

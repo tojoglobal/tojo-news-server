@@ -103,7 +103,7 @@ const AdminLogin = () => {
                   message: "Invalid email address",
                 },
               })}
-              className={`w-full p-2 rounded-md bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
+              className={`w-full px-3 py-2 rounded-md bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
                 errors.email ? "ring-2 ring-red-400" : ""
               }`}
             />
@@ -127,7 +127,7 @@ const AdminLogin = () => {
               {...register("password", {
                 required: "Password is required",
               })}
-              className={`w-full p-2 rounded-md bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
+              className={`w-full px-3 py-2 rounded-md bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
                 errors.password ? "ring-2 ring-red-400" : ""
               }`}
             />

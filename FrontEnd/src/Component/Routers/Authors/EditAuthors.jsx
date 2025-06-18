@@ -44,7 +44,7 @@ const EditAuthor = () => {
     onSuccess: () => {
       toast.success("Author updated successfully");
       queryClient.invalidateQueries(["authors"]);
-      setTimeout(() => navigate("/dashboard/author"), 1000);
+      navigate(-1)
     },
     onError: (err) => {
       toast.error(

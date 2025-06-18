@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
@@ -10,8 +10,6 @@ const CreateNewsCategory = () => {
   const { state } = useContext(AppContext);
   const navigate = useNavigate();
 
-  const [errorMessage, setErrorMessage] = useState(null);
-
   const formik = useFormik({
     initialValues: {
       categoryName: "",
@@ -19,16 +17,15 @@ const CreateNewsCategory = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await axios.post(
-          `${state.port}/api/admin/newsCategory/create`,
+          `${state.port}/api/admin/news-Category/create`,
           values
         );
         if (response.data.Status) {
-          setErrorMessage(null);
-          toast.success(`Category created successfully`);
-          setTimeout(() => navigate("/dashboard/newscategory"), 1200);
+          toast.success("Category created successfully");
+          navigate(-1);
         }
       } catch (error) {
-        setErrorMessage(`${error}`);
+        console.log(error);
       }
       resetForm();
     },
@@ -42,11 +39,6 @@ const CreateNewsCategory = () => {
         </span>
       </h2>
       <hr className="border-gray-700 mb-6" />
-      {errorMessage && (
-        <div className="text-red-400 bg-red-900/30 px-4 py-2 rounded mb-5">
-          {errorMessage}
-        </div>
-      )}
       <form
         onSubmit={formik.handleSubmit}
         encType="multipart/form-data"

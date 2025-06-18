@@ -25,7 +25,7 @@ const CreateAuthor = () => {
     onSuccess: () => {
       toast.success("Author created successfully");
       queryClient.invalidateQueries(["authors"]);
-      setTimeout(() => navigate("/dashboard/author"), 1000);
+      navigate(-1);
     },
     onError: (err) => {
       toast.error(err?.message || "Failed to create Author");
