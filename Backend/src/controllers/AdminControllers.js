@@ -288,14 +288,23 @@ const createTagName = (req, res) => {
   });
 };
 
-const allTagName = (req, res) => {
-  db.query(allTagNameQuery, (err, result) => {
-    if (err) {
-      return res.json({ Status: false, Error: "Query Error" });
-    } else {
-      return res.json({ Status: true, Result: result });
-    }
-  });
+// const allTagName = (req, res) => {
+//   db.query(allTagNameQuery, (err, result) => {
+//     if (err) {
+//       return res.json({ Status: false, Error: "Query Error" });
+//     } else {
+//       return res.json({ Status: true, Result: result });
+//     }
+//   });
+// };
+
+const allTagName = async (req, res) => {
+  try {
+    const [result] = await db.query(allTagNameQuery);
+    return res.json({ Status: true, Result: result });
+  } catch (err) {
+    return res.json({ Status: false, Error: "Query Error" });
+  }
 };
 
 const editTagNameId = (req, res) => {

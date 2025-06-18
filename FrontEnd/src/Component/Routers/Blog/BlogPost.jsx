@@ -119,7 +119,7 @@ const BlogPost = () => {
   return (
     <div className="conatiner dashboard_All">
       <h5>{isHomePageRoute}</h5>
-      <h1 className="dashboard_name">All blog </h1>
+      <h1 className="dashboard_name">All blog</h1>
       <hr />
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       <div>
