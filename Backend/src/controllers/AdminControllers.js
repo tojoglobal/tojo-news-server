@@ -323,16 +323,27 @@ const allTagName = async (req, res) => {
   }
 };
 
-const editTagNameId = (req, res) => {
-  const id = req.params.id;
-  db.query(editTagNameIdQuery, [id], (err, result) => {
-    if (err) {
-      return res.json({ Status: false, Error: "Qurey Erro" });
-    } else {
-      return res.json({ Status: true, Result: result });
-    }
-  });
+// const editTagNameId = (req, res) => {
+//   const id = req.params.id;
+//   db.query(editTagNameIdQuery, [id], (err, result) => {
+//     if (err) {
+//       return res.json({ Status: false, Error: "Qurey Erro" });
+//     } else {
+//       return res.json({ Status: true, Result: result });
+//     }
+//   });
+// };
+
+const editTagNameId = async (req, res) => {
+  try {
+    const id = [req.params.id];
+    const [result] = await db.query(editTagNameIdQuery, [id]);
+    return res.json({ Status: true, Result: result });
+  } catch (error) {
+    return res.json({ Status: false, Error: err });
+  }
 };
+
 const editTagName = (req, res) => {
   const id = req.params.id;
   const values = [req.body.TagName];

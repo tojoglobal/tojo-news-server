@@ -1,115 +1,88 @@
-import axios from "axios";
-import { useFormik } from "formik";
-import { useNavigate } from "react-router";
-import toast from "react-hot-toast";
-import { IoStarSharp } from "react-icons/io5";
 import { useContext } from "react";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import { useFormik } from "formik";
+import { useNavigate } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
-const CreateContactCategory = () => {
+const CreateAuthor = () => {
   const { state } = useContext(AppContext);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (values) =>
+      fetch(`${state.port}/api/admin/author/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      }).then(async (res) => {
+        const data = await res.json();
+        if (!data.Status)
+          throw new Error(data.Error || "Failed to create Author");
+        return data;
+      }),
+    onSuccess: () => {
+      toast.success("Author created successfully");
+      queryClient.invalidateQueries(["authors"]);
+      setTimeout(() => navigate("/dashboard/author"), 1000);
+    },
+    onError: (err) => {
+      toast.error(err?.message || "Failed to create Author");
+    },
+  });
 
   const formik = useFormik({
-    initialValues: {
-      authorName: "",
-    },
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        const response = await axios.post(
-          `${state.port}/api/admin/author/create`,
-          values
-        );
-        if (response.data.Status) {
-          toast.success(`Category created successfully`, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          setTimeout(() => {
-            navigate("/dashboard/author");
-          }, 1500);
-        } else {
-          toast.error(response.data.Error || "Something went wrong", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        }
-      } catch (error) {
-        toast.error(
-          error?.response?.data?.Error ||
-            error?.message ||
-            "Something went wrong",
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          }
-        );
-      }
+    initialValues: { authorName: "" },
+    onSubmit: (values, { resetForm }) => {
+      mutation.mutate(values);
       resetForm();
     },
   });
 
   return (
-    <div className="min-h-[80vh] bg-[#101829] flex flex-col items-center justify-center px-2 md:px-0 py-6 text-white transition-colors duration-300">
-      <div className="w-full max-w-lg bg-[#172133] rounded-xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-4">Create Author Name</h1>
-        <hr className="border-gray-700 mb-6" />
-        <form
-          onSubmit={formik.handleSubmit}
-          className="space-y-6"
-          encType="multipart/form-data"
-        >
-          <div>
-            <label
-              htmlFor="authorName"
-              className="block text-sm font-medium mb-2"
-            >
-              Author Name{" "}
-              <IoStarSharp className="inline text-red-400 text-base" />
-            </label>
-            <input
-              className="w-full px-4 py-2 rounded-lg bg-[#212b3a] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-              type="text"
-              name="authorName"
-              id="authorName"
-              onChange={formik.handleChange}
-              placeholder="Write Author Name"
-              value={formik.values.authorName}
-              required
-              autoComplete="off"
-            />
-          </div>
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition"
-              role="button"
-            >
-              Add Author Name
-            </button>
-          </div>
-        </form>
-      </div>
+    <div className="max-w-lg mx-auto bg-[#181c2f] rounded-2xl p-8 shadow-2xl border border-[#23263a] mt-10">
+      <h2 className="text-3xl font-bold text-white mb-2">
+        <span className="bg-gradient-to-r from-blue-400 via-blue-600 to-pink-500 bg-clip-text text-transparent">
+          Add New Author
+        </span>
+      </h2>
+      <form
+        onSubmit={formik.handleSubmit}
+        encType="multipart/form-data"
+        className="space-y-6"
+      >
+        <div>
+          <label
+            htmlFor="authorName"
+            className="block text-gray-200 font-semibold mb-1"
+          >
+            Author Name
+          </label>
+          <input
+            id="authorName"
+            className="w-full bg-[#23263a] border border-[#283250]/60 rounded-lg px-4 py-2.5 text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            type="text"
+            name="authorName"
+            onChange={formik.handleChange}
+            placeholder="Write Author Name"
+            value={formik.values.authorName}
+            required
+            autoComplete="off"
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-blue-600 to-pink-500 hover:from-blue-700 hover:to-pink-600 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-200 text-base"
+            disabled={mutation.isLoading}
+          >
+            Add Author
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default CreateContactCategory;
+export default CreateAuthor;

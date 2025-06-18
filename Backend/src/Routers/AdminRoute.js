@@ -182,6 +182,13 @@ AdminRouter.get("/TagName/:id", editTagNameId);
 AdminRouter.put("/TagName/edit/:id", editTagName);
 AdminRouter.delete("/TagName/delete/:uuid", TagNameToDelete);
 
+// Contact Category Route
+AdminRouter.post("/author/create", createAuthor);
+AdminRouter.get("/author", getAuthor);
+AdminRouter.get("/author/:id", showAuthorId);
+AdminRouter.delete("/author/delete/:id", deleteOneAuthor);
+AdminRouter.put("/author/edit/:id", editAuthor);
+
 // Blog Router
 AdminRouter.post("/Episodes/create", upload.single("file"), createEpisodes);
 AdminRouter.get("/Episodes", allEpisodes);
@@ -211,13 +218,6 @@ AdminRouter.get("/contactlist", allContactlist);
 AdminRouter.get("/contactlist/:id", showContactInfo);
 AdminRouter.delete("/contactlist/delete/:id", contactlistToDelete);
 AdminRouter.put("/contactlist/edit/:id", editContactlist);
-
-// Contact Category Route
-AdminRouter.post("/author/create", createAuthor);
-AdminRouter.get("/author", getAuthor);
-AdminRouter.get("/author/:id", showAuthorId);
-AdminRouter.delete("/author/delete/:id", deleteOneAuthor);
-AdminRouter.put("/author/edit/:id", editAuthor);
 
 // client List Route
 AdminRouter.post("/clientlist/create", createClientList);

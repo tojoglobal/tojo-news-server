@@ -1,22 +1,24 @@
 import axios from "axios";
-import { useFormik } from "formik";
-import { useNavigate, useParams } from "react-router";
-import toast from "react-hot-toast";
 import { useContext } from "react";
+import { useFormik } from "formik";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { IoStarSharp } from "react-icons/io5";
+import { IoMdArrowRoundBack } from "react-icons/io";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-const fetchTagName = async (port, id) => {
+const fetchTag = async (port, id) => {
   const res = await axios.get(`${port}/api/admin/TagName/${id}`);
   if (!res.data.Status || !res.data.Result[0])
     throw new Error(res.data.Error || "Tag not found");
   return res.data.Result[0];
 };
 
-const updateTagName = async ({ port, id, values }) => {
+const updateTag = async ({ port, id, values }) => {
   const res = await axios.put(`${port}/api/admin/TagName/edit/${id}`, values);
   if (!res.data.Status)
-    throw new Error(res.data.Error || "Failed to update Tag");
+    throw new Error(res.data.Error || "Failed to update tag");
   return res.data;
 };
 
@@ -33,22 +35,8 @@ const EditTagName = () => {
     error,
   } = useQuery({
     queryKey: ["TagName", id],
-    queryFn: () => fetchTagName(state.port, id),
+    queryFn: () => fetchTag(state.port, id),
     enabled: !!id,
-  });
-
-  const mutation = useMutation({
-    mutationFn: (values) => updateTagName({ port: state.port, id, values }),
-    onSuccess: () => {
-      toast.success("Tag updated successfully");
-      queryClient.invalidateQueries(["TagNames"]);
-      setTimeout(() => navigate("/dashboard/TagName"), 1000);
-    },
-    onError: (err) => {
-      toast.error(
-        err?.response?.data?.Error || err?.message || "Failed to update Tag"
-      );
-    },
   });
 
   const formik = useFormik({
@@ -57,8 +45,25 @@ const EditTagName = () => {
       TagName: tag?.name || "",
     },
     onSubmit: (values, { resetForm }) => {
-      mutation.mutate(values);
-      resetForm();
+      mutation.mutate(values, {
+        onSuccess: () => {
+          resetForm();
+        },
+      });
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (values) => updateTag({ port: state.port, id, values }),
+    onSuccess: () => {
+      toast.success("Tag updated successfully");
+      queryClient.invalidateQueries(["TagNames"]);
+      setTimeout(() => navigate(-1), 1000); // Go back one page
+    },
+    onError: (err) => {
+      toast.error(
+        err?.response?.data?.Error || err?.message || "Failed to update tag"
+      );
     },
   });
 
@@ -80,6 +85,14 @@ const EditTagName = () => {
 
   return (
     <div className="max-w-lg mx-auto bg-[#181c2f] rounded-2xl p-8 shadow-2xl border border-[#23263a] mt-10">
+      <h5 className="text-sm text-gray-400 mb-2">
+        <Link
+          to="/dashboard/TagName"
+          className="flex items-center gap-1 hover:underline"
+        >
+          <IoMdArrowRoundBack /> Back
+        </Link>
+      </h5>
       <h2 className="text-3xl font-bold text-white mb-2">
         <span className="bg-gradient-to-r from-blue-400 via-blue-600 to-pink-500 bg-clip-text text-transparent">
           Edit Tag
@@ -95,7 +108,7 @@ const EditTagName = () => {
             htmlFor="TagName"
             className="block text-gray-200 font-semibold mb-1"
           >
-            Tag Name
+            Tag Name <IoStarSharp className="inline text-red-400 text-base" />
           </label>
           <input
             id="TagName"
@@ -103,7 +116,7 @@ const EditTagName = () => {
             type="text"
             name="TagName"
             onChange={formik.handleChange}
-            placeholder="Edit Tag Name"
+            placeholder="Update Tag Name"
             value={formik.values.TagName}
             required
             autoComplete="off"

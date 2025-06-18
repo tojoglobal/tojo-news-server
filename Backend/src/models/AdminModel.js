@@ -20,6 +20,13 @@ const editTagNameIdQuery = `SELECT * FROM tags WHERE uuid = ?`;
 const editTagNameQuery = `UPDATE tags SET name = ? WHERE uuid = ?`;
 const TagNameToDeleteQuery = `DELETE FROM tags WHERE uuid = ?`;
 
+//Author Query,
+const createAuthorQuery = `INSERT INTO authors(uuid , name) VALUES ( ? ) `;
+const getAuthorQuery = `SELECT * FROM authors ORDER BY authors.ID ASC`;
+const showAuthorIdQuery = `SELECT * FROM authors WHERE uuid = ?`;
+const editAuthorQuery = `UPDATE authors SET name = ? WHERE uuid = ?`;
+const deleteOneAuthorQuery = `DELETE FROM authors WHERE uuid = ?`;
+
 // Blog  Area
 const createBlogPostQuery = `INSERT INTO blognews (uuid, title, subtitle , author1_id , author2_id , category_id , thumble , articalpost , dateAndTime ) VALUES ( ? )`;
 
@@ -98,13 +105,6 @@ const allContactlistQuery = "SELECT * FROM contactlist";
 const contactlistToDeleteQuery = `DELETE FROM contactlist WHERE uuid = ?`;
 const showContactInfoQuery = `SELECT * FROM contactlist WHERE uuid = ?`;
 const editContactlistQuery = `UPDATE contactlist SET contactName = ?, category = ? , mobileNo=? , eamil=?, note=? WHERE uuid = ?`;
-
-//Author Query,
-const createAuthorQuery = `INSERT INTO authors(uuid , name) VALUES(?) `;
-const getAuthorQuery = `SELECT * FROM authors ORDER BY authors.ID ASC`;
-const deleteOneAuthorQuery = `DELETE FROM authors WHERE uuid = ?`;
-const editAuthorQuery = `UPDATE authors SET name = ? WHERE uuid = ?`;
-const showAuthorIdQuery = `SELECT * FROM authors WHERE uuid = ?`;
 
 //News Catagory Query,
 const createNewsCategoryQuery = `INSERT INTO categories (uuid, name) VALUES (?, ?)`;
