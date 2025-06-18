@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import PropTypes from "prop-types";
-
 /**
- * Professional, modern, and accessible pagination for dark dashboard.
- * - Highlights current page with accent
- * - Rounded glassy buttons, smooth hover/active state
- * - Responsive and mobile-friendly
+ * Modern, glassy, responsive dark pagination for dashboard.
  */
 const Pagination = ({
   totalItems,
@@ -17,7 +13,6 @@ const Pagination = ({
   const [currentPage, setCurrentPage] = useState(controlledPage || 1);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // Allow controlled pagination if parent sets currentPage
   useEffect(() => {
     if (controlledPage && controlledPage !== currentPage) {
       setCurrentPage(controlledPage);
@@ -47,12 +42,15 @@ const Pagination = ({
   if (totalPages <= 1) return null;
 
   return (
-    <nav className="flex items-center gap-2 justify-center mt-4 select-none">
+    <nav className="flex items-center gap-1 justify-center mt-4 select-none">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`rounded-full p-2 transition bg-[#212639] text-gray-300 hover:bg-blue-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed`}
+        className={`rounded-full p-2 shadow-lg shadow-blue-900/10 bg-[#22283d]/80 border border-[#324266]/40 text-gray-300 hover:bg-blue-700 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed`}
         aria-label="Previous Page"
+        style={{
+          backdropFilter: "blur(20px)",
+        }}
       >
         <FaChevronLeft />
       </button>
@@ -61,14 +59,22 @@ const Pagination = ({
           key={page}
           onClick={() => handlePageChange(page)}
           disabled={page === currentPage}
-          className={`rounded-full px-3 py-1 font-semibold mx-0.5 transition
+          className={`rounded-full px-3 py-1 font-semibold mx-0.5 shadow-md 
             ${
               page === currentPage
-                ? "bg-blue-500 text-white shadow"
-                : "bg-[#23263a] text-gray-200 hover:bg-blue-700 hover:text-white"
+                ? "bg-blue-500 text-white shadow-blue-500/30"
+                : "bg-[#23263a]/80 text-gray-200 hover:bg-blue-700 hover:text-white"
             }
             disabled:opacity-90 disabled:cursor-not-allowed
           `}
+          style={{
+            backdropFilter: "blur(12px)",
+            border:
+              page === currentPage
+                ? "2px solid #3b82f6"
+                : "1.5px solid #324266",
+            minWidth: 35,
+          }}
           aria-current={page === currentPage ? "page" : undefined}
         >
           {page}
@@ -77,8 +83,11 @@ const Pagination = ({
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`rounded-full p-2 transition bg-[#212639] text-gray-300 hover:bg-blue-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed`}
+        className={`rounded-full p-2 shadow-lg shadow-blue-900/10 bg-[#22283d]/80 border border-[#324266]/40 text-gray-300 hover:bg-blue-700 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed`}
         aria-label="Next Page"
+        style={{
+          backdropFilter: "blur(20px)",
+        }}
       >
         <FaChevronRight />
       </button>

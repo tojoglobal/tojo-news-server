@@ -1,113 +1,123 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import { HiPlus } from "react-icons/hi";
-import toast from "react-hot-toast";
+import { useContext, useState } from "react";
+import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import { Link } from "react-router-dom";
 import {
-  Dialog,
   useTheme,
   useMediaQuery,
-  DialogContentText,
-  DialogTitle,
   Button,
-  DialogActions,
-  DialogContent,
+  IconButton,
+  Tooltip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Box,
+  CircularProgress,
 } from "@mui/material";
-import { BsExclamationCircle } from "react-icons/bs";
-import { MdOutlineArrowDownward } from "react-icons/md";
+import { HiPlus } from "react-icons/hi";
+import { MdEdit, MdDelete, MdVisibility } from "react-icons/md";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 import Pagination from "../../Pagination/Pagination";
-import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
+import "sweetalert2/dist/sweetalert2.min.css";
+
+const fetchSponsoredPosts = async (port) => {
+  const res = await fetch(`${port}/api/admin/Sponsored`);
+  const data = await res.json();
+  if (!data.Status)
+    throw new Error(data.Error || "Failed to fetch sponsored posts");
+  return data.Result;
+};
+
+const deleteSponsoredPost = async ({ port, id }) => {
+  const res = await fetch(`${port}/api/admin/Sponsored/delete/${id}`, {
+    method: "DELETE",
+  });
+  const data = await res.json();
+  if (!data.Status)
+    throw new Error(data.Error || "Failed to delete sponsored post");
+  return data;
+};
+
+const itemsPerPage = 10;
 
 const SponsoredPost = () => {
   const { state } = useContext(AppContext);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const queryClient = useQueryClient();
 
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [sponsoredPosts, setSponsoredPosts] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [dataDeleteId, setDataDeleteId] = useState(null);
-  const [deleteMessage, setDeleteMessage] = useState();
+  // Query: all posts
+  const {
+    data: sponsoredPosts = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["sponsoredPosts"],
+    queryFn: () => fetchSponsoredPosts(state.port),
+  });
 
+  // Pagination state (simple)
   const [currentPage, setCurrentPage] = useState(1);
-  const [paginatedData, setPaginatedData] = useState([]);
-  const itemsPerPage = 10;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedData = sponsoredPosts.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
-  useEffect(() => {
-    axios
-      .get(`${state.port}/api/admin/Sponsored`)
-      .then((result) => {
-        if (result.data.Status) {
-          setSponsoredPosts(result.data.Result);
-          setPaginatedData(result.data.Result.slice(0, itemsPerPage));
-        } else {
-          setErrorMessage(result.data.Error);
-        }
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  // Mutation: delete post
+  const mutation = useMutation({
+    mutationFn: (id) => deleteSponsoredPost({ port: state.port, id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sponsoredPosts"]);
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Sponsored post deleted successfully.",
+        timer: 1300,
+        showConfirmButton: false,
+        background: "#23263a",
+        color: "#fff",
+      });
+    },
+    onError: (err) => {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.message || "Delete failed",
+        background: "#23263a",
+        color: "#fff",
+      });
+    },
+  });
 
-  useEffect(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    setPaginatedData(sponsoredPosts.slice(startIndex, endIndex));
-  }, [currentPage, sponsoredPosts]);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const themes = useTheme();
-  const fullScreen = useMediaQuery(themes.breakpoints.down("md"));
-
-  const handleClickOpen = (id) => {
-    setOpen(true);
-    setDataDeleteId(id);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleCancel = () => {
-    toast.error(`Cancel`, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
+  const handleDelete = (id) => {
+    Swal.fire({
+      icon: "warning",
+      title: "Are you sure?",
+      text: "This will delete the sponsored post.",
+      showCancelButton: true,
+      confirmButtonColor: "#E16565",
+      cancelButtonColor: "#23263a",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      background: "#23263a",
+      color: "#fff",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        mutation.mutate(id);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        toast.error("Cancelled", {
+          position: "top-right",
+        });
+      }
     });
-    setOpen(false);
-  };
-
-  const handleDelete = () => {
-    axios
-      .delete(`${state.port}/api/admin/Sponsored/delete/` + dataDeleteId)
-      .then((result) => {
-        if (result.data.Status) {
-          setSponsoredPosts(
-            sponsoredPosts.filter((post) => post.id !== dataDeleteId)
-          );
-          setDeleteMessage(`Deleted successfully`);
-          toast.success(`Deleted successfully`, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        } else {
-          setDeleteMessage(result.data.Error);
-        }
-      })
-      .catch((err) => console.error(err));
-
-    setOpen(false);
   };
 
   const formatDate = (dateString) => {
@@ -121,141 +131,174 @@ const SponsoredPost = () => {
   };
 
   return (
-    <div className="conatiner dashboard_All">
-      <h1 className="dashboard_name">All Sponsored Posts</h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div>
-        <div>
-          <Link to="/dashboard/Sponsored/create">
-            <button className="button-62" role="button">
-              Create Sponsored Post{" "}
-              <span>
-                {" "}
-                <HiPlus />
-              </span>
-            </button>
-          </Link>
-          <p className="success-message">{deleteMessage}</p>
-        </div>
-        <div>
-          <div>
-            <table id="customers" className="">
-              <thead>
-                <tr>
-                  <th>SL</th>
-                  <th>TITLE</th>
-                  <th>START DATE</th>
-                  <th>END DATE</th>
-                  <th>IMAGE</th>
-                  <th>ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedData.length > 0 &&
-                  paginatedData.map((post, index) => (
-                    <tr key={post.id}>
-                      <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td>{post.title}</td>
-                      <td>{formatDate(post.start_date)}</td>
-                      <td>{formatDate(post.end_date)}</td>
-                      <td>
-                        <img
-                          className="Team_member_Image"
-                          src={
-                            post.image_url
-                              ? `${state.port}/Images/${post.image_url}`
-                              : "https://i.postimg.cc/KzNdw0LX/Group.png"
-                          }
-                          alt={post.title}
-                        />
-                      </td>
-                      <td>
-                        <div className="dropdown">
-                          <button className="dropbtn">
-                            Select <MdOutlineArrowDownward />
-                          </button>
-                          <div className="dropdown-content">
-                            <Link
-                              to={`/dashboard/Sponsored/edit/${post.id}`}
-                              className="routeLink"
-                            >
-                              <span className="actionBtn"> Edit</span>
-                            </Link>
-
-                            <Link
-                              to={`/dashboard/Sponsored/${post.id}`}
-                              className="routeLink"
-                            >
-                              <span className="actionBtn"> SHOW</span>
-                            </Link>
-
-                            <span
-                              onClick={() => handleClickOpen(post.id)}
-                              className="actionBtn"
-                            >
-                              DELETE
-                            </span>
-                          </div>
-                        </div>
-                        <Dialog
-                          fullScreen={fullScreen}
-                          open={open}
-                          onClose={handleClose}
-                          aria-labelledby="responsive-dialog-title"
+    <Box
+      className="container dashboard_All"
+      sx={{
+        px: isMobile ? 1 : 3,
+        py: 3,
+        color: "#fff",
+      }}
+    >
+      <Typography variant="h3" className="dashboard_name" gutterBottom>
+        All Sponsored Posts
+      </Typography>
+      <hr style={{ borderColor: "#222", opacity: 0.2 }} />
+      {error && (
+        <Box sx={{ my: 2, color: "error.main" }}>
+          <Typography variant="body1">{error.message}</Typography>
+        </Box>
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Link to="/dashboard/Sponsored/create">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<HiPlus />}
+            sx={{
+              borderRadius: 2,
+              fontWeight: 600,
+              fontSize: 16,
+              px: 3,
+              py: 1.5,
+              boxShadow: 2,
+            }}
+          >
+            Create Sponsored Post
+          </Button>
+        </Link>
+      </Box>
+      <Paper
+        elevation={3}
+        sx={{
+          borderRadius: 3,
+          overflow: "hidden",
+          background: "transparent",
+          color: "#fff",
+        }}
+      >
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ background: "rgba(255,255,255,0.05)" }}>
+                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                  SL
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                  TITLE
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                  START DATE
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                  END DATE
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700, color: "#fff" }}>
+                  IMAGE
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, color: "#fff", textAlign: "center" }}
+                >
+                  ACTIONS
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    <CircularProgress color="inherit" />
+                  </TableCell>
+                </TableRow>
+              ) : paginatedData.length > 0 ? (
+                paginatedData.map((post, index) => (
+                  <TableRow key={post.id} hover sx={{ color: "#fff" }}>
+                    <TableCell sx={{ color: "#fff" }}>
+                      {startIndex + index + 1}
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff" }}>{post.title}</TableCell>
+                    <TableCell sx={{ color: "#fff" }}>
+                      {formatDate(post.start_date)}
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff" }}>
+                      {formatDate(post.end_date)}
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff" }}>
+                      <img
+                        className="Team_member_Image"
+                        src={
+                          post.image_url
+                            ? `${state.port}/Images/${post.image_url}`
+                            : "https://i.postimg.cc/KzNdw0LX/Group.png"
+                        }
+                        alt={post.title}
+                        style={{
+                          width: 60,
+                          height: 40,
+                          objectFit: "cover",
+                          borderRadius: 8,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "#fff" }}>
+                      <Tooltip title="Edit" arrow>
+                        <IconButton
+                          component={Link}
+                          to={`/dashboard/Sponsored/edit/${post.id}`}
+                          color="primary"
+                          sx={{ mx: 0.5 }}
                         >
-                          <DialogTitle
-                            id="responsive-dialog-title "
-                            className="icon_div"
-                          >
-                            <div style={{ textAlign: "center" }}>
-                              <BsExclamationCircle className="icon" />
-                              <h3 style={{ paddingTop: "20px" }}>
-                                Are You sure?{" "}
-                              </h3>
-                            </div>
-                          </DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>
-                              Are you sure you want to delete this sponsored
-                              post?
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions>
-                            <Button
-                              autoFocus
-                              onClick={handleCancel}
-                              style={{ color: "#E16565" }}
-                            >
-                              Cancel
-                            </Button>
-                            <Button onClick={handleDelete} autoFocus>
-                              <span
-                                style={{
-                                  color: "#E16565",
-                                  textDecoration: "none",
-                                }}
-                              >
-                                Yes, delete it!
-                              </span>
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-          <Pagination
-            totalItems={sponsoredPosts.length}
-            itemsPerPage={itemsPerPage}
-            currentPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-        </div>
-      </div>
-    </div>
+                          <MdEdit />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Show" arrow>
+                        <IconButton
+                          component={Link}
+                          to={`/dashboard/Sponsored/${post.id}`}
+                          color="info"
+                          sx={{ mx: 0.5 }}
+                        >
+                          <MdVisibility />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete" arrow>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDelete(post.id)}
+                          sx={{ mx: 0.5 }}
+                        >
+                          <MdDelete />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    <Typography variant="body1" sx={{ color: "#fff" }}>
+                      No sponsored posts found.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+      <Pagination
+        totalItems={sponsoredPosts.length}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+      />
+    </Box>
   );
 };
 

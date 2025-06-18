@@ -1,16 +1,29 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { useFormik } from "formik";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  Grid,
+  TextField,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  CircularProgress,
+} from "@mui/material";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
-// ✅ Helper function to convert UTC date to local yyyy-mm-dd
+// Convert UTC date to local yyyy-mm-dd
 const formatDateToLocal = (utcDate) => {
+  if (!utcDate) return "";
   const date = new Date(utcDate);
-  const offset = date.getTimezoneOffset(); // in minutes
+  const offset = date.getTimezoneOffset();
   const localDate = new Date(date.getTime() - offset * 60000);
   return localDate.toISOString().split("T")[0];
 };
@@ -21,11 +34,13 @@ const EditSponsoredPost = () => {
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState(null);
-  const [SponsoredPost, setSponsoredPost] = useState({});
-  const [file, setFile] = useState(null); // for preview of new image only
+  const [sponsoredPost, setSponsoredPost] = useState({});
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Fetch data from DB
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`${state.port}/api/admin/Sponsoredbyid/${id}`)
       .then((result) => {
@@ -33,46 +48,40 @@ const EditSponsoredPost = () => {
           const post = result.data.Result[0];
           setSponsoredPost({
             ...post,
-            start_date: post.start_date
-              ? formatDateToLocal(post.start_date)
-              : "",
-            end_date: post.end_date ? formatDateToLocal(post.end_date) : "",
+            start_date: formatDateToLocal(post.start_date),
+            end_date: formatDateToLocal(post.end_date),
           });
-          setFile(null); // no new file selected initially
+          setFile(null);
         } else {
-          alert(result.data.Error);
+          setErrorMessage(result.data.Error);
         }
+        setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setErrorMessage(err.message || "Failed to fetch sponsored post");
+        setLoading(false);
+      });
+    // eslint-disable-next-line
   }, [id]);
-
-  // Handle image change
-  const handleChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(URL.createObjectURL(selectedFile)); // preview new image
-      formik.setFieldValue("file", selectedFile); // store file in formik
-    }
-  };
 
   const today = new Date().toISOString().split("T")[0];
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: SponsoredPost.title || "",
-      description: SponsoredPost.description || "",
-      start_date: SponsoredPost.start_date || "",
-      end_date: SponsoredPost.end_date || "",
+      title: sponsoredPost.title || "",
+      description: sponsoredPost.description || "",
+      start_date: sponsoredPost.start_date || "",
+      end_date: sponsoredPost.end_date || "",
       file: "",
-      is_recent: SponsoredPost.is_recent ? true : false,
+      is_recent: sponsoredPost.is_recent ? true : false,
     },
     validate: (values) => {
       const errors = {};
-      if (values.start_date < today) {
+      if (values.start_date && values.start_date < today) {
         errors.start_date = "Start date cannot be before today";
       }
-      if (values.end_date <= values.start_date) {
+      if (values.end_date && values.end_date <= values.start_date) {
         errors.end_date = "End date must be after start date";
       }
       return errors;
@@ -84,8 +93,6 @@ const EditSponsoredPost = () => {
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
       formData.append("is_recent", values.is_recent ? "true" : "false");
-
-      // Append file only if a new file is selected
       if (values.file instanceof File) {
         formData.append("file", values.file);
       }
@@ -94,21 +101,15 @@ const EditSponsoredPost = () => {
         const response = await axios.put(
           `${state.port}/api/admin/Sponsored/edit/${id}`,
           formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
         if (response.data.Status) {
           setErrorMessage(null);
-          toast.success(`Sponsored Post updated successfully`, {
+          toast.success("Sponsored Post updated successfully!", {
             position: "top-right",
-            autoClose: 5000,
+            duration: 4000,
           });
-          setTimeout(() => {
-            navigate(`/dashboard/Sponsored`);
-          }, 1500);
+          setTimeout(() => navigate(`/dashboard/Sponsored`), 1200);
         }
       } catch (error) {
         setErrorMessage(
@@ -119,144 +120,233 @@ const EditSponsoredPost = () => {
     },
   });
 
+  // Handle image change
+  const handleChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(URL.createObjectURL(selectedFile));
+      formik.setFieldValue("file", selectedFile);
+    }
+  };
+
   return (
-    <div className="container dashboard_All">
-      <h1 className="dashboard_name">Edit Sponsored Post</h1>
-      <hr />
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <div className="from_div">
-        <form
-          onSubmit={formik.handleSubmit}
-          className="p-4"
-          encType="multipart/form-data"
-        >
-          <div className="row">
-            {/* Title */}
-            <div className="col-md-12 inputfield">
-              <label htmlFor="title">Title</label>
-              <input
-                id="title"
-                className="text_input_field"
-                type="text"
-                name="title"
-                onChange={formik.handleChange}
-                value={formik.values.title}
-                required
-              />
-            </div>
-
-            {/* Description */}
-            <div className="col-md-12 inputfield">
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                className="text_input_field"
-                name="description"
-                onChange={formik.handleChange}
-                value={formik.values.description}
-                required
-                rows="4"
-              />
-            </div>
-
-            {/* Start Date */}
-            <div className="col-md-6 inputfield">
-              <label htmlFor="start_date">Start Date</label>
-              <input
-                id="start_date"
-                className="text_input_field"
-                type="date"
-                name="start_date"
-                onChange={formik.handleChange}
-                value={formik.values.start_date}
-                min={today}
-                required
-              />
-              {formik.errors.start_date && (
-                <div className="text-danger">{formik.errors.start_date}</div>
-              )}
-            </div>
-
-            {/* End Date */}
-            <div className="col-md-6 inputfield">
-              <label htmlFor="end_date">End Date</label>
-              <input
-                id="end_date"
-                className="text_input_field"
-                type="date"
-                name="end_date"
-                onChange={formik.handleChange}
-                value={formik.values.end_date}
-                min={formik.values.start_date || today}
-                required
-              />
-              {formik.errors.end_date && (
-                <div className="text-danger">{formik.errors.end_date}</div>
-              )}
-            </div>
-            <div className="col-md-6 inputfield">
-              <label htmlFor="is_recent">Mark as Recent Article</label>
-              <select
-                id="is_recent"
-                className="text_input_field"
-                name="is_recent"
-                onChange={(e) => {
-                  formik.setFieldValue("is_recent", e.target.value === "true");
-                }}
-                value={formik.values.is_recent ? "true" : "false"}
-              >
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-              </select>
-            </div>
-            {/* Image Upload */}
-            <div className="col-md-6 inputfield">
-              <h5>Upload Image</h5>
-              <div className="thumble_inputField_style">
-                <label htmlFor="file">
-                  Upload Image <FaCloudUploadAlt />
-                </label>
-                <input
-                  id="file"
-                  type="file"
-                  name="file"
-                  onChange={handleChange}
-                  accept=".jpg, .png"
+    <Box
+      className="container dashboard_All"
+      sx={{
+        color: "#fff",
+        py: 3,
+        width: "100%",
+        maxWidth: "100vw",
+        px: { xs: 1, sm: 3, md: 6, lg: 10 },
+      }}
+    >
+      <Typography variant="h3" className="dashboard_name" gutterBottom>
+        Edit Sponsored Post
+      </Typography>
+      <hr style={{ borderColor: "#222", opacity: 0.2 }} />
+      {errorMessage && (
+        <Box sx={{ my: 2, color: "error.main" }}>
+          <Typography variant="body1">{errorMessage}</Typography>
+        </Box>
+      )}
+      <Paper
+        elevation={3}
+        sx={{
+          borderRadius: 3,
+          background: "rgba(30,32,58,0.98)",
+          color: "#fff",
+          p: { xs: 1.5, sm: 3, md: 5 },
+          width: "100%",
+          boxShadow: "0 4px 32px #1a1c28",
+        }}
+      >
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", py: 7 }}>
+            <CircularProgress color="inherit" />
+          </Box>
+        ) : (
+          <form
+            onSubmit={formik.handleSubmit}
+            encType="multipart/form-data"
+            autoComplete="off"
+            style={{ width: "100%" }}
+          >
+            <Grid container spacing={3} sx={{ width: "100%", margin: 0 }}>
+              <Grid item xs={12} md={8}>
+                <TextField
+                  fullWidth
+                  label="Title"
+                  id="title"
+                  name="title"
+                  onChange={formik.handleChange}
+                  value={formik.values.title}
+                  required
+                  sx={{
+                    input: { color: "#fff" },
+                    label: { color: "#7aa8e6" },
+                    mb: 3,
+                  }}
                 />
-              </div>
-            </div>
-
-            {/* Preview Image */}
-            <div className="col-md-6 inputfield">
-              <h5>Preview Image</h5>
-              <img
-                src={
-                  file
-                    ? file
-                    : SponsoredPost.image_url
-                    ? `${state.port}/Images/${SponsoredPost.image_url}`
-                    : ""
-                }
-                alt="Sponsored Post Preview"
-                className="blog_Image"
-                loading="lazy"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <div className="col-md-12 inputFiledMiddel">
-              <button
-                type="submit"
-                className="button-62 cetificate_image_AddBtn"
-                role="button"
-              >
-                UPDATE SPONSORED
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+                <TextField
+                  fullWidth
+                  label="Description"
+                  id="description"
+                  name="description"
+                  onChange={formik.handleChange}
+                  value={formik.values.description}
+                  multiline
+                  minRows={4}
+                  required
+                  sx={{
+                    textarea: { color: "#fff" },
+                    label: { color: "#7aa8e6" },
+                    mb: 3,
+                  }}
+                />
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Start Date"
+                      id="start_date"
+                      name="start_date"
+                      type="date"
+                      onChange={formik.handleChange}
+                      value={formik.values.start_date}
+                      InputLabelProps={{ shrink: true }}
+                      inputProps={{ min: today }}
+                      required
+                      error={Boolean(formik.errors.start_date)}
+                      helperText={formik.errors.start_date}
+                      sx={{
+                        input: { color: "#fff" },
+                        label: { color: "#7aa8e6" },
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="End Date"
+                      id="end_date"
+                      name="end_date"
+                      type="date"
+                      onChange={formik.handleChange}
+                      value={formik.values.end_date}
+                      InputLabelProps={{ shrink: true }}
+                      inputProps={{ min: formik.values.start_date || today }}
+                      required
+                      error={Boolean(formik.errors.end_date)}
+                      helperText={formik.errors.end_date}
+                      sx={{
+                        input: { color: "#fff" },
+                        label: { color: "#7aa8e6" },
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+                <FormControl fullWidth sx={{ mt: 3 }}>
+                  <InputLabel id="is_recent" sx={{ color: "#7aa8e6" }}>
+                    Mark as Recent Article
+                  </InputLabel>
+                  <Select
+                    labelId="is_recent"
+                    id="is_recent"
+                    name="is_recent"
+                    value={formik.values.is_recent ? "true" : "false"}
+                    label="Mark as Recent Article"
+                    onChange={(e) =>
+                      formik.setFieldValue(
+                        "is_recent",
+                        e.target.value === "true"
+                      )
+                    }
+                    sx={{
+                      color: "#fff",
+                      ".MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#324266",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#3b82f6",
+                      },
+                    }}
+                  >
+                    <MenuItem value="false">No</MenuItem>
+                    <MenuItem value="true">Yes</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Box sx={{ pb: 1, fontWeight: 700, color: "#7aa8e6" }}>
+                  Upload Image
+                </Box>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  startIcon={<FaCloudUploadAlt />}
+                  sx={{
+                    color: "#7aa8e6",
+                    borderColor: "#324266",
+                    "&:hover": { borderColor: "#3b82f6", color: "#3b82f6" },
+                    mb: 2,
+                  }}
+                  fullWidth
+                >
+                  Upload Image
+                  <input
+                    id="file"
+                    type="file"
+                    name="file"
+                    hidden
+                    onChange={handleChange}
+                    accept=".jpg, .png"
+                  />
+                </Button>
+                <Box sx={{ pb: 1, fontWeight: 700, color: "#7aa8e6" }}>
+                  Preview Image
+                </Box>
+                <img
+                  src={
+                    file
+                      ? file
+                      : sponsoredPost.image_url
+                      ? `${state.port}/Images/${sponsoredPost.image_url}`
+                      : ""
+                  }
+                  alt="Sponsored Post Preview"
+                  style={{
+                    width: "100%",
+                    maxWidth: 260,
+                    height: "auto",
+                    objectFit: "cover",
+                    borderRadius: 9,
+                    boxShadow: "0 2px 18px #1a1c28",
+                  }}
+                  loading="lazy"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  sx={{
+                    borderRadius: 2,
+                    fontWeight: 700,
+                    fontSize: 17,
+                    py: 1.3,
+                    mt: 3,
+                  }}
+                >
+                  Update Sponsored
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        )}
+      </Paper>
+    </Box>
   );
 };
 
