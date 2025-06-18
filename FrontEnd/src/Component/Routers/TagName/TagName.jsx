@@ -84,6 +84,9 @@ const TagNameList = () => {
     });
   };
 
+  // Tailwind gray-600 hex: #4b5563
+  const borderBottom = "1.5px solid #4b5563";
+
   return (
     <Box sx={{ px: isMobile ? 1 : 2, py: 2, color: "#fff" }}>
       <h1 className="text-2xl md:text-3xl mb-2 font-bold">Tags</h1>
@@ -140,6 +143,7 @@ const TagNameList = () => {
                     py: 1,
                     px: 1.5,
                     fontSize: 13,
+                    borderBottom,
                   }}
                 >
                   SL
@@ -151,12 +155,18 @@ const TagNameList = () => {
                     py: 1,
                     px: 1.5,
                     fontSize: 13,
+                    borderBottom,
                   }}
                 >
                   Tag Name
                 </TableCell>
                 <TableCell
-                  sx={{ fontWeight: 700, color: "#fff", textAlign: "center" }}
+                  sx={{
+                    fontWeight: 700,
+                    color: "#fff",
+                    textAlign: "center",
+                    borderBottom,
+                  }}
                 >
                   ACTIONS
                 </TableCell>
@@ -165,16 +175,31 @@ const TagNameList = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={3} align="center" sx={{ py: 3 }}>
+                  <TableCell
+                    colSpan={3}
+                    align="center"
+                    sx={{ py: 3, borderBottom }}
+                  >
                     <CircularProgress color="inherit" size={22} />
                   </TableCell>
                 </TableRow>
               ) : tagNames && tagNames.length > 0 ? (
                 tagNames.map((item, index) => (
-                  <TableRow key={item.uuid} hover sx={{ color: "#fff" }}>
-                    <TableCell sx={{ color: "#fff" }}>{index + 1}</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>{item.name}</TableCell>
-                    <TableCell align="center" sx={{ color: "#fff" }}>
+                  <TableRow
+                    key={item.uuid}
+                    hover
+                    sx={{ color: "#fff", borderBottom }}
+                  >
+                    <TableCell sx={{ color: "#fff", borderBottom }}>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff", borderBottom }}>
+                      {item.name}
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{ color: "#fff", borderBottom }}
+                    >
                       <Tooltip title="Edit" arrow>
                         <IconButton
                           component={Link}
@@ -199,7 +224,11 @@ const TagNameList = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} align="center" sx={{ py: 2 }}>
+                  <TableCell
+                    colSpan={3}
+                    align="center"
+                    sx={{ py: 2, borderBottom }}
+                  >
                     <Typography variant="body2" sx={{ color: "#fff" }}>
                       No tags found.
                     </Typography>
@@ -215,3 +244,4 @@ const TagNameList = () => {
 };
 
 export default TagNameList;
+  

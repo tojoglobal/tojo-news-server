@@ -1,12 +1,12 @@
 import db from "../../Utils/db.js";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import fs from "fs";
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 import {
   // admin
-  adminLoginData,
+  // adminLoginData,
   // team member
   allTeamMemberQuery,
   teamMemberToDeleteQuery,
@@ -60,9 +60,9 @@ import {
   editAuthorQuery,
   showAuthorIdQuery,
   // news category
-  createNewsCategoryQuery,
+  // createNewsCategoryQuery,
   getNewsCategoryQuery,
-  deleteOneNewsCategoryQuery,
+  // deleteOneNewsCategoryQuery,
   showNewsCategoryIdQuery,
   editNewsCategoryQuery,
   // clinet list
@@ -84,7 +84,7 @@ import {
   allEpisodesQuery,
   createEpisodesQuery,
   getSponsoredPostByIdQuery,
-  editSponsoredPostIdQuery,
+  // editSponsoredPostIdQuery,
   SponsoredPostToDeleteQuery,
   editSponsoredPostQuery,
   allSponsoredPostQuery,
@@ -118,7 +118,7 @@ const createBlogPost = async (req, res) => {
 
 const allBlogPost = async (req, res) => {
   try {
-    const [data] = await db.query(allBlogPostQuery); // ✅ Use await with promise-based pool
+    const [data] = await db.query(allBlogPostQuery); 
     return res.json({ Status: true, Result: data });
   } catch (err) {
     return res.json({ Status: false, Error: "Query Error" });
@@ -295,37 +295,47 @@ const jobPostToDelete = (req, res) => {
 };
 
 // TagName Router
-const createTagName = (req, res) => {
-  const uuid = uuidv4();
-  const values = [uuid, req.body.TagName];
-  db.query(createTagNameQuery, [values], (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
-    return res.json({ Status: true, Result: result });
-  });
-};
-
-// const allTagName = (req, res) => {
-//   db.query(allTagNameQuery, (err, result) => {
-//     if (err) {
-//       return res.json({ Status: false, Error: "Query Error" });
-//     } else {
-//       return res.json({ Status: true, Result: result });
-//     }
+// const createTagName = (req, res) => {
+//   const uuid = uuidv4();
+//   const values = [uuid, req.body.TagName];
+//   db.query(createTagNameQuery, [values], (err, result) => {
+//     if (err) return res.json({ Status: false, Error: err });
+//     return res.json({ Status: true, Result: result });
 //   });
 // };
 
-const allTagName = async (req, res) => {
-  try {
-    const [result] = await db.query(allTagNameQuery);
-    return res.json({ Status: true, Result: result });
-  } catch (err) {
-    return res.json({ Status: false, Error: "Query Error" });
-  }
-};
+// const allTagName = async (req, res) => {
+//   try {
+//     const [result] = await db.query(allTagNameQuery);
+//     return res.json({ Status: true, Result: result });
+//   } catch (err) {
+//     return res.json({ Status: false, Error: "Query Error" });
+//   }
+// };
 
-// const editTagNameId = (req, res) => {
+// const editTagNameId = async (req, res) => {
+//   try {
+//     const id = [req.params.id];
+//     const [result] = await db.query(editTagNameIdQuery, [id]);
+//     return res.json({ Status: true, Result: result });
+//   } catch (error) {
+//     return res.json({ Status: false, Error: err });
+//   }
+// };
+
+// const editTagName = (req, res) => {
 //   const id = req.params.id;
-//   db.query(editTagNameIdQuery, [id], (err, result) => {
+//   const values = [req.body.TagName];
+//   db.query(editTagNameQuery, [...values, id], (err, result) => {
+//     if (err) return res.json({ Status: false, Error: err });
+//     return res.json({ Status: true, Result: result });
+//   });
+// };
+
+// const TagNameToDelete = (req, res) => {
+//   const id = req.params.uuid;
+
+//   db.query(TagNameToDeleteQuery, [id], (err, result) => {
 //     if (err) {
 //       return res.json({ Status: false, Error: "Qurey Erro" });
 //     } else {
@@ -334,35 +344,116 @@ const allTagName = async (req, res) => {
 //   });
 // };
 
-const editTagNameId = async (req, res) => {
+const createTagName = async (req, res) => {
   try {
-    const id = [req.params.id];
-    const [result] = await db.query(editTagNameIdQuery, [id]);
-    return res.json({ Status: true, Result: result });
+    const uuid = uuidv4();
+    const values = [uuid, req.body.TagName];
+    const [result] = await db.query(createTagNameQuery, [values]);
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Result: result,
+        Message: "Tag created successfully",
+      });
+    } else {
+      return res.status(500).json({
+        Status: false,
+        Error: "Failed to create tag",
+      });
+    }
   } catch (error) {
-    return res.json({ Status: false, Error: err });
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
   }
 };
 
-const editTagName = (req, res) => {
-  const id = req.params.id;
-  const values = [req.body.TagName];
-  db.query(editTagNameQuery, [...values, id], (err, result) => {
-    if (err) return res.json({ Status: false, Error: err });
-    return res.json({ Status: true, Result: result });
-  });
+const allTagName = async (req, res) => {
+  try {
+    const [result] = await db.query(allTagNameQuery);
+    return res.status(200).json({
+      Status: true,
+      Result: result,
+    });
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
+  }
 };
 
-const TagNameToDelete = (req, res) => {
-  const id = req.params.uuid;
+const editTagNameId = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const [result] = await db.query(editTagNameIdQuery, [id]);
+    return res.status(200).json({
+      Status: true,
+      Result: result,
+    });
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
+  }
+};
 
-  db.query(TagNameToDeleteQuery, [id], (err, result) => {
-    if (err) {
-      return res.json({ Status: false, Error: "Qurey Erro" });
+const editTagName = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const values = [req.body.TagName, id];
+    const [result] = await db.query(editTagNameQuery, values);
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Result: result,
+        Message: "Tag updated successfully",
+      });
     } else {
-      return res.json({ Status: true, Result: result });
+      return res.status(404).json({
+        Status: false,
+        Error: "Tag not found or no change made",
+      });
     }
-  });
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
+  }
+};
+
+const TagNameToDelete = async (req, res) => {
+  try {
+    const id = req.params.uuid;
+    const [result] = await db.query(TagNameToDeleteQuery, [id]);
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        Status: true,
+        Message: "Tag deleted successfully",
+      });
+    } else {
+      return res.status(404).json({
+        Status: false,
+        Error: "Tag not found",
+      });
+    }
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
+  }
 };
 
 // member route

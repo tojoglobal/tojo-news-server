@@ -114,7 +114,6 @@ const CreateBlogPost = () => {
           }
         );
       }
-
       resetForm();
       setFile(null);
     },

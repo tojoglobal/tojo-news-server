@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import DashboardCard from "./Card/CountCard";
 import { useEffect, useState, useContext } from "react";
@@ -61,27 +62,21 @@ const MainDashbord = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link to="/dashboard/client" className="hover:no-underline">
-          <DashboardCard
-            title="News"
-            count={loading ? "..." : totalNews}
-            icon="📰"
-          />
-        </Link>
-        <Link to="/dashboard/teamMember" className="hover:no-underline">
-          <DashboardCard
-            title="Team Members"
-            count={loading ? "..." : totalTeamMember}
-            icon="👥"
-          />
-        </Link>
-        <Link to="/dashboard/contact" className="hover:no-underline">
-          <DashboardCard
-            title="Contacts"
-            count={loading ? "..." : totalContact}
-            icon="✉️"
-          />
-        </Link>
+        <DashboardCard
+          title="News"
+          count={loading ? "..." : totalNews}
+          icon="📰"
+        />
+        <DashboardCard
+          title="Team Members"
+          count={loading ? "..." : totalTeamMember}
+          icon="👥"
+        />
+        <DashboardCard
+          title="Contacts"
+          count={loading ? "..." : totalContact}
+          icon="✉️"
+        />
       </div>
 
       {/* Recent Activity Section */}

@@ -17,10 +17,11 @@ const CreateTagName = () => {
         .post(`${state.port}/api/admin/TagName/create`, values)
         .then((res) => res.data),
     onSuccess: (res) => {
+      console.log(res);
       if (res.Status) {
         toast.success("Tag created successfully");
         queryClient.invalidateQueries(["TagNames"]);
-        setTimeout(() => navigate("/dashboard/TagName"), 1000);
+        navigate(-1);
       } else {
         toast.error(res.Error || "Failed to create Tag");
       }
@@ -74,7 +75,7 @@ const CreateTagName = () => {
         <div>
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-pink-500 hover:from-blue-700 hover:to-pink-600 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-200 text-base"
+            className="w-full cursor-pointer bg-gradient-to-r from-blue-600 to-pink-500 hover:from-blue-700 hover:to-pink-600 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-200 text-base"
             disabled={mutation.isLoading}
           >
             Add Tag

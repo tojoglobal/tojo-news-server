@@ -58,7 +58,7 @@ const EditTagName = () => {
     onSuccess: () => {
       toast.success("Tag updated successfully");
       queryClient.invalidateQueries(["TagNames"]);
-      setTimeout(() => navigate(-1), 1000); // Go back one page
+      navigate(-1);
     },
     onError: (err) => {
       toast.error(
@@ -125,7 +125,7 @@ const EditTagName = () => {
         <div>
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-pink-500 hover:from-blue-700 hover:to-pink-600 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-200 text-base"
+            className="w-full cursor-pointer bg-gradient-to-r from-blue-600 to-pink-500 hover:from-blue-700 hover:to-pink-600 text-white font-bold py-2.5 rounded-lg shadow-lg transition-all duration-200 text-base"
             disabled={mutation.isLoading}
           >
             Update Tag
