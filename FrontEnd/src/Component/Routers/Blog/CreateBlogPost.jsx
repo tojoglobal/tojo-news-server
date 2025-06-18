@@ -121,9 +121,9 @@ const CreateBlogPost = () => {
   });
 
   return (
-    <div className="bg-[#101829] flex flex-col items-center px-2 md:px-0 py-6 text-white transition-colors duration-300">
-      <div className="w-full max-w-5xl bg-[#172133] rounded-xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-4">Create News</h1>
+    <div className="p-3">
+      <div className="w-full bg-[#172133] rounded-xl shadow-lg p-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-4">Create News</h1>
         <hr className="border-gray-700 mb-6" />
         <form
           onSubmit={formik.handleSubmit}

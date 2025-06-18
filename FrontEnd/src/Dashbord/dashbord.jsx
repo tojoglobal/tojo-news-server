@@ -54,11 +54,9 @@ const Dashboard = () => {
           <MenuList collapsed={collapsed} />
         </div>
       </aside>
-
-      {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-70 md:hidden"
+          className="fixed inset-0 z-40 md:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -79,7 +77,7 @@ const Dashboard = () => {
           </button>
         </div>
         <div className="h-full overflow-y-auto">
-          <MenuList collapsed={false} />
+          <MenuList collapsed={false} onNavigate={() => setMobileOpen(false)} />
         </div>
       </aside>
       {/* Main Content */}

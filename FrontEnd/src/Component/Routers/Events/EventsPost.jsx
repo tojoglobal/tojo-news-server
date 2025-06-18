@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { HiPlus } from "react-icons/hi";
@@ -10,11 +11,8 @@ import Pagination from "../../Pagination/Pagination";
 
 const EventsPost = () => {
   const { state } = useContext(AppContext);
-
-  const [errorMessage, setErrorMessage] = useState(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
-
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -28,14 +26,12 @@ const EventsPost = () => {
       .then((result) => {
         if (result.data.Status) {
           setEvents(result.data.Result);
-          setErrorMessage(null);
         } else {
-          setErrorMessage(result.data.Error);
+          toast.error(result.data.Error);
         }
       })
-      .catch(() => setErrorMessage("Error loading events."))
+      .catch(() => toast.error("Error loading events."))
       .finally(() => setLoading(false));
-    // eslint-disable-next-line
   }, []);
 
   const handleDeleteDialog = (uuid) => {
@@ -100,13 +96,10 @@ const EventsPost = () => {
   };
 
   return (
-    <div className="w-full min-h-screen px-2 md:px-8 py-8 bg-transparent text-white">
-      <h1 className="text-3xl md:text-4xl font-bold mb-2">All Events</h1>
-      <hr className="border-[#222] opacity-20 mb-6" />
-      {errorMessage && (
-        <div className="text-red-400 font-semibold mb-4">{errorMessage}</div>
-      )}
-
+    <div className="p-3">
+      <h1 className="text-2xl md:text-3xl font-bold mb-3">
+        All Events
+      </h1>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <Link to="/dashboard/events/create" className="no-underline">
           <button
@@ -118,7 +111,6 @@ const EventsPost = () => {
           </button>
         </Link>
       </div>
-
       <div className="w-full overflow-x-auto rounded-xl">
         <table className="w-full min-w-[900px] border-separate border-spacing-0 bg-transparent text-white text-base mb-2">
           <thead>
@@ -194,7 +186,6 @@ const EventsPost = () => {
           </tbody>
         </table>
       </div>
-
       <Pagination
         totalItems={events.length}
         itemsPerPage={itemsPerPage}

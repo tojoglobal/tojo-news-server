@@ -84,10 +84,10 @@ const BlogPost = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#101829] flex flex-col px-2 md:px-0 py-6 text-white transition-colors duration-300">
+    <div className="p-2">
       <div className="w-full max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-          <h1 className="text-3xl font-bold">All Blog Posts</h1>
+          <h1 className="text-2xl md:text-3xl font-bold">All Blog Posts</h1>
           <Link to="/dashboard/blogpost/create">
             <button className="inline-flex cursor-pointer items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg shadow transition">
               Create News Post <HiPlus className="text-lg" />

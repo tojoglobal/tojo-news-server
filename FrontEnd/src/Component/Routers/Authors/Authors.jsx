@@ -93,7 +93,7 @@ const Author = () => {
         color: "#fff",
       }}
     >
-      <h1 className="text-xl md:text-2xl mb-2 font-bold">Authors</h1>
+      <h1 className="text-2xl md:text-3xl mb-2 font-bold">Authors</h1>
       <hr style={{ borderColor: "#222", opacity: 0.2 }} />
       {error && (
         <Box sx={{ my: 1, color: "error.main" }}>

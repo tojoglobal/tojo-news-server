@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   FiHome,
   FiTag,
@@ -17,8 +17,9 @@ import {
   FiSettings,
 } from "react-icons/fi";
 
-const MenuList = ({ collapsed }) => {
+const MenuList = ({ collapsed, onNavigate }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const selectedKeys = (() => {
     const path = location.pathname.toLowerCase();
@@ -132,24 +133,34 @@ const MenuList = ({ collapsed }) => {
     },
   ];
 
+  // Handler for mobile: close modal and navigate to route
+  const handleMenuClick = (path) => {
+    if (typeof onNavigate === "function") onNavigate();
+    navigate(path);
+  };
+
   return (
     <nav className="px-2 py-4">
       <ul className="space-y-1">
         {menuItems.map((item) => (
           <li key={item.key}>
-            <Link
-              to={item.path}
-              className={`flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${
-                selectedKeys.includes(item.key)
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white"
-              }`}
+            <button
+              type="button"
+              className={`w-full cursor-pointer flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors duration-200 text-left
+                ${
+                  selectedKeys.includes(item.key)
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                }
+              `}
+              onClick={() => handleMenuClick(item.path)}
+              tabIndex={0}
             >
               <span className={`${collapsed ? "mx-auto" : "mr-3"}`}>
                 {item.icon}
               </span>
               {!collapsed && <span className="truncate">{item.label}</span>}
-            </Link>
+            </button>
           </li>
         ))}
       </ul>

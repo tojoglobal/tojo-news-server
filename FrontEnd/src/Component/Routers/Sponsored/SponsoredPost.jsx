@@ -191,9 +191,9 @@ const SponsoredPost = () => {
                   sx={{
                     fontWeight: 700,
                     color: "#fff",
-                    py: 1,
-                    px: 1.5,
-                    fontSize: 13,
+                    py: 1.4,
+                    px: 1.6,
+                    fontSize: 15,
                   }}
                 >
                   SL
@@ -202,9 +202,9 @@ const SponsoredPost = () => {
                   sx={{
                     fontWeight: 700,
                     color: "#fff",
-                    py: 1,
-                    px: 1.5,
-                    fontSize: 13,
+                    py: 1.4,
+                    px: 1.6,
+                    fontSize: 15,
                   }}
                 >
                   TITLE
@@ -213,9 +213,9 @@ const SponsoredPost = () => {
                   sx={{
                     fontWeight: 700,
                     color: "#fff",
-                    py: 1,
-                    px: 1.5,
-                    fontSize: 13,
+                    py: 1.4,
+                    px: 1.6,
+                    fontSize: 15,
                   }}
                 >
                   START DATE
@@ -224,9 +224,9 @@ const SponsoredPost = () => {
                   sx={{
                     fontWeight: 700,
                     color: "#fff",
-                    py: 1,
-                    px: 1.5,
-                    fontSize: 13,
+                    py: 1.4,
+                    px: 1.6,
+                    fontSize: 15,
                   }}
                 >
                   END DATE
@@ -235,9 +235,9 @@ const SponsoredPost = () => {
                   sx={{
                     fontWeight: 700,
                     color: "#fff",
-                    py: 1,
-                    px: 1.5,
-                    fontSize: 13,
+                    py: 1.4,
+                    px: 1.6,
+                    fontSize: 15,
                   }}
                 >
                   IMAGE
@@ -247,9 +247,9 @@ const SponsoredPost = () => {
                     fontWeight: 700,
                     color: "#fff",
                     textAlign: "center",
-                    py: 1,
-                    px: 1.5,
-                    fontSize: 13,
+                    py: 1.4,
+                    px: 1.6,
+                    fontSize: 15,
                   }}
                 >
                   ACTIONS
@@ -267,26 +267,26 @@ const SponsoredPost = () => {
                 paginatedData.map((post, index) => (
                   <TableRow key={post.id} hover sx={{ color: "#fff" }}>
                     <TableCell
-                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
                     >
                       {startIndex + index + 1}
                     </TableCell>
                     <TableCell
-                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
                     >
                       {post.title}
                     </TableCell>
                     <TableCell
-                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
                     >
                       {formatDate(post.start_date)}
                     </TableCell>
                     <TableCell
-                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
                     >
                       {formatDate(post.end_date)}
                     </TableCell>
-                    <TableCell sx={{ color: "#fff", py: 1, px: 1.5 }}>
+                    <TableCell sx={{ color: "#fff", py: 1.4, px: 1.6 }}>
                       <img
                         className="Team_member_Image"
                         src={
@@ -305,7 +305,7 @@ const SponsoredPost = () => {
                     </TableCell>
                     <TableCell
                       align="center"
-                      sx={{ color: "#fff", py: 1, px: 1.5, fontSize: 13 }}
+                      sx={{ color: "#fff", py: 1.4, px: 1.6, fontSize: 15 }}
                     >
                       <Tooltip title="Edit" arrow>
                         <IconButton
@@ -314,7 +314,7 @@ const SponsoredPost = () => {
                           color="primary"
                           sx={{ mx: 0.5, p: 0.75 }}
                         >
-                          <MdEdit size={18} />
+                          <MdEdit size={20} />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Show" arrow>
@@ -324,7 +324,7 @@ const SponsoredPost = () => {
                           color="info"
                           sx={{ mx: 0.5, p: 0.75 }}
                         >
-                          <MdVisibility size={18} />
+                          <MdVisibility size={20} />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete" arrow>
@@ -333,7 +333,7 @@ const SponsoredPost = () => {
                           onClick={() => handleDelete(post.id)}
                           sx={{ mx: 0.5, p: 0.75 }}
                         >
-                          <MdDelete size={18} />
+                          <MdDelete size={20} />
                         </IconButton>
                       </Tooltip>
                     </TableCell>
