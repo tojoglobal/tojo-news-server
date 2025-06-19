@@ -138,9 +138,9 @@ const MainDashbord = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-3 space-y-5">
       {/* Header */}
-      <div className="space-y-1">
+      <div className="space-y-[2px]">
         <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
           Dashboard Overview
         </h1>
