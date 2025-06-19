@@ -1593,8 +1593,26 @@ const SponsoredPostToDelete = async (req, res) => {
   }
 };
 
+const getAdminCount = async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT COUNT(*) AS count FROM admin");
+    return res.status(200).json({
+      Status: true,
+      Count: rows[0].count,
+    });
+  } catch (error) {
+    console.error("SQL Error:", error);
+    return res.status(500).json({
+      Status: false,
+      Error: error.sqlMessage || error.message || "Unknown SQL error",
+    });
+  }
+};
+
+
 export {
   getUserCount,
+  getAdminCount,
   getHomeHighlightBlog,
   createSponsoredPost,
   allSponsoredPost,

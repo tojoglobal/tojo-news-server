@@ -211,6 +211,7 @@ const getAuthors = async (req, res) => {
   }
 };
 
+// documentories page subscription part
 const checkSubscription = async (req, res) => {
   try {
     const { email } = req.query;
@@ -233,7 +234,69 @@ const checkSubscription = async (req, res) => {
   }
 };
 
-// newsletter subscribe
+const getAllSubscribers = async (req, res) => {
+  try {
+    const [subscribers] = await db.query(
+      "SELECT id, email, interests, created_at FROM subscribers ORDER BY created_at DESC"
+    );
+    res.status(200).json({ success: true, data: subscribers });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const deleteSubscriber = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // First check if subscriber exists
+    const [existingSubscriber] = await db.query(
+      "SELECT id FROM subscribers WHERE id = ?",
+      [id]
+    );
+    
+    if (existingSubscriber.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Subscriber not found",
+      });
+    }
+
+    // Delete from database
+    await db.query("DELETE FROM subscribers WHERE id = ?", [id]);
+
+    // Optional: Also remove from Mailchimp if you're syncing
+    if (process.env.MAILCHIMP_API_KEY) {
+      try {
+        const email = existingSubscriber[0].email;
+        await axios.delete(
+          `https://${process.env.MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${process.env.MAILCHIMP_AUDIENCE_ID}/members/${md5(email.toLowerCase())}`,
+          {
+            headers: {
+              Authorization: `apikey ${process.env.MAILCHIMP_API_KEY}`,
+            },
+          }
+        );
+      } catch (mailchimpError) {
+        console.error("Mailchimp deletion error:", mailchimpError.response?.data);
+        // Continue even if Mailchimp deletion fails
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Subscriber deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting subscriber:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 const newsLetterSubscribe = async (req, res) => {
   try {
     const { email, interests } = req.body;
@@ -319,6 +382,7 @@ const newsLetterSubscribe = async (req, res) => {
   }
 };
 
+// events part
 const getAllEventsPublic = async (req, res) => {
   try {
     const [result] = await db.query("SELECT * FROM events ORDER BY date DESC");
@@ -353,6 +417,8 @@ export {
   getMostReadBlogs,
   getMostPopulerViews,
   getAuthors,
+  getAllSubscribers,
+  deleteSubscriber,
   newsLetterSubscribe,
   checkSubscription,
   getAllEventsPublic,

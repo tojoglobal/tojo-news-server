@@ -78,6 +78,12 @@ const MenuList = ({ collapsed, onNavigate }) => {
       path: "/dashboard/documentaries",
     },
     {
+      key: "newsletters",
+      icon: <FiFilm className="w-5 h-5" />,
+      label: "Newsletters",
+      path: "/dashboard/newsletters",
+    },
+    {
       key: "sponsored",
       icon: <FiVolume2 className="w-5 h-5" />,
       label: "Sponsored",

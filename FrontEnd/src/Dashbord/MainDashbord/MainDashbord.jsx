@@ -44,8 +44,9 @@ const MainDashbord = () => {
   };
 
   const contactCount = async () => {
-    const result = await axios.get(`${state.port}/api/admin/contact-count`);
-    if (result.data.Status) setTotalContact(result.data.Result[0].totalContact);
+    const result = await axios.get(`${state.port}/api/admin/total-admin`);
+    console.log(result);
+    if (result.data.Status) setTotalContact(result.data.Count);
     else setErrorMessage(result.data.Error);
   };
 
@@ -67,12 +68,12 @@ const MainDashbord = () => {
           icon="📰"
         />
         <DashboardCard
-          title="Team Members"
+          title="Users"
           count={loading ? "..." : totalTeamMember}
           icon="👥"
         />
         <DashboardCard
-          title="Contacts"
+          title="Admin"
           count={loading ? "..." : totalContact}
           icon="✉️"
         />

@@ -14,6 +14,8 @@ import {
   checkSubscription,
   getAllEventsPublic,
   getEventByIdPublic,
+  getAllSubscribers,
+  deleteSubscriber,
 } from "../controllers/PublicApiContrillers.js";
 
 // PublicApiRouter route
@@ -39,6 +41,9 @@ PublicApiRouter.get("/authors", getAuthors);
 // newsletter
 PublicApiRouter.get("/check-subscription", checkSubscription);
 PublicApiRouter.post("/subscribe", newsLetterSubscribe);
+PublicApiRouter.get("/all-subscribers", getAllSubscribers);
+PublicApiRouter.delete("/subscribers/:id", deleteSubscriber);
+// events
 PublicApiRouter.get("/events", getAllEventsPublic);
 PublicApiRouter.get("/events/:id", getEventByIdPublic);
 

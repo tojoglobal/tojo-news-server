@@ -90,6 +90,7 @@ import {
   editSponsoredPost,
   getUserCount,
   getHomeHighlightBlog,
+  getAdminCount,
 } from "../controllers/AdminControllers.js";
 import multer from "multer";
 import { v4 as uuidv4 } from "uuid";
@@ -126,6 +127,7 @@ const AdminRouter = express.Router();
 
 // admin login
 // AdminRouter.post("/adminlogin", adminLogin);
+AdminRouter.get("/total-admin", getAdminCount);
 
 // Blog Router
 AdminRouter.post("/blogpost/create", upload.single("file"), createBlogPost);

@@ -86,6 +86,7 @@ import EditEventsPost from "./Component/Routers/Events/EditEventsPost";
 import DocumentariesPost from "./Component/Routers/Documentories/DocumentariesPost";
 import AdminFeaturedThisWeek from "./Component/Routers/Documentories/AdminFeaturedThisWeek";
 import Settings from "./Dashbord/Settings";
+import NewslettersData from "./Component/Routers/Newsletters/NewslettersData";
 
 function App() {
   return (
@@ -131,6 +132,9 @@ function App() {
               path="newscategory/create"
               element={<CreateNewsCategory />}
             />
+
+            {/* newsletters */}
+            <Route path="newsletters" element={<NewslettersData />} />
 
             {/* Blog Post */}
             <Route path="blogpost" element={<BlogPost />} />
