@@ -144,13 +144,13 @@ const EditBlogPost = () => {
   });
 
   return (
-    <div className="bg-[#101829] flex flex-col items-center px-2 md:px-0 py-6 text-white transition-colors duration-300">
-      <div className="w-full max-w-5xl bg-[#172133] rounded-xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-4">Edit Blog Post</h1>
-        <hr className="border-gray-700 mb-6" />
+    <div className="bg-[#101829] flex flex-col items-center px-2 md:px-0 py-2 md:py-6 text-white transition-colors duration-300">
+      <div className="w-full max-w-5xl bg-[#172133] rounded-xl shadow-lg p-4 md:p-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-4">Edit Blog Post</h1>
+        <hr className="border-gray-700 mb-3 md:mb-6" />
         <form
           onSubmit={formik.handleSubmit}
-          className="space-y-6"
+          className="space-y-5 md:space-y-6"
           encType="multipart/form-data"
         >
           <div>

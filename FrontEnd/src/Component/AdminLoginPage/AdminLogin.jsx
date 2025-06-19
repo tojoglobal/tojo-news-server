@@ -52,8 +52,8 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#0a0647] to-[#4427ad] relative overflow-hidden">
-      {/* Optional SVG lines background */}
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#0a0647] to-[#4427ad] relative overflow-hidden px-4 pt-10 pb-10 md:pt-0 md:pb-0">
+      {/* SVG background */}
       <svg
         className="absolute inset-0 w-full h-full z-0 pointer-events-none"
         viewBox="0 0 1440 900"
@@ -79,14 +79,18 @@ const AdminLogin = () => {
           strokeWidth="2"
         />
       </svg>
-      <div className="relative z-10 w-full max-w-sm bg-[#18116a]/[.97] rounded-2xl border border-[#9996dc] shadow-2xl p-5 flex flex-col">
-        <h2 className="text-xl md:text-2xl font-bold text-center text-white mb-8 font-sans tracking-wide">
+
+      <div className="relative z-10 w-full max-w-sm sm:max-w-md bg-[#18116a]/[.97] rounded-2xl border border-[#9996dc] shadow-2xl p-6 sm:p-8 flex flex-col">
+        <h2 className="text-xl sm:text-2xl font-bold text-center text-white mb-6 sm:mb-8 font-sans tracking-wide">
           Login Admin
         </h2>
+
         {error && (
           <div className="text-red-400 text-sm text-center mb-2">{error}</div>
         )}
+
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          {/* Email */}
           <div>
             <label htmlFor="email" className="block text-white font-bold mb-2">
               Email:
@@ -113,6 +117,8 @@ const AdminLogin = () => {
               </span>
             )}
           </div>
+
+          {/* Password */}
           <div className="relative">
             <label
               htmlFor="password"
@@ -153,7 +159,8 @@ const AdminLogin = () => {
           >
             {loading ? <span>Logging In...</span> : "Log In"}
           </button>
-          {/* Checkbox for design only, NOT required */}
+
+          {/* Agree Checkbox */}
           <div className="flex items-center mt-1">
             <input
               type="checkbox"
@@ -165,7 +172,7 @@ const AdminLogin = () => {
               htmlFor="tick"
               className="text-white text-sm cursor-pointer select-none"
             >
-              You are Agree with terms & conditions
+              You agree with terms & conditions
             </label>
           </div>
         </form>

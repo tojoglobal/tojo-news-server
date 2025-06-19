@@ -119,13 +119,13 @@ const CreateBlogPost = () => {
   });
 
   return (
-    <div className="p-3">
-      <div className="w-full bg-[#172133] rounded-xl shadow-lg p-8">
-        <h1 className="text-2xl md:text-3xl font-bold mb-4">Create News</h1>
+    <div className="p-2 md:p-3">
+      <div className="w-full bg-[#172133] rounded-xl shadow-lg p-4 md:p-8">
+        <h1 className="text-2xl md:text-3xl  font-bold mb-4">Create News</h1>
         <hr className="border-gray-700 mb-6" />
         <form
           onSubmit={formik.handleSubmit}
-          className="space-y-6"
+          className="space-y-5 md:space-y-6"
           encType="multipart/form-data"
         >
           <div>

@@ -102,7 +102,7 @@ const Dashboard = () => {
           </button>
         </header>
         {/* Content Area */}
-        <main className="flex-1 overflow-y-auto bg-gray-900 p-3 md:p-4">
+        <main className="flex-1 overflow-y-auto bg-gray-900 p-1 md:p-4">
           <Outlet />
         </main>
       </div>

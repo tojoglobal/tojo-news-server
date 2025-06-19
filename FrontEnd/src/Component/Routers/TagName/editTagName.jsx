@@ -84,7 +84,7 @@ const EditTagName = () => {
   }
 
   return (
-    <div className="max-w-lg mx-auto bg-[#181c2f] rounded-2xl p-8 shadow-2xl border border-[#23263a] mt-10">
+    <div className="max-w-lg mx-auto bg-[#181c2f] rounded-md md:rounded-2xl p-8 shadow-2xl border border-[#23263a] mt-10">
       <h5 className="text-sm text-gray-400 mb-2">
         <Link
           to="/dashboard/TagName"
@@ -93,7 +93,7 @@ const EditTagName = () => {
           <IoMdArrowRoundBack /> Back
         </Link>
       </h5>
-      <h2 className="text-3xl font-bold text-white mb-2">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
         <span className="bg-gradient-to-r from-blue-400 via-blue-600 to-pink-500 bg-clip-text text-transparent">
           Edit Tag
         </span>

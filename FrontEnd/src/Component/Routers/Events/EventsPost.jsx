@@ -138,20 +138,35 @@ const EventsPost = () => {
         color: "#fff",
       }}
     >
-      <Typography variant="h5" className="font-bold mb-2" gutterBottom>
+      <Typography
+        variant="h5"
+        sx={{
+          fontWeight: "bold",
+          mb: 2,
+          fontSize: isMobile ? "1.25rem" : "1.5rem",
+        }}
+      >
         All Events
       </Typography>
-      <hr style={{ borderColor: "#222", opacity: 0.2 }} />
+
+      <hr style={{ borderColor: "#222", opacity: 0.2, marginBottom: "12px" }} />
+
       <Box
         sx={{
           display: "flex",
+          flexDirection: isMobile ? "column" : "row",
           justifyContent: "space-between",
-          alignItems: "center",
-          mb: 1.5,
+          alignItems: isMobile ? "flex-start" : "center",
+          gap: isMobile ? 1 : 0,
+          mb: 2,
         }}
       >
-        <Link to="/dashboard/events/create">
+        <Link
+          to="/dashboard/events/create"
+          style={{ width: isMobile ? "100%" : "auto" }}
+        >
           <Button
+            fullWidth={isMobile}
             variant="contained"
             color="primary"
             startIcon={<HiPlus />}
@@ -160,7 +175,7 @@ const EventsPost = () => {
               fontWeight: 600,
               fontSize: 14,
               px: 2,
-              py: 0.8,
+              py: 1,
               boxShadow: 1,
               minWidth: 0,
             }}
@@ -169,16 +184,17 @@ const EventsPost = () => {
           </Button>
         </Link>
       </Box>
+
       <Paper
         elevation={2}
         sx={{
           borderRadius: 2,
-          overflow: "hidden",
+          overflowX: "auto", // <-- Enable horizontal scroll for table
           background: "transparent",
           color: "#fff",
         }}
       >
-        <TableContainer>
+        <TableContainer sx={{ minWidth: isMobile ? "700px" : "auto" }}>
           <Table size="small">
             <TableHead>
               <TableRow sx={{ background: "rgba(255,255,255,0.03)" }}>
@@ -396,12 +412,14 @@ const EventsPost = () => {
           </Table>
         </TableContainer>
       </Paper>
-      <Pagination
-        totalItems={events.length}
-        itemsPerPage={itemsPerPage}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-      />
+      <Box sx={{ mt: 2, mb: 2 }}>
+        <Pagination
+          totalItems={events.length}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      </Box>
     </Box>
   );
 };

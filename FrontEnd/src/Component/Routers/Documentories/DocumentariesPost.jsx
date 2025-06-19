@@ -193,7 +193,7 @@ export default function DocumentariesPost() {
           </button>
         </div>
       </form>
-      <div className="mt-12">
+      <div className="mt-8 md:mt-12">
         <FeaturedList />
       </div>
       <div className="flex justify-center mt-10">
