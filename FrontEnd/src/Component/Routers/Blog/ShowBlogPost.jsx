@@ -87,9 +87,9 @@ const ShowBlogPost = () => {
 
   return (
     <div className="p-3">
-      <div className="w-full max-w-4xl mx-auto bg-[#172133] rounded-xl shadow-lg p-8">
+      <div className="w-full max-w-4xl mx-auto bg-[#172133] rounded-xl shadow-lg p-4 md:p-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-          <h1 className="text-3xl font-bold">Blog Info</h1>
+          <h1 className="text-xl md:text-2xl font-bold">Blog Info</h1>
           <div className="flex gap-3">
             <Link
               to="/dashboard/blogpost"
@@ -107,65 +107,87 @@ const ShowBlogPost = () => {
         <hr className="border-gray-700 mb-6" />
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left text-white">
-            <tbody>
-              <tr>
-                <td className="py-2 font-semibold w-40">Blog Image</td>
-                <td className="py-2">
-                  <img
-                    className="h-40 object-cover rounded-lg border border-gray-700"
-                    src={`${state.port}/Images/${blogpost.Image}`}
-                    alt={blogpost.Image}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="py-2 font-semibold">Date & Time</td>
-                <td className="py-2">
-                  <time>{formatDateTime(blogpost.dateAndTime)}</time>
-                </td>
-              </tr>
-              <tr>
-                <td className="py-2 font-semibold">Author Name</td>
-                <td className="py-2">
-                  {blogpost.AuthorOne}
-                  {blogpost.AuthorTwo ? ` & ${blogpost.AuthorTwo}` : ""}
-                </td>
-              </tr>
-              <tr>
-                <td className="py-2 font-semibold">Blog Category</td>
-                <td className="py-2">{blogpost.newsCategory}</td>
-              </tr>
-              <tr>
-                <td className="py-2 font-semibold">Blog Title</td>
-                <td className="py-2">{blogpost.title}</td>
-              </tr>
-              <tr>
-                <td className="py-2 font-semibold">Blog Text</td>
-                <td className="py-2">
-                  <button
-                    className="px-3 cursor-pointer py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition"
-                    onClick={() => togglePopup(blogpost.uuid)}
-                  >
-                    {activeId === blogpost.uuid ? "Hide blog" : "Show blog"}
-                  </button>
-                  {activeId === blogpost.uuid && (
-                    <div className="mt-3 bg-[#222e3e] rounded p-4 shadow-inner max-h-60 overflow-y-auto">
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(blogpost.artical),
-                        }}
-                      ></div>
-                      <button
-                        className="mt-3 cursor-pointer px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition"
-                        onClick={() => togglePopup(blogpost.uuid)}
-                      >
-                        Close
-                      </button>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            </tbody>
+            <table className="w-full text-sm text-left text-white border-separate border-spacing-y-3">
+              <tbody>
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell w-full md:w-40 text-gray-400">
+                    Blog Image
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    <img
+                      className="h-40 object-cover rounded-lg border border-gray-700"
+                      src={`${state.port}/Images/${blogpost.Image}`}
+                      alt={blogpost.Image}
+                    />
+                  </td>
+                </tr>
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell text-gray-400">
+                    Date & Time
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    <time>{formatDateTime(blogpost.dateAndTime)}</time>
+                  </td>
+                </tr>
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell text-gray-400">
+                    Author Name
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    {blogpost.AuthorOne}
+                    {blogpost.AuthorTwo ? ` & ${blogpost.AuthorTwo}` : ""}
+                  </td>
+                </tr>
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell text-gray-400">
+                    Blog Category
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    {blogpost.newsCategory}
+                  </td>
+                </tr>
+
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell text-gray-400">
+                    Blog Title
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    {blogpost.title}
+                  </td>
+                </tr>
+
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell text-gray-400">
+                    Blog Text
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    <button
+                      className="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition mb-2"
+                      onClick={() => togglePopup(blogpost.uuid)}
+                    >
+                      {activeId === blogpost.uuid ? "Hide blog" : "Show blog"}
+                    </button>
+
+                    {activeId === blogpost.uuid && (
+                      <div className="mt-2 bg-[#222e3e] rounded p-4 shadow-inner text-sm leading-relaxed">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(blogpost.artical),
+                          }}
+                        ></div>
+
+                        <button
+                          className="mt-3 px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition"
+                          onClick={() => togglePopup(blogpost.uuid)}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </table>
         </div>
       </div>

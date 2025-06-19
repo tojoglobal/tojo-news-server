@@ -3,124 +3,169 @@ import { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import DOMPurify from "dompurify";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import toast from "react-hot-toast";
+import { FaEdit } from "react-icons/fa";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 
 const ShowEventsPost = () => {
   const { state } = useContext(AppContext);
   const { id } = useParams();
-  const [event, setEvent] = useState({});
-  const [activeId, setActiveId] = useState(null);
+
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [descVisible, setDescVisible] = useState(false);
 
   useEffect(() => {
-    const fetchEvent = async () => {
+    async function fetchEvent() {
+      setLoading(true);
       try {
         const res = await axios.get(`${state.port}/api/admin/events/${id}`);
         if (res.data.Status && res.data.Result.length) {
           setEvent(res.data.Result[0]);
+          setError(null);
         } else {
-          toast.error(res.data.Error || "Failed to fetch event details");
+          setError(res.data.Error || "Failed to load event details");
         }
-      } catch (err) {
-        toast.error("Error fetching event data");
+      } catch {
+        setError("Network error while fetching event data");
       }
-    };
+      setLoading(false);
+    }
     fetchEvent();
   }, [id, state.port]);
 
-  // Toggle for showing/hiding event description
-  const togglePopup = (id) => {
-    setActiveId((prevId) => (prevId === id ? null : id));
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
-  // Format date
-  const formatDate = (dateTime) => {
-    const date = new Date(dateTime);
-    const options = { month: "long", day: "2-digit", year: "numeric" };
-    return date.toLocaleDateString("en-US", options).toUpperCase();
-  };
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-[#121923]">
+        <svg
+          className="animate-spin h-12 w-12 text-[#7aa8e6]"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8H4z"
+          />
+        </svg>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-[#121923] p-4">
+        <p className="text-red-500 text-lg font-semibold">{error}</p>
+      </div>
+    );
+  }
+
+  if (!event) {
+    return null;
+  }
 
   return (
-    <div className="p-3">
-      <div className="w-full max-w-3xl mx-auto bg-[#172133] rounded-xl shadow-lg p-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-          <h1 className="text-3xl font-bold">Event Info</h1>
-          <div className="flex gap-3">
+    <div className="min-h-screen bg-[#121923] py-8 px-4 md:px-10">
+      <div className="max-w-5xl mx-auto bg-[#172133] rounded-2xl shadow-xl p-6 md:p-10 text-white">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide">
+            Event Information
+          </h1>
+          <div className="flex gap-3 flex-wrap md:flex-nowrap">
             <Link
               to="/dashboard/events"
-              className="inline-flex items-center gap-1 px-4 py-1.5 rounded bg-gray-700 hover:bg-gray-600 transition text-white"
+              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition text-white font-semibold shadow-md"
             >
-              <IoMdArrowRoundBack className="text-xl" /> Back
+              <IoMdArrowRoundBack className="text-2xl" /> Back
             </Link>
             <Link to={`/dashboard/events/edit/${id}`}>
-              <button className="inline-flex cursor-pointer items-center gap-1 px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-700 transition text-white font-semibold">
-                Edit
+              <button className="flex items-center gap-2 px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition text-white font-semibold shadow-md">
+                <FaEdit /> Edit
               </button>
             </Link>
           </div>
         </div>
-        <hr className="border-gray-700 mb-6" />
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-white">
-            <tbody>
-              <tr>
-                <td className="py-2 font-semibold w-40">Event Image</td>
-                <td className="py-2">
-                  <img
-                    className="h-40 object-cover rounded-lg border border-gray-700"
-                    src={
-                      event.image_url
-                        ? `${state.port}/Images/${event.image_url}`
-                        : "https://i.postimg.cc/KzNdw0LX/Group.png"
-                    }
-                    alt={event.title}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="py-2 font-semibold">Date</td>
-                <td className="py-2">
-                  <time>{formatDate(event.date)}</time>
-                </td>
-              </tr>
-              <tr>
-                <td className="py-2 font-semibold">Location</td>
-                <td className="py-2">{event.location}</td>
-              </tr>
-              <tr>
-                <td className="py-2 font-semibold">Title</td>
-                <td className="py-2">{event.title}</td>
-              </tr>
-              <tr>
-                <td className="py-2 font-semibold">Description</td>
-                <td className="py-2">
-                  <button
-                    className="px-3 cursor-pointer py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition"
-                    onClick={() => togglePopup(event.uuid)}
-                  >
-                    {activeId === event.uuid
-                      ? "Hide description"
-                      : "Show description"}
-                  </button>
-                  {activeId === event.uuid && (
-                    <div className="mt-3 bg-[#222e3e] rounded p-4 shadow-inner max-h-60 overflow-y-auto">
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(event.description),
-                        }}
-                      ></div>
-                      <button
-                        className="mt-3 cursor-pointer px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition"
-                        onClick={() => togglePopup(event.uuid)}
-                      >
-                        Close
-                      </button>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        {/* Content Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          {/* Image */}
+          <div className="rounded-lg overflow-hidden shadow-lg max-h-[300px] md:max-h-full">
+            <img
+              src={
+                event.image_url
+                  ? `${state.port}/Images/${event.image_url}`
+                  : "https://i.postimg.cc/KzNdw0LX/Group.png"
+              }
+              alt={event.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Info */}
+          <div className="md:col-span-2 space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold text-[#7aa8e6] mb-2">
+                Date
+              </h2>
+              <p className="text-lg">{formatDate(event.date)}</p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-[#7aa8e6] mb-2">
+                Location
+              </h2>
+              <p className="text-lg">{event.location}</p>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-[#7aa8e6] mb-2">
+                Title
+              </h2>
+              <p className="text-lg">{event.title}</p>
+            </div>
+
+            {/* Description */}
+            <div>
+              <h2 className="text-xl font-semibold text-[#7aa8e6] mb-4 flex items-center justify-between">
+                Description
+                <button
+                  onClick={() => setDescVisible(!descVisible)}
+                  className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 rounded-md transition font-semibold"
+                >
+                  {descVisible ? "Hide" : "Show"}
+                </button>
+              </h2>
+
+              {/* Description Panel */}
+              {descVisible && (
+                <div
+                  className="bg-[#222e3e] rounded-lg p-6 shadow-inner max-h-[300px] overflow-y-auto leading-relaxed text-sm md:text-base"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(event.description),
+                  }}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
