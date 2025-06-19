@@ -34,7 +34,7 @@ const AppointMentCard = () => {
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="rounded-xl bg-gradient-to-tr from-[#22263a] to-[#22283f] shadow-lg p-4 md:p-6 border border-[#2c324b]/60">
+    <div className="rounded-xl bg-gradient-to-tr from-[#22263a] to-[#22283f] shadow-lg p-4 md:p-6 border border-[#2c324b]/60 mb-6 md:mb-0">
       <div className="mb-4 flex items-center justify-between">
         <h5 className="text-lg font-semibold text-blue-300">
           LATEST NEWS from Tojoglobal
