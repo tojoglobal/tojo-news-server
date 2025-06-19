@@ -83,89 +83,104 @@ const ShowEventsPost = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#121923] py-8 px-4 md:px-10">
-      <div className="max-w-5xl mx-auto bg-[#172133] rounded-2xl shadow-xl p-6 md:p-10 text-white">
+    <div className="p-3">
+      <div className="w-full max-w-4xl mx-auto bg-[#172133] rounded-xl shadow-lg p-4 md:p-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-wide">
-            Event Information
-          </h1>
-          <div className="flex gap-3 flex-wrap md:flex-nowrap">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+          <h1 className="text-xl md:text-2xl font-bold">Event Information</h1>
+          <div className="flex gap-3">
             <Link
               to="/dashboard/events"
-              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition text-white font-semibold shadow-md"
+              className="inline-flex items-center gap-1 px-4 py-1.5 rounded bg-gray-700 hover:bg-gray-600 transition text-white"
             >
-              <IoMdArrowRoundBack className="text-2xl" /> Back
+              <IoMdArrowRoundBack className="text-xl" /> Back
             </Link>
             <Link to={`/dashboard/events/edit/${id}`}>
-              <button className="flex items-center gap-2 px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition text-white font-semibold shadow-md">
+              <button className="inline-flex cursor-pointer items-center gap-1 px-4 py-1.5 rounded bg-blue-600 hover:bg-blue-700 transition text-white font-semibold">
                 <FaEdit /> Edit
               </button>
             </Link>
           </div>
         </div>
+        <hr className="border-gray-700 mb-6" />
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left text-white">
+            <table className="w-full text-sm text-left text-white border-separate border-spacing-y-3">
+              <tbody>
+                {/* Image */}
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell w-full md:w-40 text-gray-400">
+                    Event Image
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    <img
+                      className="h-40 object-cover rounded-lg border border-gray-700"
+                      src={
+                        event.image_url
+                          ? `${state.port}/Images/${event.image_url}`
+                          : "https://i.postimg.cc/KzNdw0LX/Group.png"
+                      }
+                      alt={event.title}
+                    />
+                  </td>
+                </tr>
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-          {/* Image */}
-          <div className="rounded-lg overflow-hidden shadow-lg max-h-[300px] md:max-h-full">
-            <img
-              src={
-                event.image_url
-                  ? `${state.port}/Images/${event.image_url}`
-                  : "https://i.postimg.cc/KzNdw0LX/Group.png"
-              }
-              alt={event.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+                {/* Date */}
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell text-gray-400">
+                    Date
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    {formatDate(event.date)}
+                  </td>
+                </tr>
 
-          {/* Info */}
-          <div className="md:col-span-2 space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold text-[#7aa8e6] mb-2">
-                Date
-              </h2>
-              <p className="text-lg">{formatDate(event.date)}</p>
-            </div>
+                {/* Location */}
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell text-gray-400">
+                    Location
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    {event.location}
+                  </td>
+                </tr>
 
-            <div>
-              <h2 className="text-xl font-semibold text-[#7aa8e6] mb-2">
-                Location
-              </h2>
-              <p className="text-lg">{event.location}</p>
-            </div>
+                {/* Title */}
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell text-gray-400">
+                    Title
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    {event.title}
+                  </td>
+                </tr>
 
-            <div>
-              <h2 className="text-xl font-semibold text-[#7aa8e6] mb-2">
-                Title
-              </h2>
-              <p className="text-lg">{event.title}</p>
-            </div>
+                {/* Description */}
+                <tr className="block md:table-row rounded-lg">
+                  <td className="py-2 md:px-4 font-semibold block md:table-cell text-gray-400">
+                    Description
+                  </td>
+                  <td className="py-2 md:px-4 block md:table-cell">
+                    <button
+                      onClick={() => setDescVisible(!descVisible)}
+                      className="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition mb-2"
+                    >
+                      {descVisible ? "Hide" : "Show"}
+                    </button>
 
-            {/* Description */}
-            <div>
-              <h2 className="text-xl font-semibold text-[#7aa8e6] mb-4 flex items-center justify-between">
-                Description
-                <button
-                  onClick={() => setDescVisible(!descVisible)}
-                  className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 rounded-md transition font-semibold"
-                >
-                  {descVisible ? "Hide" : "Show"}
-                </button>
-              </h2>
-
-              {/* Description Panel */}
-              {descVisible && (
-                <div
-                  className="bg-[#222e3e] rounded-lg p-6 shadow-inner max-h-[300px] overflow-y-auto leading-relaxed text-sm md:text-base"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(event.description),
-                  }}
-                />
-              )}
-            </div>
-          </div>
+                    {descVisible && (
+                      <div
+                        className="mt-2 bg-[#222e3e] rounded p-4 shadow-inner text-sm leading-relaxed"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(event.description),
+                        }}
+                      />
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </table>
         </div>
       </div>
     </div>

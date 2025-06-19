@@ -16,8 +16,18 @@ const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // useEffect(() => {
+  //   if (isMobile) setCollapsed(true);
+  // }, [isMobile]);
+
   useEffect(() => {
-    if (isMobile) setCollapsed(true);
+    if (isMobile) {
+      setCollapsed(true);
+      setMobileOpen(false);
+    } else {
+      setCollapsed(false);
+      setMobileOpen(false);
+    }
   }, [isMobile]);
 
   const handleLogout = () => {
@@ -88,6 +98,7 @@ const Dashboard = () => {
             <button
               onClick={toggleCollapsed}
               className="p-2 cursor-pointer rounded-md text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none"
+              aria-label="Toggle menu"
             >
               <FiMenu className="w-5 h-5" />
             </button>

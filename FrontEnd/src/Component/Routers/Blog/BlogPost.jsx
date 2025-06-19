@@ -179,27 +179,27 @@ const BlogPost = () => {
                     className="px-4 py-3 text-center"
                     style={{ borderBottom }}
                   >
-                    <div className="flex gap-2 justify-center">
+                    <div className="flex gap-4 justify-center">
                       <Link
                         to={`/dashboard/blogpost/edit/${bgPost.uuid}`}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white transition"
+                        className="text-[#1975d1]"
                         title="Edit"
                       >
-                        <MdEdit className="text-lg" />
+                        <MdEdit className="text-xl" />
                       </Link>
                       <Link
                         to={`/dashboard/blogpost/${bgPost.uuid}`}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-green-600 hover:bg-green-700 text-white transition"
+                        className="text-blue-500"
                         title="Show"
                       >
-                        <MdRemoveRedEye className="text-lg" />
+                        <MdRemoveRedEye className="text-xl" />
                       </Link>
                       <button
                         onClick={() => handleDelete(bgPost.uuid)}
-                        className="inline-flex cursor-pointer items-center gap-1 px-2 py-1 rounded bg-red-600 hover:bg-red-700 text-white transition"
+                        className="text-[#d32f2f]"
                         title="Delete"
                       >
-                        <MdDelete className="text-lg" />
+                        <MdDelete className="text-xl" />
                       </button>
                     </div>
                   </td>
