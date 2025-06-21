@@ -12,7 +12,6 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -52,127 +51,143 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#0a0647] to-[#4427ad] relative overflow-hidden px-4 pt-10 pb-10 md:pt-0 md:pb-0">
-      {/* SVG background */}
-      <svg
-        className="absolute inset-0 w-full h-full z-0 pointer-events-none"
-        viewBox="0 0 1440 900"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          opacity="0.12"
-          d="M0 300 Q720 100 1440 300"
-          stroke="#fff"
-          strokeWidth="2"
-        />
-        <path
-          opacity="0.08"
-          d="M0 500 Q720 700 1440 500"
-          stroke="#fff"
-          strokeWidth="2"
-        />
-        <path
-          opacity="0.08"
-          d="M0 800 Q720 900 1440 800"
-          stroke="#fff"
-          strokeWidth="2"
-        />
-      </svg>
-
-      <div className="relative z-10 w-full max-w-sm sm:max-w-md bg-[#18116a]/[.97] rounded-2xl border border-[#9996dc] shadow-2xl p-6 sm:p-8 flex flex-col">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#0D1B2A] to-[#1B263B] relative overflow-hidden px-4 py-10">
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-[#0B213A] rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#234E52] rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#0A3D62] rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+      </div>
+      <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl p-7 flex flex-col items-center">
         <h2 className="text-xl sm:text-2xl font-bold text-center text-white mb-6 sm:mb-8 font-sans tracking-wide">
-          Login Admin
+          Admin <span className="text-[#A7A890]">Login</span>
         </h2>
-
         {error && (
-          <div className="text-red-400 text-sm text-center mb-2">{error}</div>
+          <div className="bg-red-900 bg-opacity-40 text-red-300 text-sm text-center p-3 rounded-lg mb-5 border border-red-800">
+            {error}
+          </div>
         )}
-
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          {/* Email */}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full flex flex-col gap-4"
+        >
           <div>
-            <label htmlFor="email" className="block text-white font-bold mb-2">
-              Email:
+            <label
+              htmlFor="email"
+              className="block text-gray-200 text-sm font-medium mb-2"
+            >
+              Email Address
             </label>
             <input
               type="email"
               id="email"
               autoComplete="off"
-              placeholder="Enter Email"
+              placeholder="name@example.com"
               {...register("email", {
                 required: "Email is required",
+
                 pattern: {
                   value: /^\S+@\S+$/i,
+
                   message: "Invalid email address",
                 },
               })}
-              className={`w-full px-3 py-2 rounded-md bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
-                errors.email ? "ring-2 ring-red-400" : ""
+              className={`w-full px-5 py-3 rounded-lg bg-white/10 text-gray-100 text-base border border-white/20 outline-none focus:border-[#4B8B9B] transition-all duration-300 placeholder:text-gray-400 ${
+                errors.email ? "ring-2 ring-red-500 border-red-500" : ""
               }`}
             />
             {errors.email && (
-              <span className="text-sm text-red-500">
+              <span className="text-sm text-red-400 mt-2 block">
                 {errors.email.message}
               </span>
             )}
           </div>
-
-          {/* Password */}
           <div className="relative">
             <label
               htmlFor="password"
-              className="block text-white font-bold mb-2"
+              className="block text-gray-200 text-sm font-medium mb-2"
             >
-              Password:
+              Password
             </label>
             <input
               type={showPassword ? "text" : "password"}
               id="password"
-              placeholder="Enter Password"
+              placeholder="••••••••"
               {...register("password", {
                 required: "Password is required",
               })}
-              className={`w-full px-3 py-2 rounded-md bg-[#f6f8ff] text-black text-base border-none outline-none font-medium ${
-                errors.password ? "ring-2 ring-red-400" : ""
+              className={`w-full px-5 py-3 rounded-lg bg-white/10 text-gray-100 text-base border border-white/20 outline-none focus:border-[#4B8B9B] transition-all duration-300 placeholder:text-gray-400 ${
+                errors.password ? "ring-2 ring-red-500 border-red-500" : ""
               }`}
             />
             <button
               type="button"
-              aria-label="Toggle Password"
+              aria-label="Toggle Password Visibility"
               tabIndex={-1}
-              className="absolute cursor-pointer top-[71%] right-2 -translate-y-1/2 text-gray-500 hover:text-[#6a8cff] focus:outline-none"
+              className="absolute cursor-pointer top-[67%] right-4 -translate-y-1/2 text-gray-400 hover:text-[#7EB5C2] focus:outline-none transition-colors duration-200"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <FaEye /> : <FaEyeSlash />}
+              {showPassword ? <FaEye size={20} /> : <FaEyeSlash size={20} />}
             </button>
             {errors.password && (
-              <span className="text-sm text-red-500">
+              <span className="text-sm text-red-400 mt-2 block">
                 {errors.password.message}
               </span>
             )}
           </div>
+          {/* Login Button */}
           <button
-            className="w-full cursor-pointer rounded-md text-white font-bold py-2 mt-1 mb-1 transition disabled:opacity-60 bg-gradient-to-r from-[#a259ff] to-[#01cfff] text-lg"
+            className="w-full cursor-pointer rounded-lg text-white font-bold py-3 mt-4 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-[#216A7A] to-[#4B8B9B] hover:from-[#4B8B9B] hover:to-[#216A7A] focus:outline-none focus:ring-2 focus:ring-[#7EB5C2] focus:ring-offset-2 focus:ring-offset-[#0D1B2A] text-lg shadow-md hover:shadow-lg"
             type="submit"
             disabled={loading}
           >
-            {loading ? <span>Logging In...</span> : "Log In"}
-          </button>
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
 
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Logging In...
+              </span>
+            ) : (
+              "Secure Login"
+            )}
+          </button>
           {/* Agree Checkbox */}
-          <div className="flex items-center mt-1">
+          <div className="flex items-center mt-1 justify-center">
             <input
               type="checkbox"
-              id="tick"
+              id="agree"
               {...register("agree")}
-              className="accent-[#6a8cff] mr-2"
+              className="form-checkbox h-5 w-5 text-[#4B8B9B] border-white/20 rounded focus:ring-[#7EB5C2] bg-white/10 cursor-pointer"
             />
             <label
-              htmlFor="tick"
-              className="text-white text-sm cursor-pointer select-none"
+              htmlFor="agree"
+              className="ml-3 text-gray-300 text-sm cursor-pointer select-none"
             >
-              You agree with terms & conditions
+              I agree to the{" "}
+              <a
+                href="#"
+                className="text-[#7EB5C2] hover:underline focus:outline-none focus:ring-1 focus:ring-[#7EB5C2] rounded"
+              >
+                Terms & Conditions
+              </a>
             </label>
           </div>
         </form>

@@ -141,10 +141,10 @@ const MainDashbord = () => {
     <div className="p-3 space-y-5">
       {/* Header */}
       <div className="space-y-[2px]">
-        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
+        <h1 className="text-2xl md:text-3xl font-semibold text-white">
           Dashboard Overview
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-gray-400">
           Key metrics and content performance
         </p>
       </div>
@@ -181,19 +181,19 @@ const MainDashbord = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.mostPopularBlog && (
           <Link to="/dashboard/blogpost" className="group">
-            <div className="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-colors h-full">
+            <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors h-full">
               <div className="flex items-center space-x-3 mb-3">
-                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                <div className="p-2 rounded-lg bg-blue-900/30 :text-blue-400">
                   <FaEye className="text-lg" />
                 </div>
-                <h3 className="font-medium text-gray-900 dark:text-white">
+                <h3 className="font-medium text-white">
                   Most Viewed
                 </h3>
               </div>
-              <p className="text-gray-900 dark:text-gray-100 font-medium mb-2 line-clamp-2">
+              <p className="text-gray-100 font-medium mb-2 line-clamp-2">
                 {stats.mostPopularBlog.title}
               </p>
-              <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex justify-between items-center text-sm text-gray-400">
                 <span>
                   {formatLargeNumber(stats.mostPopularBlog.total_views || 0)}{" "}
                   views
@@ -210,19 +210,19 @@ const MainDashbord = () => {
 
         {stats.mostReadBlog && (
           <Link to="/dashboard/blogpost" className="group">
-            <div className="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-emerald-500 transition-colors h-full">
+            <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 hover:border-emerald-500 transition-colors h-full">
               <div className="flex items-center space-x-3 mb-3">
-                <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                <div className="p-2 rounded-lg bg-emerald-900/30 text-emerald-400">
                   <FaRegClock className="text-lg" />
                 </div>
-                <h3 className="font-medium text-gray-900 dark:text-white">
+                <h3 className="font-medium text-white">
                   Most Read
                 </h3>
               </div>
-              <p className="text-gray-900 dark:text-gray-100 font-medium mb-2 line-clamp-2">
+              <p className="text-gray-100 font-medium mb-2 line-clamp-2">
                 {stats.mostReadBlog.title}
               </p>
-              <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex justify-between items-center text-sm text-gray-400">
                 <span>
                   {Math.floor(
                     (stats.mostReadBlog.total_reading_time || 0) / 60
@@ -238,23 +238,22 @@ const MainDashbord = () => {
             </div>
           </Link>
         )}
-
         {stats.latestBlog && (
           <Link to="/dashboard/blogpost" className="group">
-            <div className="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-violet-500 transition-colors h-full">
+            <div className="bg-gray-800 p-5 rounded-lg border border-gray-700 hover:border-violet-500 transition-colors h-full">
               <div className="flex items-center space-x-3 mb-3">
-                <div className="p-2 rounded-lg bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400">
+                <div className="p-2 rounded-lg bg-violet-900/30 text-violet-400">
                   <FaNewspaper className="text-lg" />
                 </div>
-                <h3 className="font-medium text-gray-900 dark:text-white">
+                <h3 className="font-medium text-white">
                   Latest Content
                 </h3>
               </div>
-              <p className="text-gray-900 dark:text-gray-100 font-medium mb-2 line-clamp-2">
+              <p className="text-gray-100 font-medium mb-2 line-clamp-2">
                 {stats.latestBlog.title}
               </p>
-              <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
-                <span className="bg-violet-100 dark:bg-violet-900/50 text-violet-800 dark:text-violet-200 px-2 py-1 rounded-full text-xs">
+              <div className="flex justify-between items-center text-sm text-gray-400">
+                <span className="bg-violet-900/50 text-violet-200 px-2 py-1 rounded-full text-xs">
                   New
                 </span>
                 <span>
@@ -265,18 +264,16 @@ const MainDashbord = () => {
           </Link>
         )}
       </div>
-
       {/* Content Distribution */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+      <div className="bg-gray-800 rounded-lg border border-gray-700 p-5">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+          <div className="p-2 rounded-lg bg-amber-900/30 text-amber-400">
             <FaChartPie className="text-lg" />
           </div>
-          <h2 className="font-medium text-gray-900 dark:text-white">
+          <h2 className="font-medium text-white">
             Content Distribution
           </h2>
         </div>
-
         <div className="h-80">
           {loading ? (
             <div className="flex items-center justify-center h-full text-gray-400">
