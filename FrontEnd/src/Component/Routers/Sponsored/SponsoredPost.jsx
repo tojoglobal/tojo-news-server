@@ -16,7 +16,7 @@ import {
   Paper,
   Typography,
   Box,
-  CircularProgress,
+  Skeleton,
 } from "@mui/material";
 import { HiPlus } from "react-icons/hi";
 import { MdEdit, MdDelete, MdVisibility } from "react-icons/md";
@@ -52,7 +52,6 @@ const SponsoredPost = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const queryClient = useQueryClient();
 
-  // Query: all posts
   const {
     data: sponsoredPosts = [],
     isLoading,
@@ -62,7 +61,6 @@ const SponsoredPost = () => {
     queryFn: () => fetchSponsoredPosts(state.port),
   });
 
-  // Pagination state (simple)
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = sponsoredPosts.slice(
@@ -70,7 +68,6 @@ const SponsoredPost = () => {
     startIndex + itemsPerPage
   );
 
-  // Mutation: delete post
   const mutation = useMutation({
     mutationFn: (id) => deleteSponsoredPost({ port: state.port, id }),
     onSuccess: () => {
@@ -130,7 +127,6 @@ const SponsoredPost = () => {
     });
   };
 
-  // gray-600: #4b5563
   const borderBottom = "1.5px solid #4b5563";
 
   return (
@@ -190,92 +186,60 @@ const SponsoredPost = () => {
           <Table size="small">
             <TableHead>
               <TableRow sx={{ background: "rgba(255,255,255,0.03)" }}>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  SL
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  TITLE
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  START DATE
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  END DATE
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  IMAGE
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    textAlign: "center",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  ACTIONS
-                </TableCell>
+                {[
+                  "SL",
+                  "TITLE",
+                  "START DATE",
+                  "END DATE",
+                  "IMAGE",
+                  "ACTIONS",
+                ].map((head, i) => (
+                  <TableCell
+                    key={i}
+                    sx={{
+                      fontWeight: 700,
+                      color: "#fff",
+                      py: 1.4,
+                      px: 1.6,
+                      fontSize: 15,
+                      borderBottom,
+                      textAlign: head === "ACTIONS" ? "center" : "left",
+                    }}
+                  >
+                    {head}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    align="center"
-                    sx={{ py: 3, borderBottom }}
-                  >
-                    <CircularProgress color="inherit" size={22} />
-                  </TableCell>
-                </TableRow>
+                [...Array(6)].map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton
+                        variant="rectangular"
+                        height={28}
+                        width={50}
+                        sx={{ bgcolor: "#4b5563", borderRadius: 1 }}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                  </TableRow>
+                ))
               ) : paginatedData.length > 0 ? (
                 paginatedData.map((post, index) => (
                   <TableRow
@@ -331,7 +295,6 @@ const SponsoredPost = () => {
                       sx={{ color: "#fff", py: 1.4, px: 1.6, borderBottom }}
                     >
                       <img
-                        className="Team_member_Image"
                         src={
                           post.image_url
                             ? `${state.port}/Images/${post.image_url}`

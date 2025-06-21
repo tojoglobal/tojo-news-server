@@ -14,7 +14,7 @@ import {
   Paper,
   Typography,
   Box,
-  CircularProgress,
+  Skeleton,
 } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -98,6 +98,36 @@ const NewslettersData = () => {
 
   const borderColor = "#4b5563";
 
+  const skeletonRows = Array.from({ length: 5 }).map((_, index) => (
+    <TableRow key={index}>
+      <TableCell>
+        <Skeleton variant="text" width="20px" sx={{ bgcolor: "grey.700" }} />
+      </TableCell>
+      <TableCell>
+        <Skeleton variant="text" width="80%" sx={{ bgcolor: "grey.700" }} />
+      </TableCell>
+      <TableCell>
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={24}
+          sx={{ bgcolor: "grey.700", borderRadius: 1 }}
+        />
+      </TableCell>
+      <TableCell>
+        <Skeleton variant="text" width="60%" sx={{ bgcolor: "grey.700" }} />
+      </TableCell>
+      <TableCell align="center">
+        <Skeleton
+          variant="circular"
+          width={30}
+          height={30}
+          sx={{ bgcolor: "grey.700", mx: "auto" }}
+        />
+      </TableCell>
+    </TableRow>
+  ));
+
   return (
     <Box sx={{ px: isMobile ? 1 : 2, py: 2 }}>
       <h1 className="text-xl md:text-2xl mb-4 font-bold text-white">
@@ -150,64 +180,57 @@ const NewslettersData = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 3 }}>
-                    <CircularProgress
-                      color="inherit"
-                      size={22}
-                      className="text-white"
-                    />
-                  </TableCell>
-                </TableRow>
-              ) : subscribers?.length > 0 ? (
-                subscribers.map((subscriber, index) => (
-                  <TableRow key={subscriber.id} hover>
-                    <TableCell className="text-white">{index + 1}</TableCell>
-                    <TableCell className="text-white">
-                      {subscriber.email}
-                    </TableCell>
-                    <TableCell className="text-white">
-                      <div className="flex flex-wrap gap-1">
-                        {subscriber.interests.split(",").map((interest, i) => (
-                          <span
-                            key={i}
-                            className="px-2 py-1 bg-[#370094] rounded-md text-xs text-white"
+              {isLoading
+                ? skeletonRows
+                : subscribers?.length > 0
+                ? subscribers.map((subscriber, index) => (
+                    <TableRow key={subscriber.id} hover>
+                      <TableCell className="text-white">{index + 1}</TableCell>
+                      <TableCell className="text-white">
+                        {subscriber.email}
+                      </TableCell>
+                      <TableCell className="text-white">
+                        <div className="flex flex-wrap gap-1">
+                          {subscriber.interests
+                            .split(",")
+                            .map((interest, i) => (
+                              <span
+                                key={i}
+                                className="px-2 py-1 bg-[#370094] rounded-md text-xs text-white"
+                              >
+                                {interest.trim()}
+                              </span>
+                            ))}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-white">
+                        {formatDate(subscriber.created_at)}
+                      </TableCell>
+                      <TableCell align="center" className="text-white">
+                        <Tooltip title="Delete">
+                          <IconButton
+                            onClick={() =>
+                              handleDelete(subscriber.id, subscriber.email)
+                            }
+                            color="error"
+                            size="small"
+                            disabled={mutation.isLoading}
                           >
-                            {interest.trim()}
-                          </span>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-white">
-                      {formatDate(subscriber.created_at)}
-                    </TableCell>
-                    <TableCell align="center" className="text-white">
-                      <Tooltip title="Delete">
-                        <IconButton
-                          onClick={() =>
-                            handleDelete(subscriber.id, subscriber.email)
-                          }
-                          color="error"
-                          size="small"
-                          disabled={mutation.isLoading}
-                          className="text-white"
-                        >
-                          <MdDelete />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 3 }}>
-                    <Typography variant="body2" className="text-white">
-                      No subscribers found
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
+                            <MdDelete />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : !isLoading && (
+                    <TableRow>
+                      <TableCell colSpan={5} align="center" sx={{ py: 3 }}>
+                        <Typography variant="body2" className="text-white">
+                          No subscribers found
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
             </TableBody>
           </Table>
         </TableContainer>

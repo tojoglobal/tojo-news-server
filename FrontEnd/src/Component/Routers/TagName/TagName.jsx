@@ -16,7 +16,7 @@ import {
   Paper,
   Typography,
   Box,
-  CircularProgress,
+  Skeleton,
 } from "@mui/material";
 import { HiPlus } from "react-icons/hi";
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -84,8 +84,27 @@ const TagNameList = () => {
     });
   };
 
-  // Tailwind gray-600 hex: #4b5563
   const borderBottom = "1.5px solid #4b5563";
+
+  // Skeleton rows (can adjust count)
+  const skeletonRows = Array.from({ length: 5 }).map((_, index) => (
+    <TableRow key={index}>
+      <TableCell sx={{ py: 1.5, borderBottom }}>
+        <Skeleton variant="text" width="20px" sx={{ bgcolor: "grey.700" }} />
+      </TableCell>
+      <TableCell sx={{ py: 1.5, borderBottom }}>
+        <Skeleton variant="text" width="80%" sx={{ bgcolor: "grey.700" }} />
+      </TableCell>
+      <TableCell sx={{ py: 1.5, borderBottom }}>
+        <Skeleton
+          variant="rectangular"
+          width="60px"
+          height="24px"
+          sx={{ bgcolor: "grey.700", mx: "auto" }}
+        />
+      </TableCell>
+    </TableRow>
+  ));
 
   return (
     <Box sx={{ px: isMobile ? 1 : 2, py: 2, color: "#fff" }}>
@@ -173,68 +192,60 @@ const TagNameList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={3}
-                    align="center"
-                    sx={{ py: 3, borderBottom }}
-                  >
-                    <CircularProgress color="inherit" size={22} />
-                  </TableCell>
-                </TableRow>
-              ) : tagNames && tagNames.length > 0 ? (
-                tagNames.map((item, index) => (
-                  <TableRow
-                    key={item.uuid}
-                    hover
-                    sx={{ color: "#fff", borderBottom }}
-                  >
-                    <TableCell sx={{ color: "#fff", borderBottom }}>
-                      {index + 1}
-                    </TableCell>
-                    <TableCell sx={{ color: "#fff", borderBottom }}>
-                      {item.name}
-                    </TableCell>
-                    <TableCell
-                      align="center"
+              {isLoading
+                ? skeletonRows
+                : tagNames && tagNames.length > 0
+                ? tagNames.map((item, index) => (
+                    <TableRow
+                      key={item.uuid}
+                      hover
                       sx={{ color: "#fff", borderBottom }}
                     >
-                      <Tooltip title="Edit" arrow>
-                        <IconButton
-                          component={Link}
-                          to={`/dashboard/TagName/edit/${item.uuid}`}
-                          color="primary"
-                          sx={{ mx: 0.5, p: 0.75 }}
-                        >
-                          <MdEdit size={18} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete" arrow>
-                        <IconButton
-                          color="error"
-                          onClick={() => handleDelete(item.uuid)}
-                          sx={{ mx: 1 }}
-                        >
-                          <MdDelete />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={3}
-                    align="center"
-                    sx={{ py: 2, borderBottom }}
-                  >
-                    <Typography variant="body2" sx={{ color: "#fff" }}>
-                      No tags found.
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
+                      <TableCell sx={{ color: "#fff", borderBottom }}>
+                        {index + 1}
+                      </TableCell>
+                      <TableCell sx={{ color: "#fff", borderBottom }}>
+                        {item.name}
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{ color: "#fff", borderBottom }}
+                      >
+                        <Tooltip title="Edit" arrow>
+                          <IconButton
+                            component={Link}
+                            to={`/dashboard/TagName/edit/${item.uuid}`}
+                            color="primary"
+                            sx={{ mx: 0.5, p: 0.75 }}
+                          >
+                            <MdEdit size={18} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete" arrow>
+                          <IconButton
+                            color="error"
+                            onClick={() => handleDelete(item.uuid)}
+                            sx={{ mx: 1 }}
+                          >
+                            <MdDelete />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : !isLoading && (
+                    <TableRow>
+                      <TableCell
+                        colSpan={3}
+                        align="center"
+                        sx={{ py: 2, borderBottom }}
+                      >
+                        <Typography variant="body2" sx={{ color: "#fff" }}>
+                          No tags found.
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -244,4 +255,3 @@ const TagNameList = () => {
 };
 
 export default TagNameList;
-  

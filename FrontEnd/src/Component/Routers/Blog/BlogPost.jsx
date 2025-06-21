@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppContext } from "../../../Dashbord/SmallComponent/AppContext";
 import Pagination from "../../Pagination/Pagination";
-import { Button } from "@mui/material";
+import { Button, Skeleton } from "@mui/material";
 
 const fetchBlogPosts = async (port) => {
   const response = await axios.get(`${port}/api/admin/blogpost`);
@@ -32,7 +32,6 @@ const BlogPost = () => {
   const itemsPerPage = 10;
   const queryClient = useQueryClient();
 
-  // React Query: fetch blog posts
   const {
     data: blogpost = [],
     isLoading,
@@ -48,7 +47,6 @@ const BlogPost = () => {
     }
   }, [error]);
 
-  // Mutation: delete blog post by uuid
   const mutation = useMutation({
     mutationFn: (uuid) => deleteBlogPost({ port: state.port, uuid }),
     onSuccess: () => {
@@ -60,11 +58,9 @@ const BlogPost = () => {
     },
   });
 
-  // Pagination logic for current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = blogpost.slice(startIndex, startIndex + itemsPerPage);
 
-  // Delete confirmation with SweetAlert2
   const handleDelete = (uuid) => {
     Swal.fire({
       title: "Are you sure?",
@@ -84,6 +80,41 @@ const BlogPost = () => {
   };
 
   const borderBottom = "1.5px solid #4b5563";
+
+  const skeletonRows = Array.from({ length: 5 }).map((_, index) => (
+    <tr key={index} style={{ borderBottom }}>
+      <td className="px-4 py-3">
+        <Skeleton variant="text" width="20px" sx={{ bgcolor: "grey.700" }} />
+      </td>
+      <td className="px-4 py-3">
+        <Skeleton variant="text" width="80%" sx={{ bgcolor: "grey.700" }} />
+      </td>
+      <td className="px-4 py-3">
+        <Skeleton
+          variant="rectangular"
+          width={112}
+          height={56}
+          sx={{ bgcolor: "grey.700", borderRadius: "8px" }}
+        />
+      </td>
+      <td className="px-4 py-3">
+        <Skeleton
+          variant="rectangular"
+          width={120}
+          height={30}
+          sx={{ bgcolor: "grey.700", borderRadius: "6px" }}
+        />
+      </td>
+      <td className="px-4 py-3 text-center">
+        <Skeleton
+          variant="rectangular"
+          width={100}
+          height={28}
+          sx={{ bgcolor: "grey.700", mx: "auto", borderRadius: "6px" }}
+        />
+      </td>
+    </tr>
+  ));
 
   return (
     <div className="p-3">
@@ -134,88 +165,73 @@ const BlogPost = () => {
             </tr>
           </thead>
           <tbody>
-            {isLoading ? (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="text-center py-8"
-                  style={{ borderBottom }}
-                >
-                  <span className="loading loading-spinner loading-lg"></span>
-                </td>
-              </tr>
-            ) : paginatedData.length > 0 ? (
-              paginatedData.map((bgPost, index) => (
-                <tr
-                  key={bgPost.uuid}
-                  className="hover:bg-[#232e45] transition"
-                  style={{ borderBottom }}
-                >
-                  <td className="px-4 py-3" style={{ borderBottom }}>
-                    {startIndex + index + 1}
-                  </td>
-                  <td className="px-4 py-3" style={{ borderBottom }}>
-                    {bgPost.title}
-                  </td>
-                  <td className="px-4 py-3" style={{ borderBottom }}>
-                    <img
-                      className="h-14 w-28 object-cover rounded-lg border border-gray-700"
-                      src={`${state.port}/Images/${bgPost.thumble}`}
-                      alt={bgPost.thumble}
-                    />
-                  </td>
-                  <td className="px-4 py-3" style={{ borderBottom }}>
-                    {bgPost.home_highlight === 1 ? (
-                      <span className="bg-green-600 text-white px-3 py-1 rounded font-semibold text-xs shadow">
-                        Home Highlighted
-                      </span>
-                    ) : (
-                      <span className="bg-gray-700 text-white px-3 py-1 rounded text-xs">
-                        -
-                      </span>
-                    )}
-                  </td>
-                  <td
-                    className="px-4 py-3 text-center"
+            {isLoading
+              ? skeletonRows
+              : paginatedData.length > 0
+              ? paginatedData.map((bgPost, index) => (
+                  <tr
+                    key={bgPost.uuid}
+                    className="hover:bg-[#232e45] transition"
                     style={{ borderBottom }}
                   >
-                    <div className="flex gap-4 justify-center">
-                      <Link
-                        to={`/dashboard/blogpost/edit/${bgPost.uuid}`}
-                        className="text-[#1975d1]"
-                        title="Edit"
-                      >
-                        <MdEdit className="text-xl" />
-                      </Link>
-                      <Link
-                        to={`/dashboard/blogpost/${bgPost.uuid}`}
-                        className="text-blue-500"
-                        title="Show"
-                      >
-                        <MdRemoveRedEye className="text-xl" />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(bgPost.uuid)}
-                        className="text-[#d32f2f]"
-                        title="Delete"
-                      >
-                        <MdDelete className="text-xl" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="text-center py-8 text-gray-400"
-                  style={{ borderBottom }}
-                >
-                  No blog posts found.
-                </td>
-              </tr>
-            )}
+                    <td className="px-4 py-3">{startIndex + index + 1}</td>
+                    <td className="px-4 py-3">{bgPost.title}</td>
+                    <td className="px-4 py-3">
+                      <img
+                        className="h-14 w-28 object-cover rounded-lg border border-gray-700"
+                        src={`${state.port}/Images/${bgPost.thumble}`}
+                        alt={bgPost.thumble}
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      {bgPost.home_highlight === 1 ? (
+                        <span className="bg-green-600 text-white px-3 py-1 rounded font-semibold text-xs shadow">
+                          Home Highlighted
+                        </span>
+                      ) : (
+                        <span className="bg-gray-700 text-white px-3 py-1 rounded text-xs">
+                          -
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <div className="flex gap-4 justify-center">
+                        <Link
+                          to={`/dashboard/blogpost/edit/${bgPost.uuid}`}
+                          className="text-[#1975d1]"
+                          title="Edit"
+                        >
+                          <MdEdit className="text-xl" />
+                        </Link>
+                        <Link
+                          to={`/dashboard/blogpost/${bgPost.uuid}`}
+                          className="text-blue-500"
+                          title="Show"
+                        >
+                          <MdRemoveRedEye className="text-xl" />
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(bgPost.uuid)}
+                          className="text-[#d32f2f]"
+                          title="Delete"
+                        >
+                          <MdDelete className="text-xl" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              : !isLoading && (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="text-center py-8 text-gray-400"
+                      style={{ borderBottom }}
+                    >
+                      No blog posts found.
+                    </td>
+                  </tr>
+                )}
           </tbody>
         </table>
       </div>

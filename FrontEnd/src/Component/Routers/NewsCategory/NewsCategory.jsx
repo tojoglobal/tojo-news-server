@@ -16,7 +16,7 @@ import {
   Paper,
   Typography,
   Box,
-  CircularProgress,
+  Skeleton,
 } from "@mui/material";
 import { HiPlus } from "react-icons/hi";
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -85,6 +85,27 @@ const NewsCategory = () => {
     });
   };
 
+  const borderBottom = "1.5px solid #4b5563";
+
+  const skeletonRows = Array.from({ length: 5 }).map((_, index) => (
+    <TableRow key={index}>
+      <TableCell sx={{ py: 2, borderBottom }}>
+        <Skeleton variant="text" width="20px" sx={{ bgcolor: "grey.700" }} />
+      </TableCell>
+      <TableCell sx={{ py: 2, borderBottom }}>
+        <Skeleton variant="text" width="80%" sx={{ bgcolor: "grey.700" }} />
+      </TableCell>
+      <TableCell sx={{ py: 2, borderBottom }} align="center">
+        <Skeleton
+          variant="rectangular"
+          width={100}
+          height={30}
+          sx={{ bgcolor: "grey.700", borderRadius: "6px", mx: "auto" }}
+        />
+      </TableCell>
+    </TableRow>
+  ));
+
   return (
     <Box
       sx={{
@@ -93,7 +114,9 @@ const NewsCategory = () => {
         color: "#fff",
       }}
     >
-      <h1 className="text-2xl md:text-3xl mb-2 font-bold">News Categories</h1>
+      <Typography variant="h5" className="font-bold mb-2" gutterBottom>
+        News Categories
+      </Typography>
       <hr style={{ borderColor: "#222", opacity: 0.2 }} />
       {error && (
         <Box sx={{ my: 1, color: "error.main" }}>
@@ -147,7 +170,7 @@ const NewsCategory = () => {
                     py: 1,
                     px: 1.5,
                     fontSize: 13,
-                    borderBottom: "1.5px solid #4b5563", // gray-600
+                    borderBottom,
                   }}
                 >
                   SL
@@ -159,7 +182,7 @@ const NewsCategory = () => {
                     py: 1,
                     px: 1.5,
                     fontSize: 13,
-                    borderBottom: "1.5px solid #4b5563", // gray-600
+                    borderBottom,
                   }}
                 >
                   CATEGORY NAME
@@ -169,7 +192,7 @@ const NewsCategory = () => {
                     fontWeight: 700,
                     color: "#fff",
                     textAlign: "center",
-                    borderBottom: "1.5px solid #4b5563", // gray-600
+                    borderBottom,
                   }}
                 >
                   ACTIONS
@@ -177,90 +200,66 @@ const NewsCategory = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {isLoading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={3}
-                    align="center"
-                    sx={{
-                      py: 3,
-                      borderBottom: "1.5px solid #4b5563",
-                    }}
-                  >
-                    <CircularProgress color="inherit" size={22} />
-                  </TableCell>
-                </TableRow>
-              ) : categories && categories.length > 0 ? (
-                categories.map((cl, index) => (
-                  <TableRow
-                    key={cl.uuid}
-                    hover
-                    sx={{
-                      color: "#fff",
-                      borderBottom: "1.5px solid #4b5563",
-                    }}
-                  >
-                    <TableCell
+              {isLoading
+                ? skeletonRows
+                : categories && categories.length > 0
+                ? categories.map((cl, index) => (
+                    <TableRow
+                      key={cl.uuid}
+                      hover
                       sx={{
                         color: "#fff",
-                        borderBottom: "1.5px solid #4b5563",
+                        borderBottom,
                       }}
                     >
-                      {index + 1}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        color: "#fff",
-                        borderBottom: "1.5px solid #4b5563",
-                      }}
-                    >
-                      {cl.name}
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      sx={{
-                        color: "#fff",
-                        borderBottom: "1.5px solid #4b5563",
-                      }}
-                    >
-                      <Tooltip title="Edit" arrow>
-                        <IconButton
-                          component={Link}
-                          to={`/dashboard/newscategory/edit/${cl.uuid}`}
-                          color="primary"
-                          sx={{ mx: 0.5, p: 0.75 }}
-                        >
-                          <MdEdit size={18} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete" arrow>
-                        <IconButton
-                          color="error"
-                          onClick={() => handleDelete(cl.uuid)}
-                          sx={{ mx: 1 }}
-                        >
-                          <MdDelete />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={3}
-                    align="center"
-                    sx={{
-                      py: 2,
-                      borderBottom: "1.5px solid #4b5563",
-                    }}
-                  >
-                    <Typography variant="body2" sx={{ color: "#fff" }}>
-                      No categories found.
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
+                      <TableCell sx={{ color: "#fff", borderBottom }}>
+                        {index + 1}
+                      </TableCell>
+                      <TableCell sx={{ color: "#fff", borderBottom }}>
+                        {cl.name}
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{ color: "#fff", borderBottom }}
+                      >
+                        <Tooltip title="Edit" arrow>
+                          <IconButton
+                            component={Link}
+                            to={`/dashboard/newscategory/edit/${cl.uuid}`}
+                            color="primary"
+                            sx={{ mx: 0.5, p: 0.75 }}
+                          >
+                            <MdEdit size={18} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete" arrow>
+                          <IconButton
+                            color="error"
+                            onClick={() => handleDelete(cl.uuid)}
+                            sx={{ mx: 1 }}
+                          >
+                            <MdDelete />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                : !isLoading && (
+                    <TableRow>
+                      <TableCell
+                        colSpan={3}
+                        align="center"
+                        sx={{
+                          py: 2,
+                          borderBottom,
+                        }}
+                      >
+                        <Typography variant="body2" sx={{ color: "#fff" }}>
+                          No categories found.
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
             </TableBody>
           </Table>
         </TableContainer>

@@ -22,7 +22,7 @@ import {
   Paper,
   useTheme,
   useMediaQuery,
-  CircularProgress,
+  Skeleton,
 } from "@mui/material";
 
 const itemsPerPage = 10;
@@ -189,7 +189,7 @@ const EventsPost = () => {
         elevation={2}
         sx={{
           borderRadius: 2,
-          overflowX: "auto", // <-- Enable horizontal scroll for table
+          overflowX: "auto",
           background: "transparent",
           color: "#fff",
         }}
@@ -198,92 +198,55 @@ const EventsPost = () => {
           <Table size="small">
             <TableHead>
               <TableRow sx={{ background: "rgba(255,255,255,0.03)" }}>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  SL
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  TITLE
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  LOCATION
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  DATE
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  IMAGE
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: 700,
-                    color: "#fff",
-                    textAlign: "center",
-                    py: 1.4,
-                    px: 1.6,
-                    fontSize: 15,
-                    borderBottom,
-                  }}
-                >
-                  ACTIONS
-                </TableCell>
+                {["SL", "TITLE", "LOCATION", "DATE", "IMAGE", "ACTIONS"].map(
+                  (head, i) => (
+                    <TableCell
+                      key={i}
+                      sx={{
+                        fontWeight: 700,
+                        color: "#fff",
+                        py: 1.4,
+                        px: 1.6,
+                        fontSize: 15,
+                        borderBottom,
+                        textAlign: head === "ACTIONS" ? "center" : "left",
+                      }}
+                    >
+                      {head}
+                    </TableCell>
+                  )
+                )}
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    align="center"
-                    sx={{ py: 3, borderBottom }}
-                  >
-                    <CircularProgress color="inherit" size={22} />
-                  </TableCell>
-                </TableRow>
+                [...Array(6)].map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton
+                        variant="rectangular"
+                        height={40}
+                        width={64}
+                        sx={{ bgcolor: "#4b5563", borderRadius: 1 }}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ py: 1.4, px: 1.6, borderBottom }}>
+                      <Skeleton height={24} sx={{ bgcolor: "#4b5563" }} />
+                    </TableCell>
+                  </TableRow>
+                ))
               ) : paginatedData.length > 0 ? (
                 paginatedData.map((post, index) => (
                   <TableRow
