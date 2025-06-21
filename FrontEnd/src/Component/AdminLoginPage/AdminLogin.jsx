@@ -51,7 +51,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-[#0D1B2A] to-[#1B263B] relative overflow-hidden px-4">
+    <div className="min-h-dvh w-full flex items-center justify-center bg-gradient-to-br from-[#0D1B2A] to-[#1B263B] relative overflow-hidden px-4">
       {/* Background blobs */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-64 h-64 bg-[#0B213A] rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
@@ -60,7 +60,7 @@ const AdminLogin = () => {
       </div>
 
       {/* Main content container */}
-      <div className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl p-6 sm:p-8 my-8 mx-auto">
+      <div className="relative z-10 w-full max-w-md bg-[rgba(255,255,255,0.05)] backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl p-6 sm:p-8 my-8 mx-auto">
         {/* Login form */}
         <div className="w-full">
           <h2 className="text-2xl font-bold text-center text-white mb-6 sm:mb-8 font-sans tracking-wide">
@@ -94,7 +94,7 @@ const AdminLogin = () => {
                     message: "Invalid email address",
                   },
                 })}
-                className={`w-full px-3 py-2.5 rounded-lg bg-white/10 text-gray-100 text-base border border-white/20 outline-none focus:border-[#4B8B9B] transition-all duration-300 placeholder:text-gray-400 ${
+                className={`w-full px-3 py-2.5 rounded-lg bg-[rgba(255,255,255,0.1)] text-gray-100 text-base border border-white/20 outline-none focus:border-[#4B8B9B] transition-all duration-300 placeholder:text-gray-400 ${
                   errors.email ? "ring-2 ring-red-500 border-red-500" : ""
                 }`}
               />
@@ -120,7 +120,7 @@ const AdminLogin = () => {
                 {...register("password", {
                   required: "Password is required",
                 })}
-                className={`w-full px-3 py-2.5 rounded-lg bg-white/10 text-gray-100 text-base border border-white/20 outline-none focus:border-[#4B8B9B] transition-all duration-300 placeholder:text-gray-400 ${
+                className={`w-full px-3 py-2.5 rounded-lg bg-[rgba(255,255,255,0.1)] text-gray-100 text-base border border-white/20 outline-none focus:border-[#4B8B9B] transition-all duration-300 placeholder:text-gray-400 ${
                   errors.password ? "ring-2 ring-red-500 border-red-500" : ""
                 }`}
               />
@@ -181,7 +181,7 @@ const AdminLogin = () => {
                 type="checkbox"
                 id="agree"
                 {...register("agree")}
-                className="form-checkbox h-4 w-4 sm:h-5 sm:w-5 text-[#4B8B9B] border-white/20 rounded focus:ring-[#7EB5C2] bg-white/10 cursor-pointer"
+                className="form-checkbox h-4 w-4 sm:h-5 sm:w-5 text-[#4B8B9B] border-white/20 rounded focus:ring-[#7EB5C2] bg-[rgba(255,255,255,0.1)] cursor-pointer"
               />
               <label
                 htmlFor="agree"
