@@ -145,14 +145,108 @@ const getLoveCount = async (req, res) => {
   }
 };
 
-const getLatestNews = async (req, res) => {
+const getMostPopulerViews = async (req, res) => {
   try {
-    const getLatestNewsQuery = `SELECT * FROM blognews ORDER BY dateAndTime DESC`;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
 
-    const [LatestBlogResult] = await db.query(getLatestNewsQuery);
+    // Get total count
+    const [countRows] = await db.query(`
+      SELECT COUNT(*) as count
+      FROM blognews
+    `);
+    const total = countRows[0].count;
+
+    // Get paginated data
+    const getMostPopularQuery = `
+      SELECT b.*, COALESCE(SUM(v.view_count), 0) AS total_views
+      FROM blognews b
+      LEFT JOIN blog_views v ON b.ID = v.blog_id
+      GROUP BY b.ID
+      ORDER BY total_views DESC
+      LIMIT ? OFFSET ?
+    `;
+    const [mostPopularBlogs] = await db.query(getMostPopularQuery, [
+      limit,
+      offset,
+    ]);
     res.status(200).json({
       success: true,
-      data: LatestBlogResult.length,
+      count: mostPopularBlogs.length,
+      total,
+      page,
+      limit,
+      result: mostPopularBlogs,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const getMostReadBlogs = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
+
+    // Get total count
+    const [countRows] = await db.query(`
+      SELECT COUNT(*) as count
+      FROM blognews
+    `);
+    const total = countRows[0].count;
+
+    const getMostReadQuery = `
+      SELECT b.*, COALESCE(SUM(br.reading_time), 0) AS total_reading_time
+      FROM blognews b
+      LEFT JOIN blog_reading_time br ON b.ID = br.blog_id
+      GROUP BY b.ID
+      ORDER BY total_reading_time DESC
+      LIMIT ? OFFSET ?
+    `;
+    const [mostReadBlogs] = await db.query(getMostReadQuery, [limit, offset]);
+    res.status(200).json({
+      success: true,
+      count: mostReadBlogs.length,
+      total,
+      page,
+      limit,
+      result: mostReadBlogs,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const getLatestNews = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const offset = (page - 1) * limit;
+
+    // Get total count
+    const [countRows] = await db.query(`
+      SELECT COUNT(*) as count
+      FROM blognews
+    `);
+    const total = countRows[0].count;
+
+    const getLatestNewsQuery = `
+      SELECT * FROM blognews
+      ORDER BY dateAndTime DESC
+      LIMIT ? OFFSET ?
+    `;
+    const [LatestBlogResult] = await db.query(getLatestNewsQuery, [
+      limit,
+      offset,
+    ]);
+    res.status(200).json({
+      success: true,
+      count: LatestBlogResult.length,
+      total,
+      page,
+      limit,
       result: LatestBlogResult,
     });
   } catch (error) {
@@ -161,45 +255,6 @@ const getLatestNews = async (req, res) => {
   }
 };
 
-const getMostReadBlogs = async (req, res) => {
-  try {
-    const getMostReadQuery = `
-      SELECT b.*, COALESCE(SUM(br.reading_time), 0) AS total_reading_time
-      FROM blognews b
-      LEFT JOIN blog_reading_time br ON b.ID = br.blog_id
-      GROUP BY b.ID
-      ORDER BY total_reading_time DESC;
-    `;
-    const [mostReadBlogs] = await db.query(getMostReadQuery);
-    res.status(200).json({
-      success: true,
-      count: mostReadBlogs.length,
-      result: mostReadBlogs,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
-
-const getMostPopulerViews = async (req, res) => {
-  try {
-    const getMostPopularQuery = `
-      SELECT b.*, COALESCE(SUM(v.view_count), 0) AS total_views
-      FROM blognews b
-      LEFT JOIN blog_views v ON b.ID = v.blog_id
-      GROUP BY b.ID
-      ORDER BY total_views DESC;
-    `;
-    const [mostPopularBlogs] = await db.query(getMostPopularQuery);
-    res.status(200).json({
-      success: true,
-      count: mostPopularBlogs.length,
-      result: mostPopularBlogs,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
 // get the Authors
 const getAuthors = async (req, res) => {
   try {
