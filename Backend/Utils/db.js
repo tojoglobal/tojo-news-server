@@ -3,7 +3,7 @@ dotenv.config();
 
 import mysql from "mysql2/promise";
 // // Create a connection pool
-const db = mysql.createPool({
+const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
